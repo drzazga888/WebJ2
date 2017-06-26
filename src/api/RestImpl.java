@@ -1,22 +1,46 @@
 package api;
 import java.io.IOException;
+import java.sql.SQLException;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import model.Database;
 import model.Project;
 import model.ProjectSample;
+import model.User;
 import processors.MusicProducer;
 
 @Path("/")
 public class RestImpl {
 	
+	protected Database db = new Database();
+	
+	@POST
+	@Path("user")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createUser(User user) {
+		try {
+			db.createUser(user);
+			return Response.status(Status.CREATED).build();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+		
+	}
+	
 	@GET
+	@Path("produce")
 	@Produces("audio/wav")
-	public Response getRest() {
+	public Response produce() {
 		try {
 			Project project = new Project(new ProjectSample[] {
 					new ProjectSample("838[kb]099_deep_soul_rhodes.aif.mp3", 1.0, 0.0, 0.0, 5.0),
