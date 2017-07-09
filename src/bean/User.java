@@ -1,12 +1,22 @@
-package model;
+package bean;
 
-public class User {
+public class User extends Credentials {
+
+	public User(Integer id, String fname, String lname, String email, String password, String password2) {
+		super(email, password);
+		this.id = id;
+		this.fname = fname;
+		this.lname = lname;
+		this.password2 = password2;
+	}
+
+	public User() {
+		super(null, null);
+	}
 
 	private Integer id;
 	private String fname;
 	private String lname;
-	private String email;
-	private String password;
 	private String password2;
 
 	public Integer getId() {
@@ -20,15 +30,7 @@ public class User {
 	public String getLname() {
 		return lname;
 	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
+	
 	public String getPassword2() {
 		return password2;
 	}
@@ -43,14 +45,6 @@ public class User {
 
 	public void setLname(String lname) {
 		this.lname = lname;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public void setPassword2(String password2) {

@@ -1,41 +1,19 @@
 package api;
-import java.io.IOException;
-import java.sql.SQLException;
 
-import javax.ws.rs.Consumes;
+import java.io.IOException;
+
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import model.Database;
-import model.Project;
-import model.ProjectSample;
-import model.User;
-import processors.MusicProducer;
+import bean.Project;
+import bean.ProjectSample;
+import util.MusicProducer;
 
-@Path("/")
-public class RestImpl {
-	
-	protected Database db = new Database();
-	
-	@POST
-	@Path("user")
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response createUser(User user) {
-		try {
-			db.createUser(user);
-			return Response.status(Status.CREATED).build();
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return Response.status(Status.BAD_REQUEST).build();
-		}
-		
-	}
+@Path("projects")
+public class ProjectController {
 	
 	@GET
 	@Path("produce")

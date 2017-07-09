@@ -1,9 +1,10 @@
-package processors;
+package util;
+
 import java.io.File;
 import java.io.IOException;
 
-import model.Project;
-import model.ProjectSample;
+import bean.Project;
+import bean.ProjectSample;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
