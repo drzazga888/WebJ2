@@ -1,7 +1,5 @@
 drop table users;
-
 drop table projects;
-
 drop table samples;
 
 CREATE TABLE IF NOT EXISTS users
@@ -10,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users
     email VARCHAR(40) UNIQUE,
     lname VARCHAR(40),
     fname VARCHAR(40),
-    password CHARACTER(40)
+    password CHARACTER(60)
 );
 
 CREATE TABLE IF NOT EXISTS projects

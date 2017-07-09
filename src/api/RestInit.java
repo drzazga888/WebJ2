@@ -10,6 +10,8 @@ public class RestInit extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new java.util.HashSet<>();
+        resources.add(BadParameterMapper.class);
+        resources.add(UserAlreadyExistsMapper.class);
         resources.add(UserController.class);
         resources.add(ProjectController.class);
         return resources;
