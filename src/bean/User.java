@@ -61,19 +61,7 @@ public class User extends Credentials implements Sanitizable {
 		this.password2 = password2;
 	}
 	
-	public void sanitizeForDbCreate() {
-		sanitizeForDbUpdate();
-		// password2 is not null / empty
-		if (password2 == null || password2.length() == 0) {
-			throw new BadParameterException("password2 must be provided");
-		}
-		// password = password2
-		if (!password.equals(password2)) {
-			throw new BadParameterException("password and password2 must be the same");
-		}
-	}
-	
-	public void sanitizeForDbUpdate() {
+	public void sanitize() {
 		// fname is not null / empty
 		if (fname == null || fname.length() == 0) {
 			throw new BadParameterException("fname must be provided");
@@ -105,6 +93,14 @@ public class User extends Credentials implements Sanitizable {
 		// password constraints - at liest 1 upper, 1 lower, 1 digit and 1 special
 		if (!PASSWORD_PATTERN.matcher(password).matches()) {
 			throw new BadParameterException("password must contain at liest 1 uppercase English letter, 1 lowercase English letter, 1 digit and 1 special character (#?!@$%^&*-)");
+		}
+		// password2 is not null / empty
+		if (password2 == null || password2.length() == 0) {
+			throw new BadParameterException("password2 must be provided");
+		}
+		// password = password2
+		if (!password.equals(password2)) {
+			throw new BadParameterException("password and password2 must be the same");
 		}
 	}
 	

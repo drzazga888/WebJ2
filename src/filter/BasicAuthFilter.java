@@ -59,7 +59,10 @@ public class BasicAuthFilter implements Filter {
 		try {
 			InitialContext context = new InitialContext();
 			String appName = (String) context.lookup(LOOKUP_APP_NAME);
-			return httpRequest.getRequestURI().startsWith("/" + appName + "/api/user") && httpRequest.getMethod() == "POST";
+			System.out.println(httpRequest.getRequestURI());
+			System.out.println(httpRequest.getMethod());
+			System.out.println(appName);
+			return httpRequest.getRequestURI().startsWith("/" + appName + "/api/users") && httpRequest.getMethod() == "POST";
 		} catch (NamingException e) {
 			e.printStackTrace();
 			throw new InternalServerErrorException();

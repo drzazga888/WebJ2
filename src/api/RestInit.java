@@ -13,6 +13,7 @@ public class RestInit extends Application {
         resources.add(BadParameterMapper.class);
         resources.add(UserAlreadyExistsMapper.class);
         resources.add(UserController.class);
+        resources.add(AudioController.class);
         resources.add(ProjectController.class);
         return resources;
     }

@@ -32,7 +32,7 @@ public class UserController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createUser(User user) {
-		user.sanitizeForDbCreate();
+		user.sanitize();
 		userModel.createUser(user);
 		return Response.status(Status.CREATED).build();
 	}
@@ -44,6 +44,7 @@ public class UserController {
 	public Response updateUser(User userReplacement, @Context HttpServletRequest request) {
 		User existingUser = (User) request.getAttribute("user");
 		userReplacement.setId(existingUser.getId());
+		userReplacement.sanitize();
 		userModel.updateUser(userReplacement);
 		return Response.status(Status.NO_CONTENT).build();
 	}
