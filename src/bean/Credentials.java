@@ -1,15 +1,34 @@
 package bean;
 
-public class Credentials {
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.validation.constraints.NotNull;
+
+@MappedSuperclass
+public class Credentials implements Serializable {
+	
+	protected static final long serialVersionUID = 1L;
+	public static final int MAX_EMAIL_LENGTH = 40;
+	
+	@Column(length = MAX_EMAIL_LENGTH)
+	@NotNull
+	protected String email;
+	
+	@Column(length = 60)
+	@NotNull
+	protected String password;
+	
+	public Credentials() {
+		super();
+	}
 
 	public Credentials(String email, String password) {
 		super();
 		this.email = email;
 		this.password = password;
 	}
-
-	protected String email;
-	protected String password;
 
 	public String getEmail() {
 		return email;

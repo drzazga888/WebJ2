@@ -2,62 +2,52 @@ package bean;
 
 import java.util.regex.Pattern;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQuery;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import exception.BadParameterException;
 
+@Entity
+@NamedQuery(name = "User.getByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
 public class User extends Credentials implements Sanitizable {
 	
+	private static final long serialVersionUID = 1L;
 	public static final Pattern EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
 	public static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$");
 	public static final int MAX_FNAME_LENGTH = 40;
 	public static final int MAX_LNAME_LENGTH = 40;
-	public static final int MAX_EMAIL_LENGTH = 40;
-
-	public User(Integer id, String fname, String lname, String email, String password, String password2) {
+	
+	@Id
+	@GeneratedValue
+	@NotNull
+	private Integer id;
+	
+	@Column(length = MAX_FNAME_LENGTH, unique = true)
+	@NotNull
+	private String fname;
+	
+	@Column(length = MAX_LNAME_LENGTH)
+	@NotNull
+	private String lname;
+	
+	@Transient
+	private String password2;
+	
+	public User() {
+		super();
+	}
+	
+	public User(Integer id, String fname, String lname, String email, String password2, String password) {
 		super(email, password);
 		this.id = id;
 		this.fname = fname;
 		this.lname = lname;
-		this.password2 = password2;
-	}
-
-	public User() {
-		super(null, null);
-	}
-
-	private Integer id;
-	private String fname;
-	private String lname;
-	private String password2;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public String getFname() {
-		return fname;
-	}
-
-	public String getLname() {
-		return lname;
-	}
-	
-	public String getPassword2() {
-		return password2;
-	}
-	
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public void setFname(String fname) {
-		this.fname = fname;
-	}
-
-	public void setLname(String lname) {
-		this.lname = lname;
-	}
-
-	public void setPassword2(String password2) {
 		this.password2 = password2;
 	}
 	
@@ -107,6 +97,38 @@ public class User extends Credentials implements Sanitizable {
 	@Override
 	public String toString() {
 		return String.format("User(id=%d, fname=%s, lname=%s, email=%s, password=%s, password2=%s)", id, fname, lname, email, password, password2);
+	}
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getFname() {
+		return fname;
+	}
+
+	public void setFname(String fname) {
+		this.fname = fname;
+	}
+
+	public String getLname() {
+		return lname;
+	}
+
+	public void setLname(String lname) {
+		this.lname = lname;
+	}
+
+	public String getPassword2() {
+		return password2;
+	}
+
+	public void setPassword2(String password2) {
+		this.password2 = password2;
 	}
 	
 }

@@ -1,5 +1,10 @@
 package api;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -13,13 +18,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import bean.User;
+import exception.UserAlreadyExistsException;
 import model.UserModel;
 
 @Path("users")
 public class UserController {
 	
-	private UserModel userModel = new UserModel();
+	@PersistenceContext
+	private EntityManager em;
 	
 	@GET
 	@Path("me")
@@ -33,7 +42,13 @@ public class UserController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createUser(User user) {
 		user.sanitize();
-		userModel.createUser(user);
+		user.setEmail(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+		if (em.createNamedQuery("User.getByEmail").setParameter("email", user.getEmail()).getResultList().size() > 0) {
+			throw new UserAlreadyExistsException();
+		}
+		EntityTransaction trans = em.getTransaction();
+		trans.begin();
+		em.persist();
 		return Response.status(Status.CREATED).build();
 	}
 	
@@ -41,11 +56,14 @@ public class UserController {
 	@Path("me")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response updateUser(User userReplacement, @Context HttpServletRequest request) {
+	public Response updateUser(User user, @Context HttpServletRequest request) {
 		User existingUser = (User) request.getAttribute("user");
-		userReplacement.setId(existingUser.getId());
-		userReplacement.sanitize();
-		userModel.updateUser(userReplacement);
+		user.setId(existingUser.getId());
+		user.sanitize();
+		if (em.createNamedQuery("User.getByEmail").setParameter("email", user.getEmail()).getResultList().size() > 0) {
+			throw new UserAlreadyExistsException();
+		}
+		update(user);
 		return Response.status(Status.NO_CONTENT).build();
 	}
 	
