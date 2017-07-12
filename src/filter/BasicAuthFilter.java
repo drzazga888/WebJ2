@@ -1,12 +1,17 @@
 package filter;
+
 import java.io.IOException;
 import java.util.Base64;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -22,17 +27,19 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import bean.Credentials;
 import bean.User;
-import model.UserModel;
 
+@Stateless
 @WebFilter(filterName = "BasicAuthFilter", urlPatterns = {"/api/*"})
 public class BasicAuthFilter implements Filter {
+	
+	@PersistenceContext(name = "WebJ2")
+	private EntityManager em;
 	
 	public final static String AUTH_HEADER_KEY = "Authorization";
 	public final static Pattern AUTH_HEADER_PATTERN = Pattern.compile("^Basic (.+)$");
 	public final static String LOOKUP_APP_NAME = "java:app/AppName";
 	public final static String BAD_CREDENTIALS_DESCRIPTION = "Bad login or password";
 	
-
     public BasicAuthFilter() {
     }
 
@@ -59,9 +66,6 @@ public class BasicAuthFilter implements Filter {
 		try {
 			InitialContext context = new InitialContext();
 			String appName = (String) context.lookup(LOOKUP_APP_NAME);
-			System.out.println(httpRequest.getRequestURI());
-			System.out.println(httpRequest.getMethod());
-			System.out.println(appName);
 			return httpRequest.getRequestURI().startsWith("/" + appName + "/api/users") && httpRequest.getMethod() == "POST";
 		} catch (NamingException e) {
 			e.printStackTrace();
@@ -75,11 +79,14 @@ public class BasicAuthFilter implements Filter {
 			chain.doFilter(request, response);
 			return;
 		} else {
-			UserModel db = new UserModel();
 			Credentials requestCredentials = getCredentialsFromRequest(httpRequest);
-			User user = db.getUserByEmail(requestCredentials.getEmail());
+			User user;
+			try {
+				user = (User) em.createNamedQuery("User.getByEmail").setParameter("email", requestCredentials.getEmail()).getSingleResult();
+			} catch(NoResultException e) {
+				user = null;
+			}
 			if (user != null && BCrypt.checkpw(requestCredentials.getPassword(), user.getPassword())) {
-				user.setPassword(null);
 				request.setAttribute("user", user);
 				chain.doFilter(request, response);
 				return;

@@ -12,12 +12,10 @@ public class Credentials implements Serializable {
 	protected static final long serialVersionUID = 1L;
 	public static final int MAX_EMAIL_LENGTH = 40;
 	
-	@Column(length = MAX_EMAIL_LENGTH)
-	@NotNull
+	@Column(length = MAX_EMAIL_LENGTH, nullable = false)
 	protected String email;
 	
-	@Column(length = 60)
-	@NotNull
+	@Column(length = 60, nullable = false)
 	protected String password;
 	
 	public Credentials() {

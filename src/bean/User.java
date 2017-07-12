@@ -5,15 +5,14 @@ import java.util.regex.Pattern;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
-
 import exception.BadParameterException;
 
 @Entity
+@Table(name = "PROFILE")
 @NamedQuery(name = "User.getByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
 public class User extends Credentials implements Sanitizable {
 	
@@ -25,15 +24,12 @@ public class User extends Credentials implements Sanitizable {
 	
 	@Id
 	@GeneratedValue
-	@NotNull
 	private Integer id;
 	
-	@Column(length = MAX_FNAME_LENGTH, unique = true)
-	@NotNull
+	@Column(length = MAX_FNAME_LENGTH, unique = true, nullable = false)
 	private String fname;
 	
-	@Column(length = MAX_LNAME_LENGTH)
-	@NotNull
+	@Column(length = MAX_LNAME_LENGTH, nullable = false)
 	private String lname;
 	
 	@Transient

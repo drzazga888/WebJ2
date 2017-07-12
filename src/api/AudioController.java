@@ -1,22 +1,11 @@
 package api;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-
-import bean.Audio;
-import bean.User;
-import model.AudioModel;
 
 @Path("audios")
 public class AudioController {
 	
+	/*
 	private AudioModel audioModel = new AudioModel();
 	
 	@POST
@@ -26,5 +15,21 @@ public class AudioController {
 		User user = (User) request.getAttribute("user");
 		return Response.status(Status.CREATED).entity(audioModel.createNewAudioResource(user, audio)).build();
 	}
+	
+	public PostMessage createNewAudioResource(User user, Audio audio) {
+		try {
+			PreparedStatement stmt = conn.prepareStatement("INSERT INTO audios (user_id, name) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+			stmt.setInt(1, user.getId());
+			stmt.setString(2, audio.getName());
+			stmt.executeUpdate();
+			ResultSet result = stmt.getGeneratedKeys();
+			result.next();
+			return new PostMessage(result.getInt(1));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new InternalServerErrorException();
+		}
+	}
+	*/
 
 }

@@ -1,10 +1,9 @@
 package api;
 
-import javax.inject.Inject;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,18 +21,21 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import bean.User;
 import exception.UserAlreadyExistsException;
-import model.UserModel;
 
 @Path("users")
+@Stateless
 public class UserController {
 	
-	@PersistenceContext
+	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
 	
 	@GET
 	@Path("me")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser(@Context HttpServletRequest request) {
+		User user = (User) request.getAttribute("user");
+		user.setPassword(null);
+		user.setPassword2(null);
 		return Response.ok(request.getAttribute("user")).build();
 	}
 	
@@ -42,13 +44,11 @@ public class UserController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createUser(User user) {
 		user.sanitize();
-		user.setEmail(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 		if (em.createNamedQuery("User.getByEmail").setParameter("email", user.getEmail()).getResultList().size() > 0) {
 			throw new UserAlreadyExistsException();
 		}
-		EntityTransaction trans = em.getTransaction();
-		trans.begin();
-		em.persist();
+		em.persist(user);
 		return Response.status(Status.CREATED).build();
 	}
 	
@@ -60,10 +60,13 @@ public class UserController {
 		User existingUser = (User) request.getAttribute("user");
 		user.setId(existingUser.getId());
 		user.sanitize();
+		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
 		if (em.createNamedQuery("User.getByEmail").setParameter("email", user.getEmail()).getResultList().size() > 0) {
 			throw new UserAlreadyExistsException();
 		}
-		update(user);
+		if (!em.contains(user)) {
+		    user = em.merge(user);
+		}
 		return Response.status(Status.NO_CONTENT).build();
 	}
 	
@@ -71,8 +74,11 @@ public class UserController {
 	@Path("me")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response deleteUser(@Context HttpServletRequest request) {
-		User existingUser = (User) request.getAttribute("user");
-		userModel.deleteUser(existingUser.getId());
+		User user = (User) request.getAttribute("user");
+		if (!em.contains(user)) {
+		    user = em.merge(user);
+		}
+		em.remove(user);
 		return Response.status(Status.NO_CONTENT).build();
 	}
 
