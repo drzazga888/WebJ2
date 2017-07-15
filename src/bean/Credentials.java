@@ -4,13 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import javax.validation.constraints.NotNull;
 
 @MappedSuperclass
 public class Credentials implements Serializable {
 	
 	protected static final long serialVersionUID = 1L;
-	public static final int MAX_EMAIL_LENGTH = 40;
+	private static final int MAX_EMAIL_LENGTH = 40;
 	
 	@Column(length = MAX_EMAIL_LENGTH, nullable = false)
 	protected String email;

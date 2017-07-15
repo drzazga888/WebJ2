@@ -1,7 +1,8 @@
-package api;
+package controller;
 
 import java.io.IOException;
 
+import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -13,6 +14,7 @@ import bean.ProjectSample;
 import util.MusicProducer;
 
 @Path("projects")
+@Stateless
 public class ProjectController {
 	
 	@GET

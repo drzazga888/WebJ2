@@ -24,7 +24,7 @@ public class User extends Credentials implements Sanitizable {
 	
 	@Id
 	@GeneratedValue
-	private Integer id;
+	private Long id;
 	
 	@Column(length = MAX_FNAME_LENGTH, unique = true, nullable = false)
 	private String fname;
@@ -39,7 +39,7 @@ public class User extends Credentials implements Sanitizable {
 		super();
 	}
 	
-	public User(Integer id, String fname, String lname, String email, String password2, String password) {
+	public User(Long id, String fname, String lname, String email, String password2, String password) {
 		super(email, password);
 		this.id = id;
 		this.fname = fname;
@@ -95,11 +95,11 @@ public class User extends Credentials implements Sanitizable {
 		return String.format("User(id=%d, fname=%s, lname=%s, email=%s, password=%s, password2=%s)", id, fname, lname, email, password, password2);
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

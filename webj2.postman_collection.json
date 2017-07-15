@@ -2,7 +2,7 @@
 	"variables": [],
 	"info": {
 		"name": "webj2",
-		"_postman_id": "e0fa6618-b130-7f0f-2de4-3b72a373a530",
+		"_postman_id": "c95ac7f3-10ac-22ca-6553-42f2bce83f74",
 		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
 	},
@@ -89,6 +89,68 @@
 			"name": "user",
 			"description": "",
 			"item": [
+				{
+					"name": "no credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 401\"] = responseCode.code === 401;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Error message is bad login or password\"] = jsonData.error = \"Bad login or password\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/users/me",
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fname\": \"Jan\",\n  \"lname\": \"Kowalski\",\n  \"email\": \"jan@kowalski.pl\",\n  \"password\": \"Ja-8-fajnie\",\n  \"password2\": \"Ja-8-fajnie\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "bad credentials",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 401\"] = responseCode.code === 401;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Error message is bad login or password\"] = jsonData.error = \"Bad login or password\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/users/me",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fname\": \"Jan\",\n  \"lname\": \"Kowalski\",\n  \"email\": \"jan@kowalski.pl\",\n  \"password\": \"Ja-8-fajnie\",\n  \"password2\": \"Ja-8-fajnie\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
 				{
 					"name": "empty fname",
 					"event": [
@@ -475,6 +537,8 @@
 									"tests[\"Lname field is valid\"] = jsonData.lname = \"Kowalski\";",
 									"tests[\"Email field is valid\"] = jsonData.fname = \"jan@kowalski.pl\";",
 									"tests[\"Id field is provided\"] = jsonData.id;",
+									"tests[\"Password is not showed\"] = !jsonData.password;",
+									"tests[\"Password2 is not showed\"] = !jsonData.password2;",
 									""
 								]
 							}
@@ -584,6 +648,8 @@
 									"tests[\"Lname field is valid\"] = jsonData.lname = \"Kowalski2\";",
 									"tests[\"Email field is valid\"] = jsonData.fname = \"jan@kowalski2.pl\";",
 									"tests[\"Id field is provided\"] = jsonData.id;",
+									"tests[\"Password is not showed\"] = !jsonData.password;",
+									"tests[\"Password2 is not showed\"] = !jsonData.password2;",
 									""
 								]
 							}

@@ -1,53 +1,38 @@
 package filter;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
+import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebFilter;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.InternalServerErrorException;
-
-import org.mindrot.jbcrypt.BCrypt;
+import javax.ws.rs.HttpMethod;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.ext.Provider;
 
 import bean.Credentials;
 import bean.User;
+import exception.BadCredentialsException;
+import util.BCrypt;
 
-@Stateless
-@WebFilter(filterName = "BasicAuthFilter", urlPatterns = {"/api/*"})
-public class BasicAuthFilter implements Filter {
+@Provider
+@PreMatching
+public class BasicAuthFilter implements ContainerRequestFilter {
+		    	
+	private final static String AUTH_HEADER_KEY = "Authorization";
+	private final static Pattern AUTH_HEADER_PATTERN = Pattern.compile("^Basic (.+)$");
 	
-	@PersistenceContext(name = "WebJ2")
-	private EntityManager em;
-	
-	public final static String AUTH_HEADER_KEY = "Authorization";
-	public final static Pattern AUTH_HEADER_PATTERN = Pattern.compile("^Basic (.+)$");
-	public final static String LOOKUP_APP_NAME = "java:app/AppName";
-	public final static String BAD_CREDENTIALS_DESCRIPTION = "Bad login or password";
+	@Inject
+	private EntityManagerProvider entityManagerProvider;
 	
     public BasicAuthFilter() {
     }
 
-	public void destroy() {
-	}
-	
-	private Credentials getCredentialsFromRequest(HttpServletRequest httpRequest) {
-		String authHeader = httpRequest.getHeader(AUTH_HEADER_KEY);
+	private Credentials getCredentialsFromRequest(ContainerRequestContext request) {
+		String authHeader = request.getHeaderString(AUTH_HEADER_KEY);
 		if (authHeader != null) {
 			Matcher m = AUTH_HEADER_PATTERN.matcher(authHeader);
 			if (m.find()) {
@@ -62,41 +47,24 @@ public class BasicAuthFilter implements Filter {
 		return null;
 	}
 	
-	private boolean isNotProtected(HttpServletRequest httpRequest) {
-		try {
-			InitialContext context = new InitialContext();
-			String appName = (String) context.lookup(LOOKUP_APP_NAME);
-			return httpRequest.getRequestURI().startsWith("/" + appName + "/api/users") && httpRequest.getMethod() == "POST";
-		} catch (NamingException e) {
-			e.printStackTrace();
-			throw new InternalServerErrorException();
-		}
-	}
-	
-	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest httpRequest = (HttpServletRequest) request;
-		if (isNotProtected(httpRequest)) {
-			chain.doFilter(request, response);
-			return;
-		} else {
-			Credentials requestCredentials = getCredentialsFromRequest(httpRequest);
+	@Override
+	public void filter(ContainerRequestContext request) {
+		if (!request.getUriInfo().getPath().contains("users") || request.getMethod() != HttpMethod.POST) {
+			Credentials requestCredentials = getCredentialsFromRequest(request);
+			if (requestCredentials == null) {
+				throw new BadCredentialsException();
+			}
 			User user;
 			try {
-				user = (User) em.createNamedQuery("User.getByEmail").setParameter("email", requestCredentials.getEmail()).getSingleResult();
+				user = (User) entityManagerProvider.get().createNamedQuery("User.getByEmail").setParameter("email", requestCredentials.getEmail()).getSingleResult();
 			} catch(NoResultException e) {
 				user = null;
 			}
-			if (user != null && BCrypt.checkpw(requestCredentials.getPassword(), user.getPassword())) {
-				request.setAttribute("user", user);
-				chain.doFilter(request, response);
-				return;
+			if (user == null || !BCrypt.checkpw(requestCredentials.getPassword(), user.getPassword())) {
+				throw new BadCredentialsException();
 			}
+			request.setSecurityContext(new BasicSecurityContext(user, request.getUriInfo().getRequestUri().getScheme()));
 		}
-		HttpServletResponse httpResponse = (HttpServletResponse) response;
-		httpResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, BAD_CREDENTIALS_DESCRIPTION);
-	}
-
-	public void init(FilterConfig fConfig) throws ServletException {
 	}
 
 }
