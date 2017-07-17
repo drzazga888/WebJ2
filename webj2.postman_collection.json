@@ -82,6 +82,87 @@
 						"description": ""
 					},
 					"response": []
+				},
+				{
+					"name": "put audio",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios/{{audio_resource_id}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "audio",
+									"description": "",
+									"type": "file",
+									"src": "111127__stephensaldanha__scifi-transforming-sound-01.wav"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "put audio copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios",
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "audio",
+									"description": "",
+									"type": "file",
+									"src": "111127__stephensaldanha__scifi-transforming-sound-01.wav"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
 				}
 			]
 		},

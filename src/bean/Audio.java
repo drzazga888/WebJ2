@@ -7,10 +7,12 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 
 import exception.BadParameterException;
 
 @Entity
+@NamedQuery(name = "Audio.getAllByUserId", query = "SELECT a FROM Audio a WHERE a.user.id = :id")
 public class Audio implements Sanitizable {
 	
 	private static final int MAX_NAME_LENGTH = 40;
@@ -23,7 +25,7 @@ public class Audio implements Sanitizable {
 	private String name;
 	
 	@Column(nullable = true)
-	private double[] amplitudeOverTime;
+	private float[] amplitudeOverTime;
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE } )
 	private User user;
@@ -40,10 +42,10 @@ public class Audio implements Sanitizable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public double[] getAmplitudeOverTime() {
+	public float[] getAmplitudeOverTime() {
 		return amplitudeOverTime;
 	}
-	public void setAmplitudeOverTime(double[] amplitudeOverTime) {
+	public void setAmplitudeOverTime(float[] amplitudeOverTime) {
 		this.amplitudeOverTime = amplitudeOverTime;
 	}
 	
