@@ -30,9 +30,9 @@ import com.ibm.websphere.jaxrs20.multipart.IMultipartBody;
 import javax.ws.rs.core.Response.Status;
 
 import bean.Audio;
-import bean.PostMessage;
+import bean.SuccessMessage;
 import bean.User;
-import exception.AudioFormatNotSupportedException;
+import exception.BadParameterException;
 import exception.UserIsNotOwnerException;
 import filter.BasicSecurityContext;
 import util.RmsPowerOverTime;
@@ -45,7 +45,7 @@ public class AudioController {
 	
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
-	
+
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllAudios(@Context SecurityContext securityContext) {
@@ -54,10 +54,10 @@ public class AudioController {
 		for (Audio audio : audios) {
 			audio.setUser(null);
 		}
-		return Response.status(Status.OK).entity(audios).build();
+		return Response.ok(audios).build();
 	}
 	
-	@POST
+	@POST 
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createAudioResource(Audio audio, @Context SecurityContext securityContext) {
@@ -69,7 +69,7 @@ public class AudioController {
 		}
 		em.persist(audio);
 		em.flush();
-		return Response.status(Status.CREATED).entity(new PostMessage(audio.getId())).build();
+		return Response.status(Status.CREATED).entity(new SuccessMessage("audio was successfully created", audio.getId())).build();
 	}
 	
 	@Path("{id}")
@@ -85,9 +85,9 @@ public class AudioController {
 		if (audio.getUser().getId() != authUser.getId()) {
 			throw new UserIsNotOwnerException();
 		}
-		IAttachment attachment = multipartBody.getRootAttachment();
+		IAttachment attachment = multipartBody.getAttachment("audio");
 		if (!attachment.getContentType().toString().equals(AUDIO_WAV_MIME_TYPE)) {
-			throw new AudioFormatNotSupportedException();
+			throw new BadParameterException("provided audio format is not supported");
 		}
 		String filePath = "./" + id + ".wav";
 		try {
@@ -102,7 +102,7 @@ public class AudioController {
 		float[] rms = rmsProvider.generate();
 		audio.setAmplitudeOverTime(rms);
 		em.persist(audio);
-		return Response.status(Status.NO_CONTENT).build();
-	}
+		return Response.ok(new SuccessMessage("audio file was successfully replaced", audio.getId())).build();
+	} 
 
 }

@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.SecurityContext;
 
+import bean.SuccessMessage;
 import bean.User;
 import exception.UserAlreadyExistsException;
 import filter.BasicSecurityContext;
@@ -35,7 +36,7 @@ public class UserController {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
 		user.setPassword(null);
 		user.setPassword2(null);
-		return Response.ok(user).build();
+		return Response.ok(user).entity(user).build();
 	}
 	
 	@POST
@@ -48,7 +49,7 @@ public class UserController {
 			throw new UserAlreadyExistsException();
 		}
 		em.persist(user);
-		return Response.status(Status.CREATED).build();
+		return Response.status(Status.CREATED).entity(new SuccessMessage("user was successfully created")).build();
 	}
 	
 	@PUT
@@ -66,7 +67,7 @@ public class UserController {
 		if (!em.contains(user)) {
 		    user = em.merge(user);
 		}
-		return Response.status(Status.NO_CONTENT).build();
+		return Response.ok(new SuccessMessage("user was successfully updated")).build();
 	}
 	
 	@DELETE
@@ -78,7 +79,7 @@ public class UserController {
 		    user = em.merge(user);
 		}
 		em.remove(user);
-		return Response.status(Status.NO_CONTENT).build();
+		return Response.ok(new SuccessMessage("user was successfully deleted")).build();
 	}
 
 }

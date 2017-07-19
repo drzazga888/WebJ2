@@ -9,7 +9,9 @@ import controller.ProjectController;
 import controller.UserController;
 import exceptionMapper.BadCredentialsMapper;
 import exceptionMapper.BadParameterMapper;
+import exceptionMapper.NotFoundExceptionMapper;
 import exceptionMapper.UserAlreadyExistsMapper;
+import exceptionMapper.UserIsNotOwnerMapper;
 import filter.BasicAuthFilter;
  
 @ApplicationPath("api")
@@ -21,6 +23,8 @@ public class RestInit extends Application {
         	BadCredentialsMapper.class,
         	BadParameterMapper.class,
         	UserAlreadyExistsMapper.class,
+        	NotFoundExceptionMapper.class,
+        	UserIsNotOwnerMapper.class,
         	BasicAuthFilter.class,
         	AudioController.class,
         	ProjectController.class,

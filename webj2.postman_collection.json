@@ -19,7 +19,10 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"User created message\"] = jsonData.message === \"user was successfully created\";"
 								]
 							}
 						}
@@ -43,6 +46,118 @@
 					"response": []
 				},
 				{
+					"name": "create second user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"User created message\"] = jsonData.message === \"user was successfully created\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fname\": \"Jan2\",\n  \"lname\": \"Kowalski2\",\n  \"email\": \"jan@kowalski2.pl\",\n  \"password\": \"Ja-8-fajnie2\",\n  \"password2\": \"Ja-8-fajnie2\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "name not provided",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Name must be provided message\"] = jsonData.error = \"name must be provided\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "name too long",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Name is too long message\"] = jsonData.error = \"max length of name is 40\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							},
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"VERY_LONG!VERY_LONG!VERY_LONG!VERY_LONG!!\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "create audio resource",
 					"event": [
 						{
@@ -54,6 +169,7 @@
 									"",
 									"var jsonData = JSON.parse(responseBody);",
 									"tests[\"Id is provided\"] = jsonData.id;",
+									"tests[\"Audio created message\"] = jsonData.message === \"audio was successfully created\";",
 									"",
 									"postman.setGlobalVariable(\"audio_resource_id\", jsonData.id);"
 								]
@@ -84,6 +200,177 @@
 					"response": []
 				},
 				{
+					"name": "put to not existing resource",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 404\"] = responseCode.code === 404;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Not found message\"] = jsonData.error === \"resource cannot be found\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios/999",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "audio",
+									"value": "this is bad text",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "put by different user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 403\"] = responseCode.code === 403;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Not found message\"] = jsonData.error === \"you can access only your private resources\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios/{{audio_resource_id}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpMi5wbDpKYS04LWZham5pZTI=",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "audio",
+									"value": "texttext",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "put with empty body",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios/{{audio_resource_id}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "put with invalid type",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"tests[\"Status code is 400\"] = responseCode.code === 400;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Audio format not supported message\"] = jsonData.error === \"provided audio format is not supported\";"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "https://localhost:9443/webj2/api/audios/{{audio_resource_id}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Basic amFuQGtvd2Fsc2tpLnBsOkphLTgtZmFqbmll",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "audio",
+									"value": "this is bad text",
+									"description": "",
+									"type": "text"
+								}
+							]
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
 					"name": "put audio",
 					"event": [
 						{
@@ -91,7 +378,10 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Audio replaced message\"] = jsonData.message === \"audio file was successfully replaced\";"
 								]
 							}
 						}
@@ -127,14 +417,21 @@
 					"response": []
 				},
 				{
-					"name": "put audio copy",
+					"name": "get audios",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 200\"] = responseCode.code === 200;"
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"Result is array\"] = jsonData instanceof Array;",
+									"tests[\"All entries contains id\"] = !jsonData.some(obj => !obj.id);",
+									"tests[\"All entries contains name\"] = !jsonData.some(obj => !obj.name);",
+									"tests[\"AmplitudeOverTime is valid (if provided)\"] = !jsonData.some(obj => !(!obj.amplitudeOverTime || obj.amplitudeOverTime instanceof Array));",
+									"tests[\"All entries does dot contain user\"] = !jsonData.some(obj => obj.user);"
 								]
 							}
 						}
@@ -154,9 +451,9 @@
 							"formdata": [
 								{
 									"key": "audio",
+									"value": "",
 									"description": "",
-									"type": "file",
-									"src": "111127__stephensaldanha__scifi-transforming-sound-01.wav"
+									"type": "file"
 								}
 							]
 						},
@@ -580,7 +877,10 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 201\"] = responseCode.code === 201;"
+									"tests[\"Status code is 201\"] = responseCode.code === 201;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"User created message\"] = jsonData.message === \"user was successfully created\";"
 								]
 							}
 						}
@@ -685,8 +985,10 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 204\"] = responseCode.code === 204;",
-									""
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"User updated message\"] = jsonData.message === \"user was successfully updated\";"
 								]
 							}
 						}
@@ -762,7 +1064,10 @@
 							"script": {
 								"type": "text/javascript",
 								"exec": [
-									"tests[\"Status code is 204\"] = responseCode.code === 204;"
+									"tests[\"Status code is 200\"] = responseCode.code === 200;",
+									"",
+									"var jsonData = JSON.parse(responseBody);",
+									"tests[\"User deleted message\"] = jsonData.message === \"user was successfully deleted\";"
 								]
 							}
 						}
