@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -12,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
@@ -52,6 +54,7 @@ public class AudioController {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
 		List<Audio> audios = em.createNamedQuery("Audio.getAllByUserId", Audio.class).setParameter("id", user.getId()).getResultList();
 		for (Audio audio : audios) {
+			em.detach(audio);
 			audio.setUser(null);
 		}
 		return Response.ok(audios).build();
@@ -86,10 +89,13 @@ public class AudioController {
 			throw new UserIsNotOwnerException();
 		}
 		IAttachment attachment = multipartBody.getAttachment("audio");
+		if (attachment == null) {
+			throw new BadParameterException("you need to send your audio in the 'audio' field as multipart-form-data");
+		}
 		if (!attachment.getContentType().toString().equals(AUDIO_WAV_MIME_TYPE)) {
 			throw new BadParameterException("provided audio format is not supported");
 		}
-		String filePath = "./" + id + ".wav";
+		String filePath = audio.getAudioPath();
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 			InputStream audioStream = dataHandler.getInputStream();
@@ -103,6 +109,50 @@ public class AudioController {
 		audio.setAmplitudeOverTime(rms);
 		em.persist(audio);
 		return Response.ok(new SuccessMessage("audio file was successfully replaced", audio.getId())).build();
-	} 
+	}
+	
+	@Path("{id}")
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateAudioInfo(Audio newAudio, @Context SecurityContext securityContext, @PathParam("id") String id) {
+		User authUser = (User) ((BasicSecurityContext) securityContext).getUser();
+		Audio audio = em.find(Audio.class, Long.parseLong(id));
+		if (audio == null) {
+			throw new NotFoundException();
+		}
+		if (audio.getUser().getId() != authUser.getId()) {
+			throw new UserIsNotOwnerException();
+		}
+		if (em.contains(audio)) {
+			em.detach(audio);
+		} 
+		audio.setName(newAudio.getName());
+		audio.sanitize();
+		audio = em.merge(audio);
+		em.persist(audio);
+		return Response.ok(new SuccessMessage("audio information was successfully updated")).build();
+	}
+	
+	@Path("{id}")
+	@DELETE
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response deleteAudio(@Context SecurityContext securityContext, @PathParam("id") String id) {
+		User authUser = (User) ((BasicSecurityContext) securityContext).getUser();
+		Audio audio = em.find(Audio.class, Long.parseLong(id));
+		if (audio == null) {
+			throw new NotFoundException();
+		}
+		if (audio.getUser().getId() != authUser.getId()) {
+			throw new UserIsNotOwnerException();
+		}
+		File audioFile = new File(audio.getAudioPath());
+		if (audio.getAmplitudeOverTime() != null && !audioFile.delete()) {
+			throw new InternalServerErrorException();
+		}
+		em.remove(audio);
+		return Response.ok(new SuccessMessage("audio was successfully deleted")).build();
+	}
+
 
 }

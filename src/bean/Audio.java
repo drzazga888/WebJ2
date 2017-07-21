@@ -19,7 +19,7 @@ public class Audio implements Sanitizable {
 
 	@Id
 	@GeneratedValue
-	private long id;
+	private Long id;
 	
 	@Column(length = MAX_NAME_LENGTH, nullable = false)
 	private String name;
@@ -27,13 +27,13 @@ public class Audio implements Sanitizable {
 	@Column(nullable = true)
 	private float[] amplitudeOverTime;
 	
-	@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = { CascadeType.REMOVE } )
+	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	private User user;
 	
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -71,6 +71,10 @@ public class Audio implements Sanitizable {
 		if (name.length() > MAX_NAME_LENGTH) {
 			throw new BadParameterException("max length of name is " + MAX_NAME_LENGTH);
 		}
+	}
+	
+	public String getAudioPath() {
+		return id != null ? "./audios/" + id + ".wav" : null;
 	}
 	
 }

@@ -34,6 +34,7 @@ public class UserController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getUser(@Context SecurityContext securityContext) {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
+		em.detach(user);
 		user.setPassword(null);
 		user.setPassword2(null);
 		return Response.ok(user).entity(user).build();
