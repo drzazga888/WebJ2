@@ -1,12 +1,16 @@
 package bean;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import exception.BadParameterException;
@@ -34,6 +38,12 @@ public class User extends Credentials implements Sanitizable {
 	
 	@Transient
 	private String password2;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	private List<Audio> audios;
+	
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	private List<Project> projects;
 	
 	public User() {
 		super();
@@ -92,7 +102,12 @@ public class User extends Credentials implements Sanitizable {
 	
 	@Override
 	public String toString() {
-		return String.format("User(id=%d, fname=%s, lname=%s, email=%s, password=%s, password2=%s)", id, fname, lname, email, password, password2);
+		return String.format(
+				"User(id=%d, fname=%s, lname=%s, email=%s, password=%s, password2=%s, audios=%d, projects=%d)",
+				id, fname, lname, email, password, password2,
+				audios != null ? audios.size() : null,
+				projects != null ? projects.size() : null
+		);
 	}
 
 	public Long getId() {
@@ -125,6 +140,22 @@ public class User extends Credentials implements Sanitizable {
 
 	public void setPassword2(String password2) {
 		this.password2 = password2;
+	}
+
+	public List<Audio> getAudios() {
+		return audios;
+	}
+
+	public void setAudios(List<Audio> audios) {
+		this.audios = audios;
+	}
+
+	public List<Project> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<Project> projects) {
+		this.projects = projects;
 	}
 	
 }

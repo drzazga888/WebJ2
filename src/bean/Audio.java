@@ -6,12 +6,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
-
 import exception.BadParameterException;
 
 @Entity
-@NamedQuery(name = "Audio.getAllByUserId", query = "SELECT a FROM Audio a WHERE a.user.id = :id")
 public class Audio implements Sanitizable {
 	
 	private static final int MAX_NAME_LENGTH = 40;
@@ -62,18 +59,18 @@ public class Audio implements Sanitizable {
 	
 	@Override
 	public void sanitize() {
-		// fname is not null / empty
+		// name is not null / empty
 		if (name == null || name.length() == 0) {
 			throw new BadParameterException("name must be provided");
 		}
-		// max length of fname = MAX_FNAME_LENGTH
+		// max length of name = MAX_NAME_LENGTH
 		if (name.length() > MAX_NAME_LENGTH) {
 			throw new BadParameterException("max length of name is " + MAX_NAME_LENGTH);
 		}
 	}
 	
 	public String getAudioPath() {
-		return id != null ? "./audios/" + id + ".wav" : null;
+		return amplitudeOverTime != null && id != null ? "./audios/" + id + ".wav" : null;
 	}
 	
 }

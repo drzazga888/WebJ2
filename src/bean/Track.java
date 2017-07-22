@@ -2,6 +2,7 @@ package bean;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -18,10 +19,10 @@ public class Track {
 	@GeneratedValue
 	private Long id;
 	
-	@Column(length = MAX_TRACK_NAME_LENGTH, nullable = false)
+	@Column(length = MAX_TRACK_NAME_LENGTH, nullable = true)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private List<Sample> samples;
 	
 	@Column(nullable = false)

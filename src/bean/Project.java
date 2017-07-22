@@ -3,6 +3,7 @@ package bean;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,8 +12,10 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import exception.BadParameterException;
+
 @Entity
-public class Project {
+public class Project implements Sanitizable {
 	
 	private static final int MAX_PROJECT_NAME_LENGTH = 40;
 
@@ -23,7 +26,7 @@ public class Project {
 	@Column(length = MAX_PROJECT_NAME_LENGTH, nullable = false)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private List<Track> tracks;
 	
 	@Column(nullable = false)
@@ -82,6 +85,26 @@ public class Project {
 	
 	public String getResultPath() {
 		return id != null ? "./projects/" + id + ".wav" : null;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format(
+				"Project(id=%d, name=%s, tracks=%d, createdAt=%s, updatedAt=%s)",
+				id, name, tracks != null ? tracks.size() : null, createdAt, updatedAt
+		);
+	}
+	
+	@Override
+	public void sanitize() {
+		// name is not null / empty
+		if (name == null || name.length() == 0) {
+			throw new BadParameterException("name must be provided");
+		}
+		// max length of name = MAX_PROJECT_NAME_LENGTH
+		if (name.length() > MAX_PROJECT_NAME_LENGTH) {
+			throw new BadParameterException("max length of name is " + MAX_PROJECT_NAME_LENGTH);
+		}
 	}
 	
 }

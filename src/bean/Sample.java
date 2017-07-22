@@ -23,7 +23,7 @@ public class Sample {
 	@Column(nullable = false)
 	private float duration;
 	
-	@Column(nullable = false)
+	@Column(name = "AUDIO_OFFSET", nullable = false)
 	private float offset;
 	
 	@Column(nullable = false)

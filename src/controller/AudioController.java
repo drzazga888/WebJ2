@@ -52,7 +52,7 @@ public class AudioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllAudios(@Context SecurityContext securityContext) {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
-		List<Audio> audios = em.createNamedQuery("Audio.getAllByUserId", Audio.class).setParameter("id", user.getId()).getResultList();
+		List<Audio> audios = user.getAudios();
 		for (Audio audio : audios) {
 			em.detach(audio);
 			audio.setUser(null);
