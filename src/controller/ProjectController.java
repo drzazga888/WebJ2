@@ -10,13 +10,12 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import bean.Project;
-import bean.ProjectSample;
 import util.MusicProducer;
 
 @Path("projects")
 @Stateless
 public class ProjectController {
-	
+	/*
 	@GET
 	@Path("produce")
 	@Produces("audio/wav")
@@ -36,5 +35,5 @@ public class ProjectController {
 			return Response.status(Status.NOT_FOUND).build();
 		}
 	}
-
+*/
 }

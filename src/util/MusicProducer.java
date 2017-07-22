@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import bean.Project;
-import bean.ProjectSample;
+import bean.Track;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
@@ -15,27 +15,39 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 import net.beadsproject.beads.ugens.GranularSamplePlayer;
 import net.beadsproject.beads.ugens.RecordToSample;
 
-
 public class MusicProducer {
+
+	private static float MASTER_GAIN_VALUE = 0.5f;
 	
-	protected Project project;
-	protected static String SAMPLES_LOCATION = "resources/samples/";
-	protected static String PRODUCT_OUTPUT = "temp/result.wav";
+	final private Project project;
+	final private AudioContext ac = new AudioContext();
 	
 	public MusicProducer(Project project) {
 		this.project = project;
 	}
 	
-	public void record(final AudioContext ac, UGen input) throws IOException {
-		
-		final Sample s = new Sample(project.duration * 1000); 
+	private float computeDuration() {
+		float duration = 0;
+		for (Track track : project.getTracks()) {
+			for (bean.Sample sample : track.getSamples()) {
+				float end = sample.getDuration() + sample.getStart();
+				if (end > duration) {
+					duration = end;
+				}
+			}
+		}
+		return duration;
+	}
+	
+	private void record(final AudioContext ac, UGen input) throws IOException {
+		final Sample s = new Sample(computeDuration() * 1000); 
 		RecordToSample rts = new RecordToSample(ac, s, RecordToSample.Mode.FINITE);
 		ac.out.addDependent(rts);
 		rts.addInput(input);
 		rts.setKillListener(new Bead() {
 			public void messageReceived(Bead message) {
 				try {
-					s.write(PRODUCT_OUTPUT);
+					s.write(project.getResultPath());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -43,40 +55,36 @@ public class MusicProducer {
 			}
 		});
 		ac.runNonRealTime();
-
+	}
+	
+	private Gain prepareSampleGain(final bean.Sample sample) throws IOException {
+		SamplePlayer gsp = new GranularSamplePlayer(ac, new Sample(sample.getAudio().getAudioPath()));
+		gsp.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
+		gsp.setPosition((sample.getStart() + sample.getOffset()) * 1000);
+		Envelope env = new Envelope(ac, 0);
+		env.addSegment(0, (float) (sample.getStart() * 1000));
+		env.addSegment((float) sample.getGain(), 0);
+		env.addSegment((float) sample.getGain(), (float) (sample.getDuration() * 1000));
+		env.addSegment(0, 0);
+		Gain g = new Gain(ac, 1, env);
+		g.addInput(gsp);
+		return g;
 	}
 	
 	public void createFromProject() throws IOException {
-			
-		final AudioContext ac = new AudioContext();
-		
-		Gain masterGain = new Gain(ac, project.samples.length, (float) 0.5);
-		
-		for (ProjectSample mysample : project.samples) {
-	
-			SamplePlayer gsp = new GranularSamplePlayer(ac, new Sample(SAMPLES_LOCATION + mysample.resource));
-			gsp.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
-			gsp.setPosition((mysample.start + mysample.position) * 1000);
-			
-			Envelope env = new Envelope(ac, 0);
-			env.addSegment(0, (float) (mysample.start * 1000));
-			env.addSegment((float) mysample.gain, 0);
-			env.addSegment((float) mysample.gain, (float) (mysample.duration * 1000));
-			env.addSegment(0, 0);
-			
-			Gain g = new Gain(ac, 1, env);
-			g.addInput(gsp);
-			
-			masterGain.addInput(g);
-			
+		Gain masterGain = new Gain(ac, project.countSamples(), MASTER_GAIN_VALUE);
+		for (Track track : project.getTracks()) {
+			Gain trackGain = new Gain(ac, track.getSamples().size(), track.getGain());
+			for (bean.Sample sample : track.getSamples()) {
+				trackGain.addInput(prepareSampleGain(sample));
+			}
+			masterGain.addInput(trackGain);
 		}
-		
 		record(ac, masterGain);
-		
 	}
 	
 	public File getResult() {
-		return new File(PRODUCT_OUTPUT);
+		return new File(project.getResultPath());
 	}
 
 }

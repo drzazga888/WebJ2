@@ -4,6 +4,9 @@
 		<jta-data-source>jdbc/postgres-api</jta-data-source>
 		<class>bean.Audio</class>
 		<class>bean.Credentials</class>
+		<class>bean.Project</class>
+		<class>bean.Sample</class>
+		<class>bean.Track</class>
 		<class>bean.User</class>
 		<properties>
 			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create"/>
