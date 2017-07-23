@@ -15,17 +15,13 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import exception.BadParameterException;
+import util.ResponsePreparable;
+import util.Sanitizable;
 
 @Entity
 @Table(name = "PROFILE")
 @NamedQuery(name = "User.getByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
-public class User extends Credentials implements Sanitizable {
-	
-	public static enum SerializationMode {
-	    FETCH_PROJECTS,
-	    FETCH_AUDIOS,
-	    SAFE_INFO
-	}
+public class User extends Credentials implements Sanitizable, ResponsePreparable {
 	
 	private static final long serialVersionUID = 1L;
 	public static final Pattern EMAIL_PATTERN = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
@@ -51,9 +47,6 @@ public class User extends Credentials implements Sanitizable {
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
 	private List<Project> projects;
-	
-	@Transient
-	protected SerializationMode serializationMode;
 
 	public User() {
 		super();
@@ -68,43 +61,33 @@ public class User extends Credentials implements Sanitizable {
 	}
 	
 	public void sanitize() {
-		// fname is not null / empty
 		if (fname == null || fname.length() == 0) {
 			throw new BadParameterException("fname must be provided");
 		}
-		// max length of fname = MAX_FNAME_LENGTH
 		if (fname.length() > MAX_FNAME_LENGTH) {
 			throw new BadParameterException("max length of fname is " + MAX_FNAME_LENGTH);
 		}
-		// lname is not null / empty
 		if (lname == null || lname.length() == 0) {
 			throw new BadParameterException("lname must be provided");
 		}
-		// max length of fname = MAX_FNAME_LENGTH
 		if (lname.length() > MAX_FNAME_LENGTH) {
 			throw new BadParameterException("max length of lname is " + MAX_LNAME_LENGTH);
 		}
-		// email is not null / empty
 		if (email == null || email.length() == 0) {
 			throw new BadParameterException("email must be provided");
 		}
-		// email is email :)
 		if (!EMAIL_PATTERN.matcher(email).matches()) {
 			throw new BadParameterException("bad email format");
 		}
-		// password is not null / empty
 		if (password == null || password.length() == 0) {
 			throw new BadParameterException("password must be provided");
 		}
-		// password constraints - at liest 1 upper, 1 lower, 1 digit and 1 special
 		if (!PASSWORD_PATTERN.matcher(password).matches()) {
 			throw new BadParameterException("password must contain at liest 1 uppercase English letter, 1 lowercase English letter, 1 digit and 1 special character (#?!@$%^&*-)");
 		}
-		// password2 is not null / empty
 		if (password2 == null || password2.length() == 0) {
 			throw new BadParameterException("password2 must be provided");
 		}
-		// password = password2
 		if (!password.equals(password2)) {
 			throw new BadParameterException("password and password2 must be the same");
 		}
@@ -143,14 +126,9 @@ public class User extends Credentials implements Sanitizable {
 	public void setLname(String lname) {
 		this.lname = lname;
 	}
-	
-	@Override
-	public String getPassword() {
-		return serializationMode == SerializationMode.SAFE_INFO ? null : super.getPassword();
-	}
 
 	public String getPassword2() {
-		return serializationMode == SerializationMode.SAFE_INFO ? null : password2;
+		return password2;
 	}
 
 	public void setPassword2(String password2) {
@@ -158,7 +136,7 @@ public class User extends Credentials implements Sanitizable {
 	}
 
 	public List<Audio> getAudios() {
-		return serializationMode == SerializationMode.FETCH_AUDIOS ? audios : null;
+		return audios;
 	}
 
 	public void setAudios(List<Audio> audios) {
@@ -166,15 +144,20 @@ public class User extends Credentials implements Sanitizable {
 	}
 
 	public List<Project> getProjects() {
-		return serializationMode == SerializationMode.FETCH_PROJECTS ? projects : null;
+		return projects;
 	}
 
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
 	}
 	
-	public void setSerializationMode(SerializationMode serializationMode) {
-		this.serializationMode = serializationMode;
+	@Override
+	public Object prepareForResponse() {
+		User user = new User();
+		user.setEmail(email);
+		user.setFname(fname);
+		user.setLname(lname);
+		return user;
 	}
 	
 }

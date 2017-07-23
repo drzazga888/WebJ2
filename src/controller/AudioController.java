@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.activation.DataHandler;
 import javax.ejb.Stateless;
@@ -52,12 +53,8 @@ public class AudioController {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllAudios(@Context SecurityContext securityContext) {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
-		List<Audio> audios = user.getAudios();
-		for (Audio audio : audios) {
-			em.detach(audio);
-			audio.setUser(null);
-		}
-		return Response.ok(audios).build();
+		List<Audio> audios = em.createNamedQuery("Audio.getByUser", Audio.class).setParameter("id", user.getId()).getResultList();
+		return Response.ok(audios.stream().map(a -> a.prepareForResponse()).collect(Collectors.toList())).build();
 	}
 	
 	@POST 
@@ -95,7 +92,7 @@ public class AudioController {
 		if (!attachment.getContentType().toString().equals(AUDIO_WAV_MIME_TYPE)) {
 			throw new BadParameterException("provided audio format is not supported");
 		}
-		String filePath = audio.getAudioPath();
+		String filePath = audio.audioPath();
 		try {
 			DataHandler dataHandler = attachment.getDataHandler();
 			InputStream audioStream = dataHandler.getInputStream();
@@ -146,7 +143,7 @@ public class AudioController {
 		if (audio.getUser().getId() != authUser.getId()) {
 			throw new UserIsNotOwnerException();
 		}
-		File audioFile = new File(audio.getAudioPath());
+		File audioFile = new File(audio.audioPath());
 		if (audio.getAmplitudeOverTime() != null && !audioFile.delete()) {
 			throw new InternalServerErrorException();
 		}

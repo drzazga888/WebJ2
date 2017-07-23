@@ -47,7 +47,7 @@ public class MusicProducer {
 		rts.setKillListener(new Bead() {
 			public void messageReceived(Bead message) {
 				try {
-					s.write(project.getResultPath());
+					s.write(project.resultPath());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -58,7 +58,7 @@ public class MusicProducer {
 	}
 	
 	private Gain prepareSampleGain(final bean.Sample sample) throws IOException {
-		SamplePlayer gsp = new GranularSamplePlayer(ac, new Sample(sample.getAudio().getAudioPath()));
+		SamplePlayer gsp = new GranularSamplePlayer(ac, new Sample(sample.getAudio().audioPath()));
 		gsp.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
 		gsp.setPosition((sample.getStart() + sample.getOffset()) * 1000);
 		Envelope env = new Envelope(ac, 0);
@@ -84,7 +84,7 @@ public class MusicProducer {
 	}
 	
 	public File getResult() {
-		return new File(project.getResultPath());
+		return new File(project.resultPath());
 	}
 
 }

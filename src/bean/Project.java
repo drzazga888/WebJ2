@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import exception.BadParameterException;
+import util.Sanitizable;
 
 @Entity
 public class Project implements Sanitizable {
@@ -83,7 +84,7 @@ public class Project implements Sanitizable {
 		return n;
 	}
 	
-	public String getResultPath() {
+	public String resultPath() {
 		return id != null ? "./projects/" + id + ".wav" : null;
 	}
 	
@@ -97,11 +98,9 @@ public class Project implements Sanitizable {
 	
 	@Override
 	public void sanitize() {
-		// name is not null / empty
 		if (name == null || name.length() == 0) {
 			throw new BadParameterException("name must be provided");
 		}
-		// max length of name = MAX_PROJECT_NAME_LENGTH
 		if (name.length() > MAX_PROJECT_NAME_LENGTH) {
 			throw new BadParameterException("max length of name is " + MAX_PROJECT_NAME_LENGTH);
 		}

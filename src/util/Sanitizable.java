@@ -1,4 +1,4 @@
-package bean;
+package util;
 
 public interface Sanitizable {
 	
