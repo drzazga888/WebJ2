@@ -3,7 +3,6 @@ package bean;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +10,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+
+import org.eclipse.persistence.annotations.PrivateOwned;
 
 import exception.BadParameterException;
 import util.Sanitizable;
@@ -27,7 +28,8 @@ public class Project implements Sanitizable {
 	@Column(length = MAX_PROJECT_NAME_LENGTH, nullable = false)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+	@PrivateOwned
+	@OneToMany(fetch = FetchType.LAZY)
 	private List<Track> tracks;
 	
 	@Column(nullable = false)

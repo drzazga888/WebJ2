@@ -3,7 +3,6 @@ package bean;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +12,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.eclipse.persistence.annotations.PrivateOwned;
 
 import exception.BadParameterException;
 import util.ResponsePreparable;
@@ -42,10 +43,12 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 	@Transient
 	private String password2;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+	@PrivateOwned
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Audio> audios;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, mappedBy = "user")
+	@PrivateOwned
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Project> projects;
 
 	public User() {

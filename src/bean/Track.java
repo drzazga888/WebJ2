@@ -2,13 +2,14 @@ package bean;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+
+import org.eclipse.persistence.annotations.PrivateOwned;
 
 @Entity
 public class Track {
@@ -22,7 +23,8 @@ public class Track {
 	@Column(length = MAX_TRACK_NAME_LENGTH, nullable = true)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@PrivateOwned
+	@OneToMany(fetch = FetchType.EAGER)
 	private List<Sample> samples;
 	
 	@Column(nullable = false)
