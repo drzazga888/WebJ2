@@ -18,6 +18,7 @@ import javax.ws.rs.core.SecurityContext;
 
 import bean.SuccessMessage;
 import bean.User;
+import bean.User.SerializationMode;
 import exception.UserAlreadyExistsException;
 import filter.BasicSecurityContext;
 import util.BCrypt;
@@ -35,9 +36,8 @@ public class UserController {
 	public Response getUser(@Context SecurityContext securityContext) {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
 		em.detach(user);
-		user.setPassword(null);
-		user.setPassword2(null);
-		return Response.ok(user).entity(user).build();
+		user.setSerializationMode(SerializationMode.SAFE_INFO);
+		return Response.ok(user).build();
 	}
 	
 	@POST

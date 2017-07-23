@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
@@ -56,7 +57,10 @@ public class BasicAuthFilter implements ContainerRequestFilter {
 			}
 			User user;
 			try {
-				user = (User) entityManagerProvider.get().createNamedQuery("User.getByEmail").setParameter("email", requestCredentials.getEmail()).getSingleResult();
+				EntityManager em = entityManagerProvider.get();
+				user = (User) em.createNamedQuery("User.getByEmail")
+						.setParameter("email", requestCredentials.getEmail())
+						.getSingleResult();
 			} catch(NoResultException e) {
 				user = null;
 			}

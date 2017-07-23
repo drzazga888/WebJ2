@@ -26,7 +26,7 @@ public class Project implements Sanitizable {
 	@Column(length = MAX_PROJECT_NAME_LENGTH, nullable = false)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private List<Track> tracks;
 	
 	@Column(nullable = false)
