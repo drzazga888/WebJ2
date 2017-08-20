@@ -1,7 +1,9 @@
 package bean;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,14 +11,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-
-import org.eclipse.persistence.annotations.PrivateOwned;
 
 import exception.BadParameterException;
 import util.Sanitizable;
 
 @Entity
+@NamedQuery(name = "Project.getByUser", query = "SELECT p FROM Project p WHERE p.user.id = :id")
 public class Project implements Sanitizable {
 	
 	private static final int MAX_PROJECT_NAME_LENGTH = 40;
@@ -28,7 +30,6 @@ public class Project implements Sanitizable {
 	@Column(length = MAX_PROJECT_NAME_LENGTH, nullable = false)
 	private String name;
 	
-	@PrivateOwned
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<Track> tracks;
 	
@@ -106,6 +107,31 @@ public class Project implements Sanitizable {
 		if (name.length() > MAX_PROJECT_NAME_LENGTH) {
 			throw new BadParameterException("max length of name is " + MAX_PROJECT_NAME_LENGTH);
 		}
+	}
+	
+	public void deepSanitize() {
+		sanitize();
+		for (Track track : tracks) {
+			track.sanitize();
+		}
+	}
+	
+	public Project prepareForResponse() {
+		Project project = new Project();
+		project.setId(id);
+		project.setName(name);
+		project.setCreatedAt(createdAt);
+		project.setUpdatedAt(updatedAt);
+		return project;
+	}
+	
+	public Object prepareForExtendedResponse() {
+		Project project = new Project();
+		project.setName(name);
+		project.setCreatedAt(createdAt);
+		project.setUpdatedAt(updatedAt);
+		project.setTracks(tracks.stream().map(a -> a.prepareForResponse()).collect(Collectors.toCollection(ArrayList<Track>::new)));
+		return project;
 	}
 	
 }

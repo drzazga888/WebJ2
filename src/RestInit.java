@@ -10,6 +10,7 @@ import controller.UserController;
 import exceptionMapper.BadCredentialsMapper;
 import exceptionMapper.BadParameterMapper;
 import exceptionMapper.NotFoundExceptionMapper;
+import exceptionMapper.UnsupportedAudioFileMapper;
 import exceptionMapper.UserAlreadyExistsMapper;
 import exceptionMapper.UserIsNotOwnerMapper;
 import filter.BasicAuthFilter;
@@ -25,6 +26,7 @@ public class RestInit extends Application {
         	UserAlreadyExistsMapper.class,
         	NotFoundExceptionMapper.class,
         	UserIsNotOwnerMapper.class,
+        	UnsupportedAudioFileMapper.class,
         	BasicAuthFilter.class,
         	AudioController.class,
         	ProjectController.class,

@@ -9,6 +9,7 @@ import net.beadsproject.beads.analysis.featureextractors.Power;
 import net.beadsproject.beads.analysis.segmenters.ShortFrameSegmenter;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.TimeStamp;
+import net.beadsproject.beads.core.io.NonrealtimeIO;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.ugens.SamplePlayer;
 
@@ -25,7 +26,7 @@ public class RmsPowerOverTime {
 	public float[] generate() {
 		try {
 
-			AudioContext ac = new AudioContext();
+			AudioContext ac = new AudioContext(new NonrealtimeIO());
 			
 			ShortFrameSegmenter sfs = new ShortFrameSegmenter(ac);
 			sfs.addInput(ac.out);

@@ -8,6 +8,7 @@ import bean.Track;
 import net.beadsproject.beads.core.AudioContext;
 import net.beadsproject.beads.core.Bead;
 import net.beadsproject.beads.core.UGen;
+import net.beadsproject.beads.core.io.NonrealtimeIO;
 import net.beadsproject.beads.data.Sample;
 import net.beadsproject.beads.ugens.Envelope;
 import net.beadsproject.beads.ugens.Gain;
@@ -20,7 +21,7 @@ public class MusicProducer {
 	private static float MASTER_GAIN_VALUE = 0.5f;
 	
 	final private Project project;
-	final private AudioContext ac = new AudioContext();
+	final private AudioContext ac = new AudioContext(new NonrealtimeIO());
 	
 	public MusicProducer(Project project) {
 		this.project = project;
@@ -58,7 +59,7 @@ public class MusicProducer {
 	}
 	
 	private Gain prepareSampleGain(final bean.Sample sample) throws IOException {
-		SamplePlayer gsp = new GranularSamplePlayer(ac, new Sample(sample.getAudio().audioPath()));
+		SamplePlayer gsp = new GranularSamplePlayer(ac, new Sample(sample.getAudio().audioIdPath()));
 		gsp.setLoopType(SamplePlayer.LoopType.LOOP_FORWARDS);
 		gsp.setPosition((sample.getStart() + sample.getOffset()) * 1000);
 		Envelope env = new Envelope(ac, 0);

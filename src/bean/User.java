@@ -13,8 +13,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.eclipse.persistence.annotations.PrivateOwned;
-
 import exception.BadParameterException;
 import util.ResponsePreparable;
 import util.Sanitizable;
@@ -43,11 +41,9 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 	@Transient
 	private String password2;
 	
-	@PrivateOwned
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Audio> audios;
 	
-	@PrivateOwned
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Project> projects;
 

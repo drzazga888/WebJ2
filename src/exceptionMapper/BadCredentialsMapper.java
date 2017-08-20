@@ -20,6 +20,7 @@ public class BadCredentialsMapper implements ExceptionMapper<BadCredentialsExcep
 				.status(Status.UNAUTHORIZED)
 				.entity(new ErrorMessage(BAD_CREDENTIALS_DESCRIPTION))
 				.type(MediaType.APPLICATION_JSON)
+				.header("WWW-Authenticate", "Basic realm=\"User Realm\"")
 				.build();
 	}
 

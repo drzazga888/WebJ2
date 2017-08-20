@@ -1,15 +1,9 @@
 package controller;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.activation.DataHandler;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -28,14 +22,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import com.ibm.websphere.jaxrs20.multipart.IAttachment;
-import com.ibm.websphere.jaxrs20.multipart.IMultipartBody;
 import javax.ws.rs.core.Response.Status;
 
 import bean.Audio;
 import bean.SuccessMessage;
 import bean.User;
-import exception.BadParameterException;
 import exception.UserIsNotOwnerException;
 import filter.BasicSecurityContext;
 import util.RmsPowerOverTime;
@@ -44,39 +35,25 @@ import util.RmsPowerOverTime;
 @Stateless
 public class AudioController {
 	
-	private static final String AUDIO_WAV_MIME_TYPE = "audio/wav";
+	private static final String AUDIO_DELETED_MESSAGE = "audio was successfully deleted";
+	private static final String AUDIO_UPDATED_MESSAGE = "audio information was successfully updated";
+	private static final String AUDIO_CREATED_MESSAGE = "audio was successfully created";
 	
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllAudios(@Context SecurityContext securityContext) {
+	public Response getAudioList(@Context SecurityContext securityContext) {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
 		List<Audio> audios = em.createNamedQuery("Audio.getByUser", Audio.class).setParameter("id", user.getId()).getResultList();
 		return Response.ok(audios.stream().map(a -> a.prepareForResponse()).collect(Collectors.toList())).build();
 	}
 	
-	@POST 
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response createAudioResource(Audio audio, @Context SecurityContext securityContext) {
-		User user = (User) ((BasicSecurityContext) securityContext).getUser();
-		audio.sanitize();
-		audio.setUser(user);
-		if (!em.contains(audio)) {
-			audio = em.merge(audio);
-		}
-		em.persist(audio);
-		em.flush();
-		return Response.status(Status.CREATED).entity(new SuccessMessage("audio was successfully created", audio.getId())).build();
-	}
-	
 	@Path("{id}")
-	@PUT
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response replaceAudio(IMultipartBody multipartBody, @Context SecurityContext securityContext, @PathParam("id") String id) {
+	@GET
+	@Produces("audio/wav")
+	public Response getAudio(@Context SecurityContext securityContext, @PathParam("id") String id) {
 		User authUser = (User) ((BasicSecurityContext) securityContext).getUser();
 		Audio audio = em.find(Audio.class, Long.parseLong(id));
 		if (audio == null) {
@@ -85,27 +62,28 @@ public class AudioController {
 		if (audio.getUser().getId() != authUser.getId()) {
 			throw new UserIsNotOwnerException();
 		}
-		IAttachment attachment = multipartBody.getAttachment("audio");
-		if (attachment == null) {
-			throw new BadParameterException("you need to send your audio in the 'audio' field as multipart-form-data");
-		}
-		if (!attachment.getContentType().toString().equals(AUDIO_WAV_MIME_TYPE)) {
-			throw new BadParameterException("provided audio format is not supported");
-		}
-		String filePath = audio.audioPath();
-		try {
-			DataHandler dataHandler = attachment.getDataHandler();
-			InputStream audioStream = dataHandler.getInputStream();
-			Files.copy(audioStream, Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new InternalServerErrorException();
-		}
-		RmsPowerOverTime rmsProvider = new RmsPowerOverTime(filePath);
+		File audioFile = new File(audio.audioIdPath());
+		return Response.ok(audioFile).header("Content-Disposition", "attachment; filename=\"" + audio.audioAttachmentName() + "\"").build();
+	}
+	
+	@POST 
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createAudio(Audio audio, @Context SecurityContext securityContext) {
+		User user = (User) ((BasicSecurityContext) securityContext).getUser();
+		audio.sanitize();
+		audio.setUser(user);
+		audio.saveBase64AudioStringToTempFile();
+		RmsPowerOverTime rmsProvider = new RmsPowerOverTime(audio.audioTempPath());
 		float[] rms = rmsProvider.generate();
 		audio.setAmplitudeOverTime(rms);
+		if (!em.contains(audio)) {
+			audio = em.merge(audio);
+		}
 		em.persist(audio);
-		return Response.ok(new SuccessMessage("audio file was successfully replaced", audio.getId())).build();
+		em.flush();
+		audio.assignIdToTempAudioFile();
+		return Response.status(Status.CREATED).entity(new SuccessMessage(AUDIO_CREATED_MESSAGE, audio.getId())).build();
 	}
 	
 	@Path("{id}")
@@ -128,7 +106,7 @@ public class AudioController {
 		audio.sanitize();
 		audio = em.merge(audio);
 		em.persist(audio);
-		return Response.ok(new SuccessMessage("audio information was successfully updated")).build();
+		return Response.ok(new SuccessMessage(AUDIO_UPDATED_MESSAGE)).build();
 	}
 	
 	@Path("{id}")
@@ -143,13 +121,11 @@ public class AudioController {
 		if (audio.getUser().getId() != authUser.getId()) {
 			throw new UserIsNotOwnerException();
 		}
-		File audioFile = new File(audio.audioPath());
-		if (audio.getAmplitudeOverTime() != null && !audioFile.delete()) {
+		if (audio.getAmplitudeOverTime() != null && !audio.deleteAudioFile()) {
 			throw new InternalServerErrorException();
 		}
 		em.remove(audio);
-		return Response.ok(new SuccessMessage("audio was successfully deleted")).build();
+		return Response.ok(new SuccessMessage(AUDIO_DELETED_MESSAGE)).build();
 	}
-
 
 }

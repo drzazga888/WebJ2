@@ -6,9 +6,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
+
+import exception.BadParameterException;
+import util.Sanitizable;
 
 @Entity
-public class Sample {
+public class Sample implements Sanitizable {
 
 	@Id
 	@GeneratedValue
@@ -28,6 +32,9 @@ public class Sample {
 	
 	@Column(nullable = false)
 	private float gain;
+	
+	@Transient
+	private Long audioId;
 	
 	public Long getId() {
 		return id;
@@ -64,6 +71,29 @@ public class Sample {
 	}
 	public void setGain(float gain) {
 		this.gain = gain;
+	}
+	public Long getAudioId() {
+		return audioId;
+	}
+	public void setAudioId(Long audioId) {
+		this.audioId = audioId;
+	}
+	
+	public Object prepareForResponse() {
+		Sample sample = new Sample();
+		sample.setAudioId(audio.getId());
+		sample.setDuration(duration);
+		sample.setGain(gain);
+		sample.setStart(start);
+		sample.setOffset(offset);
+		return sample;
+	}
+	
+	@Override
+	public void sanitize() {
+		if (audioId == null) {
+			throw new BadParameterException("id of the audio must be provided");
+		}
 	}
 	
 }

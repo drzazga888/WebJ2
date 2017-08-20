@@ -1,6 +1,8 @@
 package bean;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,10 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import org.eclipse.persistence.annotations.PrivateOwned;
+import exception.BadParameterException;
+import util.Sanitizable;
 
 @Entity
-public class Track {
+public class Track implements Sanitizable {
 	
 	private static final int MAX_TRACK_NAME_LENGTH = 40;
 
@@ -20,10 +23,9 @@ public class Track {
 	@GeneratedValue
 	private Long id;
 	
-	@Column(length = MAX_TRACK_NAME_LENGTH, nullable = true)
+	@Column(length = MAX_TRACK_NAME_LENGTH)
 	private String name;
 	
-	@PrivateOwned
 	@OneToMany(fetch = FetchType.EAGER)
 	private List<Sample> samples;
 	
@@ -53,6 +55,27 @@ public class Track {
 	}
 	public void setGain(float gain) {
 		this.gain = gain;
+	}
+	
+	public Object prepareForResponse() {
+		Track track = new Track();
+		track.setGain(gain);
+		track.setName(name);
+		track.setSamples(samples.stream().map(a -> a.prepareForResponse()).collect(Collectors.toCollection(ArrayList<Sample>::new)));
+		return track;
+	}
+	
+	@Override
+	public void sanitize() {
+		if (name == null || name.length() == 0) {
+			throw new BadParameterException("name must be provided");
+		}
+		if (name.length() > MAX_TRACK_NAME_LENGTH) {
+			throw new BadParameterException("max length of name is " + MAX_TRACK_NAME_LENGTH);
+		}
+		for (Sample sample : samples) {
+			sample.sanitize();
+		}
 	}
 
 }

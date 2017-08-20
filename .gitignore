@@ -1,3 +1,5 @@
 WebContent/WEB-INF/lib
 WebContent/WEB-INF/classes
-test/111127__stephensaldanha__scifi-transforming-sound-01.wav
+test-endpoints/audios
+node_modules
+.DS_Store
