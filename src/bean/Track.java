@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -26,7 +27,7 @@ public class Track implements Sanitizable {
 	@Column(length = MAX_TRACK_NAME_LENGTH)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.EAGER)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private List<Sample> samples;
 	
 	@Column(nullable = false)
@@ -67,8 +68,8 @@ public class Track implements Sanitizable {
 	
 	@Override
 	public void sanitize() {
-		if (name == null || name.length() == 0) {
-			throw new BadParameterException("name must be provided");
+		if (name == null) {
+			throw new BadParameterException("name must be a string");
 		}
 		if (name.length() > MAX_TRACK_NAME_LENGTH) {
 			throw new BadParameterException("max length of name is " + MAX_TRACK_NAME_LENGTH);

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -30,7 +31,7 @@ public class Project implements Sanitizable {
 	@Column(length = MAX_PROJECT_NAME_LENGTH, nullable = false)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	private List<Track> tracks;
 	
 	@Column(nullable = false)

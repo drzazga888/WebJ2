@@ -83,13 +83,6 @@ public class UserController {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
 		List<Audio> audios = em.createNamedQuery("Audio.getByUser", Audio.class).setParameter("id", user.getId()).getResultList();
 		List<Project> projects = em.createNamedQuery("Project.getByUser", Project.class).setParameter("id", user.getId()).getResultList();
-		for (Audio audio : audios) {
-			audio.deleteAudioFile();
-			if (!em.contains(audio)) {
-				em.merge(audio);
-			}
-			em.remove(audio);
-		}
 		for (Project project : projects) {
 			for (Track track : project.getTracks()) {
 				for (Sample sample : track.getSamples()) {
@@ -107,6 +100,14 @@ public class UserController {
 				em.merge(project);
 			}
 			em.remove(project);
+		}
+		em.flush();
+		for (Audio audio : audios) {
+			audio.deleteAudioFile();
+			if (!em.contains(audio)) {
+				em.merge(audio);
+			}
+			em.remove(audio);
 		}
 		if (!em.contains(user)) {
 		    user = em.merge(user);

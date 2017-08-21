@@ -2,7 +2,7 @@ const chakram = require('chakram')
 const expect = chakram.expect
 const { postUser, deleteUser } = require('../requests/user')
 const { getAudioPath, AUDIO_1, AUDIO_2, AUDIO_NAME_VALID_1, AUDIO_NAME_VALID_2, postAudio, getAudios, getAudio, putAudioInfo, deleteAudio }  = require('../requests/audio')
-const { PROJECT_NAME_VALID_1, postProject, getProjects, getProject, putProject } = require('../requests/project')
+const { PROJECT_NAME_VALID_1, projectUpdate1Producer, postProject, getProjects, getProject, putProject, deleteProject } = require('../requests/project')
 
 describe('Project endpoint', function() {
 
@@ -12,6 +12,7 @@ describe('Project endpoint', function() {
     let getListResponse
     let putResponse
     let getResponse
+    let deleteResponse
 
     before('do necessary requests', function() {
         return postUser().then(request => {
@@ -27,12 +28,15 @@ describe('Project endpoint', function() {
             return getProjects()
         }).then(response => {
             getListResponse = response
-            return putProject()
+            return putProject(postResponse.body.id, projectUpdate1Producer(audio1PostResponse.body.id, audio2PostResponse.body.id))
         }).then(response => {
             putResponse = response
             return getProject(postResponse.body.id)
         }).then(response => {
             getResponse = response
+            /*return deleteProject(postResponse.body.id)
+        }).then(response => {
+            deleteResponse = response*/
             return response
         })
     })
@@ -86,6 +90,10 @@ describe('Project endpoint', function() {
         const newId = postResponse.body.id
         const filteredAudios = getListResponse.body.filter(project => project.id === newId)
         return expect(filteredAudios.length).to.equal(1)
+    })
+
+    it('returns 200 OK on valid project update', function() {
+        return expect(putResponse).to.have.status(200)
     })
 
     it('returns 200 OK on project GET', function() {
@@ -146,8 +154,16 @@ describe('Project endpoint', function() {
         })
     })
 
+    it('returns updated project on GET', function() {
+        return expect(getResponse).to.comprise.of.json(projectUpdate1Producer(audio1PostResponse.body.id, audio2PostResponse.body.id))
+    })
+
+    /*it('returns 200 on project DELETE', function() {
+        return expect(deleteResponse).to.have.status(200)
+    })
+
     after('remove user', function() {
         return deleteUser()
-    })
+    })*/
 
 })

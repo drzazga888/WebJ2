@@ -131,17 +131,19 @@ public class ProjectController {
 			em.remove(track);
 		}
 		project.setId(existingProject.getId());
+		project.setUser(existingProject.getUser());
+		project.setCreatedAt(existingProject.getCreatedAt());
+		project.setUpdatedAt(new Date());
 		if (!em.contains(project)) {
 			em.merge(project);
 		}
-		em.persist(project);
 		return Response.ok(new SuccessMessage(PROJECT_UPDATED_MESSAGE)).build();
 	}
 	
 	@DELETE
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response deleteProject(SecurityContext securityContext, @PathParam("id") String id) {
+	public Response deleteProject(@Context SecurityContext securityContext, @PathParam("id") String id) {
 		User authUser = (User) ((BasicSecurityContext) securityContext).getUser();
 		Project project = em.find(Project.class, Long.parseLong(id));
 		if (project == null) {
@@ -170,9 +172,9 @@ public class ProjectController {
 	}
 	
 	@GET
-	@Path("{id}")
+	@Path("{id}/audio")
 	@Produces("audio/wav")
-	public Response produce(SecurityContext securityContext, @PathParam("id") String id) {
+	public Response produce(@Context SecurityContext securityContext, @PathParam("id") String id) {
 		User authUser = (User) ((BasicSecurityContext) securityContext).getUser();
 		Project project = em.find(Project.class, Long.parseLong(id));
 		if (project == null) {
@@ -189,7 +191,7 @@ public class ProjectController {
 			throw new InternalServerErrorException();
 		}
 		File result = producer.getResult();
-		return Response.ok(result).header("Content-Disposition", "attachment; filename=\"" + project.getName() + "\"").build();
+		return Response.ok(result).header("Content-Disposition", "attachment; filename=\"" + project.getName() + ".wav\"").build();
 	}
 	
 }
