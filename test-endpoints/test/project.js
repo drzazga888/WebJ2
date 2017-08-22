@@ -34,9 +34,9 @@ describe('Project endpoint', function() {
             return getProject(postResponse.body.id)
         }).then(response => {
             getResponse = response
-            /*return deleteProject(postResponse.body.id)
+            return deleteProject(postResponse.body.id)
         }).then(response => {
-            deleteResponse = response*/
+            deleteResponse = response
             return response
         })
     })
@@ -158,12 +158,12 @@ describe('Project endpoint', function() {
         return expect(getResponse).to.comprise.of.json(projectUpdate1Producer(audio1PostResponse.body.id, audio2PostResponse.body.id))
     })
 
-    /*it('returns 200 on project DELETE', function() {
+    it('returns 200 on project DELETE', function() {
         return expect(deleteResponse).to.have.status(200)
     })
 
     after('remove user', function() {
         return deleteUser()
-    })*/
+    })
 
 })

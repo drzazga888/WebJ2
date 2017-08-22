@@ -39,6 +39,9 @@ public class Audio implements Sanitizable, ResponsePreparable {
 	@Column(length = MAX_NAME_LENGTH, nullable = false)
 	private String name;
 	
+	@Column
+	private double length;
+
 	@Column(nullable = true)
 	private float[] amplitudeOverTime;
 	
@@ -59,6 +62,12 @@ public class Audio implements Sanitizable, ResponsePreparable {
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public double getLength() {
+		return length;
+	}
+	public void setLength(double length) {
+		this.length = length;
 	}
 	public float[] getAmplitudeOverTime() {
 		return amplitudeOverTime;
@@ -100,6 +109,7 @@ public class Audio implements Sanitizable, ResponsePreparable {
 		audio.setId(id);
 		audio.setName(name);
 		audio.setAmplitudeOverTime(amplitudeOverTime);
+		audio.setLength(length);
 		return audio;
 	}
 	
@@ -115,9 +125,9 @@ public class Audio implements Sanitizable, ResponsePreparable {
 		return name + "." + AUDIO_EXTENSION;
 	}
 	
-	public boolean deleteAudioFile() {
+	public void deleteAudioFile() {
 		File target = new File(audioIdPath());
-		return target.delete();
+		target.delete();
 	}
 	
 	public void assignIdToTempAudioFile() {

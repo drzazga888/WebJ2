@@ -164,6 +164,7 @@ public class ProjectController {
 			}
 			em.remove(track);
 		}
+		project.deleteAudioFile();
 		if (!em.contains(project)) {
 			em.merge(project);
 		}

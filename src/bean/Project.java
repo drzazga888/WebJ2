@@ -1,5 +1,6 @@
 package bean;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -90,6 +91,11 @@ public class Project implements Sanitizable {
 	
 	public String resultPath() {
 		return id != null ? "./projects/" + id + ".wav" : null;
+	}
+	
+	public void deleteAudioFile() {
+		File audioFile = new File(resultPath());
+		audioFile.delete();
 	}
 	
 	@Override

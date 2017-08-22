@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +30,7 @@ import bean.SuccessMessage;
 import bean.User;
 import exception.UserIsNotOwnerException;
 import filter.BasicSecurityContext;
-import util.RmsPowerOverTime;
+import util.AudioInfoExtractor;
 
 @Path("audios")
 @Stateless
@@ -74,9 +75,15 @@ public class AudioController {
 		audio.sanitize();
 		audio.setUser(user);
 		audio.saveBase64AudioStringToTempFile();
-		RmsPowerOverTime rmsProvider = new RmsPowerOverTime(audio.audioTempPath());
-		float[] rms = rmsProvider.generate();
-		audio.setAmplitudeOverTime(rms);
+		AudioInfoExtractor audioInfoExtractor;
+		try {
+			audioInfoExtractor = new AudioInfoExtractor(audio.audioTempPath());
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new InternalServerErrorException();
+		}
+		audio.setAmplitudeOverTime(audioInfoExtractor.getRmsOverTime());
+		audio.setLength(audioInfoExtractor.getLength());
 		if (!em.contains(audio)) {
 			audio = em.merge(audio);
 		}
@@ -121,9 +128,7 @@ public class AudioController {
 		if (audio.getUser().getId() != authUser.getId()) {
 			throw new UserIsNotOwnerException();
 		}
-		if (audio.getAmplitudeOverTime() != null && !audio.deleteAudioFile()) {
-			throw new InternalServerErrorException();
-		}
+		audio.deleteAudioFile();
 		em.remove(audio);
 		return Response.ok(new SuccessMessage(AUDIO_DELETED_MESSAGE)).build();
 	}

@@ -96,6 +96,7 @@ public class UserController {
 				}
 				em.remove(track);
 			}
+			project.deleteAudioFile();
 			if (!em.contains(project)) {
 				em.merge(project);
 			}
