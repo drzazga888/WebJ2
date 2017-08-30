@@ -14,9 +14,13 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.ws.rs.InternalServerErrorException;
 
 import exception.BadParameterException;
@@ -24,7 +28,11 @@ import util.ResponsePreparable;
 import util.Sanitizable;
 
 @Entity
-@NamedQuery(name = "Audio.getByUser", query = "SELECT a FROM Audio a WHERE a.user.id = :id")
+@NamedQueries({
+	@NamedQuery(name = "Audio.getByUser", query = "SELECT a FROM Audio a WHERE a.user.id = :id"),
+	@NamedQuery(name = "Audio.getByUserAndName", query = "SELECT a FROM Audio a WHERE a.user.id = :id and a.name = :name")
+})
+@Table(uniqueConstraints={ @UniqueConstraint(columnNames={"user_id", "name"}) })
 public class Audio implements Sanitizable, ResponsePreparable {
 	
 	private static final int MAX_NAME_LENGTH = 40;
@@ -36,7 +44,7 @@ public class Audio implements Sanitizable, ResponsePreparable {
 	@GeneratedValue
 	private Long id;
 	
-	@Column(length = MAX_NAME_LENGTH, nullable = false)
+	@Column(name = "name", length = MAX_NAME_LENGTH, nullable = false)
 	private String name;
 	
 	@Column
@@ -46,6 +54,7 @@ public class Audio implements Sanitizable, ResponsePreparable {
 	private float[] amplitudeOverTime;
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User user;
 	
 	@Transient

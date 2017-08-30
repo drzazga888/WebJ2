@@ -14,6 +14,7 @@ import exceptionMapper.UnsupportedAudioFileMapper;
 import exceptionMapper.UserAlreadyExistsMapper;
 import exceptionMapper.UserIsNotOwnerMapper;
 import filter.BasicAuthFilter;
+import filter.CorsFilter;
  
 @ApplicationPath("api")
 public class RestInit extends Application {
@@ -28,6 +29,7 @@ public class RestInit extends Application {
         	UserIsNotOwnerMapper.class,
         	UnsupportedAudioFileMapper.class,
         	BasicAuthFilter.class,
+        	CorsFilter.class,
         	AudioController.class,
         	ProjectController.class,
         	UserController.class

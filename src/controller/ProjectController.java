@@ -32,6 +32,7 @@ import bean.Sample;
 import bean.SuccessMessage;
 import bean.Track;
 import bean.User;
+import exception.UserAlreadyExistsException;
 import exception.UserIsNotOwnerException;
 import filter.BasicSecurityContext;
 import util.MusicProducer;
@@ -61,6 +62,9 @@ public class ProjectController {
 		track.setName("");
 		project.setTracks(Arrays.asList(track));
 		project.sanitize();
+		if (em.createNamedQuery("Project.getByUserAndName").setParameter("id", user.getId()).setParameter("name", requestProject.getName()).getResultList().size() > 0) {
+			throw new UserAlreadyExistsException();
+		}
 		if (!em.contains(project)) {
 			project = em.merge(project);
 		}
@@ -106,6 +110,9 @@ public class ProjectController {
 			throw new UserIsNotOwnerException();
 		}
 		project.deepSanitize();
+		if (em.createNamedQuery("Project.getByUserAndName").setParameter("id", authUser.getId()).setParameter("name", project.getName()).getResultList().size() > 0) {
+			throw new UserAlreadyExistsException();
+		}
 		for (Track track : project.getTracks()) {
 			for (Sample sample : track.getSamples()) {
 				Audio audio = em.find(Audio.class, sample.getAudioId());

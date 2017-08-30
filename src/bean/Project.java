@@ -12,15 +12,24 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 
 import exception.BadParameterException;
 import util.Sanitizable;
 
 @Entity
-@NamedQuery(name = "Project.getByUser", query = "SELECT p FROM Project p WHERE p.user.id = :id")
+@NamedQueries({
+	@NamedQuery(name = "Project.getByUser", query = "SELECT p FROM Project p WHERE p.user.id = :id"),
+	@NamedQuery(name = "Project.getByUserAndName", query = "SELECT p FROM Project p WHERE p.user.id = :id AND p.name = :name")
+})
+@Table(uniqueConstraints={ @UniqueConstraint(columnNames={"user_id", "name"}) })
 public class Project implements Sanitizable {
 	
 	private static final int MAX_PROJECT_NAME_LENGTH = 40;
@@ -29,7 +38,7 @@ public class Project implements Sanitizable {
 	@GeneratedValue
 	private Long id;
 	
-	@Column(length = MAX_PROJECT_NAME_LENGTH, nullable = false)
+	@Column(name = "name", length = MAX_PROJECT_NAME_LENGTH, nullable = false)
 	private String name;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
@@ -42,7 +51,11 @@ public class Project implements Sanitizable {
 	private Date updatedAt;
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id")
 	private User user;
+	
+	@Transient
+	private Float duration;
 	
 	public Long getId() {
 		return id;
@@ -79,6 +92,12 @@ public class Project implements Sanitizable {
 	}
 	public void setUser(User user) {
 		this.user = user;
+	}
+	public Float getDuration() {
+		return duration;
+	}
+	public void setDuration(Float duration) {
+		this.duration = duration;
 	}
 	
 	public int countSamples() {
@@ -129,6 +148,7 @@ public class Project implements Sanitizable {
 		project.setName(name);
 		project.setCreatedAt(createdAt);
 		project.setUpdatedAt(updatedAt);
+		project.setDuration(computeDuration());
 		return project;
 	}
 	
@@ -139,6 +159,19 @@ public class Project implements Sanitizable {
 		project.setUpdatedAt(updatedAt);
 		project.setTracks(tracks.stream().map(a -> a.prepareForResponse()).collect(Collectors.toCollection(ArrayList<Track>::new)));
 		return project;
+	}
+	
+	public float computeDuration() {
+		float duration = 0;
+		for (Track track : getTracks()) {
+			for (bean.Sample sample : track.getSamples()) {
+				float end = sample.getDuration() + sample.getStart();
+				if (end > duration) {
+					duration = end;
+				}
+			}
+		}
+		return duration;
 	}
 	
 }

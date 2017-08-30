@@ -32,7 +32,7 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 	@GeneratedValue
 	private Long id;
 	
-	@Column(length = MAX_FNAME_LENGTH, unique = true, nullable = false)
+	@Column(length = MAX_FNAME_LENGTH, nullable = false)
 	private String fname;
 	
 	@Column(length = MAX_LNAME_LENGTH, nullable = false)
@@ -153,7 +153,6 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 	@Override
 	public Object prepareForResponse() {
 		User user = new User();
-		user.setEmail(email);
 		user.setFname(fname);
 		user.setLname(lname);
 		return user;

@@ -12,6 +12,7 @@ import javax.ws.rs.HttpMethod;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.Provider;
 
 import bean.Credentials;
@@ -50,7 +51,9 @@ public class BasicAuthFilter implements ContainerRequestFilter {
 	
 	@Override
 	public void filter(ContainerRequestContext request) {
-		if (!request.getUriInfo().getPath().contains("users") || request.getMethod() != HttpMethod.POST) {
+		if (request.getMethod() == HttpMethod.OPTIONS) {
+			request.abortWith(Response.ok().build());
+		} else if (!request.getUriInfo().getPath().contains("users") || request.getMethod() != HttpMethod.POST) {
 			Credentials requestCredentials = getCredentialsFromRequest(request);
 			if (requestCredentials == null) {
 				throw new BadCredentialsException();

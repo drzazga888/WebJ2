@@ -27,21 +27,8 @@ public class MusicProducer {
 		this.project = project;
 	}
 	
-	private float computeDuration() {
-		float duration = 0;
-		for (Track track : project.getTracks()) {
-			for (bean.Sample sample : track.getSamples()) {
-				float end = sample.getDuration() + sample.getStart();
-				if (end > duration) {
-					duration = end;
-				}
-			}
-		}
-		return duration;
-	}
-	
 	private void record(final AudioContext ac, UGen input) throws IOException {
-		final Sample s = new Sample(computeDuration() * 1000); 
+		final Sample s = new Sample(project.computeDuration() * 1000); 
 		RecordToSample rts = new RecordToSample(ac, s, RecordToSample.Mode.FINITE);
 		ac.out.addDependent(rts);
 		rts.addInput(input);

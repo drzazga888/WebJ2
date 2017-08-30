@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 import bean.Audio;
 import bean.SuccessMessage;
 import bean.User;
+import exception.UserAlreadyExistsException;
 import exception.UserIsNotOwnerException;
 import filter.BasicSecurityContext;
 import util.AudioInfoExtractor;
@@ -73,6 +74,9 @@ public class AudioController {
 	public Response createAudio(Audio audio, @Context SecurityContext securityContext) {
 		User user = (User) ((BasicSecurityContext) securityContext).getUser();
 		audio.sanitize();
+		if (em.createNamedQuery("Project.getByUserAndName").setParameter("id", user.getId()).setParameter("name", audio.getName()).getResultList().size() > 0) {
+			throw new UserAlreadyExistsException();
+		}
 		audio.setUser(user);
 		audio.saveBase64AudioStringToTempFile();
 		AudioInfoExtractor audioInfoExtractor;
@@ -106,11 +110,14 @@ public class AudioController {
 		if (audio.getUser().getId() != authUser.getId()) {
 			throw new UserIsNotOwnerException();
 		}
+		audio.setName(newAudio.getName());
+		audio.sanitize();
+		if (em.createNamedQuery("Project.getByUserAndName").setParameter("id", authUser.getId()).setParameter("name", audio.getName()).getResultList().size() > 0) {
+			throw new UserAlreadyExistsException();
+		}
 		if (em.contains(audio)) {
 			em.detach(audio);
 		} 
-		audio.setName(newAudio.getName());
-		audio.sanitize();
 		audio = em.merge(audio);
 		em.persist(audio);
 		return Response.ok(new SuccessMessage(AUDIO_UPDATED_MESSAGE)).build();

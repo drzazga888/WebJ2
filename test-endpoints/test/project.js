@@ -54,8 +54,10 @@ describe('Project endpoint', function() {
                 },
                 id: {
                     type: "integer"
-                }
-            }
+                },
+                additionalProperties: false
+            },
+            additionalProperties: false
         })
     })
     
@@ -80,8 +82,12 @@ describe('Project endpoint', function() {
                     },
                     updatedAt: {
                         type: "integer"
+                    },
+                    duration: {
+                        type: "number"
                     }
-                }
+                },
+                additionalProperties: false
             }
         })
     })
@@ -144,13 +150,16 @@ describe('Project endpoint', function() {
                                         gain: {
                                             type: "number"
                                         }
-                                    }
+                                    },
+                                    additionalProperties: false
                                 }
                             }
-                        }
+                        },
+                        additionalProperties: false
                     }
                 }
-            }
+            },
+            additionalProperties: false
         })
     })
 

@@ -52,7 +52,8 @@ describe('Audio endpoint', function() {
                 id: {
                     type: "integer"
                 }
-            }
+            },
+            additionalProperties: false
         })
     })
 
@@ -81,7 +82,8 @@ describe('Audio endpoint', function() {
                             type: "number"
                         }
                     }
-                }
+                },
+                additionalProperties: false
             }
         })
     })
