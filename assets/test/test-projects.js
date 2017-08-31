@@ -18,7 +18,7 @@ describe('Projects part of the redux store', function() {
 
     it('should init with the desired structure', function() {
         state = reducer(undefined, {})
-        expect(state.projects).to.deep.equal({ loading: false, error: null, entries: [] })
+        expect(state.projects).to.deep.equal({ loading: false, error: null, entries: null })
     })
 
     it('should load projects into store on fetch projects request', function() {
@@ -40,7 +40,7 @@ describe('Projects part of the redux store', function() {
         state = reducer(initState, {})
         fetchMock.get(basePath + 'projects', [ fakeProject ])
         const fetchProjects = projectsActions.fetchProjects()(dispatch, getState)
-        expect(state.projects).to.deep.equal({ loading: true, error: null, entries: [] })
+        expect(state.projects).to.deep.equal({ loading: true, error: null, entries: null })
         return fetchProjects.then(() => {
             expect(state.projects).to.deep.equal({ loading: false, error: null, entries: [ Object.assign({
                 loaded: true
@@ -48,7 +48,7 @@ describe('Projects part of the redux store', function() {
         })
     })
 
-    it('should restore state on fetch projects error', function() {
+    it('should clean state on fetch projects error', function() {
         const initState = {
             user: {
                 credentials: {
@@ -67,9 +67,9 @@ describe('Projects part of the redux store', function() {
         state = reducer(initState, {})
         fetchMock.get(basePath + 'projects', { status: 500, body: { error: 'undefined' }})
         const fetchProjects = projectsActions.fetchProjects()(dispatch, getState)
-        expect(state.projects).to.deep.equal({ loading: true, error: null, entries: [] })
+        expect(state.projects).to.deep.equal({ loading: true, error: null, entries: null })
         return fetchProjects.then(() => {
-            expect(state.projects).to.deep.equal({ loading: false, error: { payload: { error: 'undefined' }, statusCode: 500 }, entries: [] })
+            expect(state.projects).to.deep.equal({ loading: false, error: { payload: { error: 'undefined' }, statusCode: 500 }, entries: null })
         })
     })
 
@@ -239,6 +239,107 @@ describe('Projects part of the redux store', function() {
         return updateProject.then(() => {
             expect(state.projects).to.deep.equal({ loading: false, error: null, entries: [ project1, project2 ]})
         })
+    })
+
+    it('should remove project after successful entry delete', function() {
+        const project1 = {
+            id: 17,
+            name: 'Fake name',
+            createdAt: 123456,
+            updatedAt: 123459,
+            duration: 12.5,
+            loaded: true
+        }
+        const project2 = {
+            id: 18,
+            name: 'Fake name 2',
+            createdAt: 823456,
+            updatedAt: 923459,
+            duration: 40.3,
+            loaded: true
+        }
+        const initState = {
+            user: {
+                credentials: {
+                    email: 'fake@email.com',
+                    password: 'fakePASSWORD1-'
+                }
+            },
+            projects: {
+                entries: [project1, project2]
+            }
+        }
+        state = reducer(initState, {})
+        fetchMock.delete(basePath + 'projects/18', { message: 'deleted' })
+        const updateProject = projectsActions.deleteProject(18)(dispatch, getState)
+        expect(state.projects).to.deep.equal({ loading: false, error: null, entries: [ project1, Object.assign({}, project2, { loaded: false }) ]})
+        return updateProject.then(() => {
+            expect(state.projects).to.deep.equal({ loading: false, error: null, entries: [ project1 ]})
+        })
+    })
+
+    it('should restore project after entry delete error', function() {
+        const project1 = {
+            id: 17,
+            name: 'Fake name',
+            createdAt: 123456,
+            updatedAt: 123459,
+            duration: 12.5,
+            loaded: true
+        }
+        const project2 = {
+            id: 18,
+            name: 'Fake name 2',
+            createdAt: 823456,
+            updatedAt: 923459,
+            duration: 40.3,
+            loaded: true
+        }
+        const initState = {
+            user: {
+                credentials: {
+                    email: 'fake@email.com',
+                    password: 'fakePASSWORD1-'
+                }
+            },
+            projects: {
+                entries: [project1, project2]
+            }
+        }
+        state = reducer(initState, {})
+        fetchMock.delete(basePath + 'projects/18', { status: 500, body: { error: 'unknown' }})
+        const updateProject = projectsActions.deleteProject(18)(dispatch, getState)
+        expect(state.projects).to.deep.equal({ loading: false, error: null, entries: [ project1, Object.assign({}, project2, { loaded: false }) ]})
+        return updateProject.then(() => {
+            expect(state.projects).to.deep.equal({ loading: false, error: null, entries: [ project1, project2 ]})
+        })
+    })
+
+    it('should throw away projects after clean action requested', function() {
+        const project1 = {
+            id: 17,
+            name: 'Fake name',
+            createdAt: 123456,
+            updatedAt: 123459,
+            duration: 12.5,
+            loaded: true
+        }
+        const project2 = {
+            id: 18,
+            name: 'Fake name 2',
+            createdAt: 823456,
+            updatedAt: 923459,
+            duration: 40.3,
+            loaded: true
+        }
+        const initState = {
+            projects: {
+                entries: [project1, project2]
+            }
+        }
+        state = reducer(initState, {})
+        dispatch(projectsActions.cleanProjects())
+        expect(state.projects).to.deep.equal({ loading: false, error: null, entries: null })
     })
 
     beforeEach('mock clocks', function() {

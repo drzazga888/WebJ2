@@ -15,6 +15,7 @@ export const UPDATE_PROJECT_ERROR = 'UPDATE_PROJECT_ERROR'
 export const DELETE_PROJECT_REQUESTED = 'DELETE_PROJECT_REQUESTED'
 export const DELETE_PROJECT_DONE = 'DELETE_PROJECT_DONE'
 export const DELETE_PROJECT_ERROR = 'DELETE_PROJECT_ERROR'
+export const CLEAN_PROJECTS = 'CLEAN_PROJECTS'
 
 export const fetchProjects = () => (dispatch, getState) => {
     const state = getState()
@@ -90,3 +91,7 @@ export const deleteProject = (id) => (dispatch, getState) => {
         }
     )
 }
+
+export const cleanProjects = () => ({
+    type: CLEAN_PROJECTS
+})

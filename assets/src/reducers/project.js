@@ -6,11 +6,14 @@ const loaded = (state = true, action) => {
     switch (action.type) {
         case projectsActions.CREATE_PROJECT_REQUESTED:
         case projectsActions.UPDATE_PROJECT_REQUESTED:
+        case projectsActions.DELETE_PROJECT_REQUESTED:
             return false
         case projectsActions.CREATE_PROJECT_DONE:
         case projectsActions.CREATE_PROJECT_ERROR:
         case projectsActions.UPDATE_PROJECT_DONE:
         case projectsActions.UPDATE_PROJECT_ERROR:
+        case projectsActions.DELETE_PROJECT_DONE:
+        case projectsActions.DELETE_PROJECT_ERROR:
             return true
         default:
             return state
