@@ -14,7 +14,6 @@ import javax.ws.rs.GET;
 import javax.ws.rs.InternalServerErrorException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -26,12 +25,14 @@ import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.Response.Status;
 
 import bean.Audio;
+import bean.AudioPostSuccessMessage;
 import bean.SuccessMessage;
 import bean.User;
 import exception.UserAlreadyExistsException;
 import exception.UserIsNotOwnerException;
 import filter.BasicSecurityContext;
 import util.AudioInfoExtractor;
+import util.PATCH;
 
 @Path("audios")
 @Stateless
@@ -39,7 +40,9 @@ public class AudioController {
 	
 	private static final String AUDIO_DELETED_MESSAGE = "audio was successfully deleted";
 	private static final String AUDIO_UPDATED_MESSAGE = "audio information was successfully updated";
-	private static final String AUDIO_CREATED_MESSAGE = "audio was successfully created";
+	
+	private static final SuccessMessage AUDIO_DELETED_PAYLOAD = new SuccessMessage(AUDIO_DELETED_MESSAGE);
+	private static final SuccessMessage AUDIO_UPDATED_PAYLOAD = new SuccessMessage(AUDIO_UPDATED_MESSAGE);
 	
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
@@ -94,11 +97,11 @@ public class AudioController {
 		em.persist(audio);
 		em.flush();
 		audio.assignIdToTempAudioFile();
-		return Response.status(Status.CREATED).entity(new SuccessMessage(AUDIO_CREATED_MESSAGE, audio.getId())).build();
+		return Response.status(Status.CREATED).entity(new AudioPostSuccessMessage(audio.getId(), audio.getLength(), audio.getAmplitudeOverTime())).build();
 	}
 	
 	@Path("{id}")
-	@PUT
+	@PATCH
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response updateAudioInfo(Audio newAudio, @Context SecurityContext securityContext, @PathParam("id") String id) {
@@ -120,7 +123,7 @@ public class AudioController {
 		} 
 		audio = em.merge(audio);
 		em.persist(audio);
-		return Response.ok(new SuccessMessage(AUDIO_UPDATED_MESSAGE)).build();
+		return Response.ok(AUDIO_UPDATED_PAYLOAD).build();
 	}
 	
 	@Path("{id}")
@@ -137,7 +140,7 @@ public class AudioController {
 		}
 		audio.deleteAudioFile();
 		em.remove(audio);
-		return Response.ok(new SuccessMessage(AUDIO_DELETED_MESSAGE)).build();
+		return Response.ok(AUDIO_DELETED_PAYLOAD).build();
 	}
 
 }

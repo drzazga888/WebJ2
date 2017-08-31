@@ -43,9 +43,11 @@ import util.PATCH;
 @Stateless
 public class ProjectController {
 	
-	private static final String PROJECT_CREATED_MESSAGE = "project was successfully created";
+	private static final String PROJECT_DELETED_MESSAGE = "project was successfully deleted";	
 	private static final String PROJECT_UPDATED_MESSAGE = "project was successfully updated";
-	private static final String PROJECT_DELETED_MESSAGE = "project was successfully deleted";
+	
+	private static final SuccessMessage PROJECT_DELETED_PAYLOAD = new SuccessMessage(PROJECT_DELETED_MESSAGE);
+	private static final SuccessMessage PROJECT_UPDATED_PAYLOAD = new SuccessMessage(PROJECT_UPDATED_MESSAGE);
 	
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
@@ -72,7 +74,7 @@ public class ProjectController {
 		}
 		em.persist(project);
 		em.flush();
-		return Response.status(Status.CREATED).entity(new ProjectPostSuccessMessage(PROJECT_CREATED_MESSAGE, project.getId(), project.getCreatedAt(), project.getUpdatedAt())).build();
+		return Response.status(Status.CREATED).entity(new ProjectPostSuccessMessage(project.getId(), project.getCreatedAt(), project.getUpdatedAt())).build();
 	}
 	
 	@GET
@@ -171,7 +173,7 @@ public class ProjectController {
 		if (!em.contains(existingProject)) {
 			em.merge(existingProject);
 		}
-		return Response.ok(new SuccessMessage(PROJECT_UPDATED_MESSAGE)).build();
+		return Response.ok(PROJECT_UPDATED_PAYLOAD).build();
 	}
 	
 	@DELETE
@@ -203,7 +205,7 @@ public class ProjectController {
 			em.merge(project);
 		}
 		em.remove(project);
-		return Response.ok(new SuccessMessage(PROJECT_DELETED_MESSAGE)).build();
+		return Response.ok(PROJECT_DELETED_PAYLOAD).build();
 	}
 	
 	@GET

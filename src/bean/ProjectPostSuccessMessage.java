@@ -4,11 +4,13 @@ import java.util.Date;
 
 public class ProjectPostSuccessMessage extends SuccessMessage {
 	
+	private static final String PROJECT_CREATED_MESSAGE = "project was successfully created";
+	
 	private Date createdAt;
 	private Date updatedAt;
 
-	public ProjectPostSuccessMessage(String message, Long id, Date createdAt, Date updatedAt) {
-		super(message, id);
+	public ProjectPostSuccessMessage(Long id, Date createdAt, Date updatedAt) {
+		super(PROJECT_CREATED_MESSAGE, id);
 		this.setCreatedAt(createdAt);
 		this.setUpdatedAt(updatedAt);
 	}

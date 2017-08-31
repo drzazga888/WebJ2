@@ -31,7 +31,11 @@ import util.BCrypt;
 @Stateless
 public class UserController {
 	
+	private static final String USER_DELETED_MESSAGE = "user was successfully deleted";
 	private static final String USER_CREATED_MESSAGE = "user was successfully created";
+	
+	private static final SuccessMessage USER_DELETED_PAYLOAD = new SuccessMessage(USER_DELETED_MESSAGE);
+	private static final SuccessMessage USER_UPDATED_PAYLOAD = new SuccessMessage(USER_CREATED_MESSAGE);
 	
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
@@ -72,7 +76,7 @@ public class UserController {
 		if (!em.contains(user)) {
 		    user = em.merge(user);
 		}
-		return Response.ok(new SuccessMessage("user was successfully updated")).build();
+		return Response.ok(USER_UPDATED_PAYLOAD).build();
 	}
 	
 	@DELETE
@@ -113,7 +117,7 @@ public class UserController {
 		    user = em.merge(user);
 		}
 		em.remove(user);
-		return Response.ok(new SuccessMessage("user was successfully deleted")).build();
+		return Response.ok(USER_DELETED_PAYLOAD).build();
 	}
 
 }

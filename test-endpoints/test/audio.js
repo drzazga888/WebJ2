@@ -1,7 +1,7 @@
 const chakram = require('chakram')
 const expect = chakram.expect
 const { postUser, deleteUser } = require('../requests/user')
-const { getAudioPath, AUDIO_1, AUDIO_2, AUDIO_NAME_VALID_1, AUDIO_NAME_VALID_2, postAudio, getAudios, getAudio, putAudioInfo, deleteAudio }  = require('../requests/audio')
+const { getAudioPath, AUDIO_1, AUDIO_2, AUDIO_NAME_VALID_1, AUDIO_NAME_VALID_2, postAudio, getAudios, getAudio, patchAudioInfo, deleteAudio }  = require('../requests/audio')
 
 describe('Audio endpoint', function() {
 
@@ -23,7 +23,7 @@ describe('Audio endpoint', function() {
             return getAudio(postResponse.body.id)
         }).then(response => {
             getResponse = response
-            return putAudioInfo(postResponse.body.id, AUDIO_NAME_VALID_2)
+            return patchAudioInfo(postResponse.body.id, AUDIO_NAME_VALID_2)
         }).then(response => {
             return getAudio(postResponse.body.id)
         }).then(response => {
@@ -51,6 +51,15 @@ describe('Audio endpoint', function() {
                 },
                 id: {
                     type: "integer"
+                },
+                length: {
+                    type: "number"
+                },
+                amplitudeOverTime: {
+                    type: "array",
+                    items: {
+                        type: "number"
+                    }
                 }
             },
             additionalProperties: false

@@ -40,7 +40,7 @@ const getAudio = id => chakram.get(audioEndpoint + '/' + id, {
     json: false
 })
 
-const putAudioInfo = (id, name) => chakram.put(audioEndpoint + '/' + id, {
+const patchAudioInfo = (id, name) => chakram.patch(audioEndpoint + '/' + id, {
     name: name
 }, {
     headers: {
@@ -54,4 +54,4 @@ const deleteAudio = id => chakram.delete(audioEndpoint + '/' + id, null, {
     }
 })
 
-module.exports = { getAudioPath, AUDIO_1, AUDIO_2, AUDIO_NAME_VALID_1, AUDIO_NAME_VALID_2, postAudio, getAudios, getAudio, putAudioInfo, deleteAudio }
+module.exports = { getAudioPath, AUDIO_1, AUDIO_2, AUDIO_NAME_VALID_1, AUDIO_NAME_VALID_2, postAudio, getAudios, getAudio, patchAudioInfo, deleteAudio }
