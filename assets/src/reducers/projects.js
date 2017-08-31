@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux'
 
 import * as projectsActions from '../actions/projects'
+import project from './project'
 
 const loading = (state = false, action) => {
     switch (action.type) {
@@ -25,57 +26,20 @@ const error = (state = null, action) => {
     }
 }
 
-const id = (state = null, action) => {
-    switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
-            return action.payload.id
-        default:
-            return state
-    }
-}
-
-const name = (state = null, action) => {
-    switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
-            return action.payload.name
-        default:
-            return state
-    }
-}
-
-const duration = (state = null, action) => {
-    switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
-            return action.payload.duration
-        default:
-            return state
-    }
-}
-
-const createdAt = (state = null, action) => {
-    switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
-            return action.payload.createdAt
-        default:
-            return state
-    }
-}
-
-const updatedAt = (state = null, action) => {
-    switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
-            return action.payload.updatedAt
-        default:
-            return state
-    }
-}
-
-const project = combineReducers({ id, name, duration, createdAt, updatedAt })
-
 const entries = (state = [], action) => {
     switch (action.type) {
         case projectsActions.FETCH_PROJECTS_DONE:
             return action.payload.map(entry => project(undefined, { type: action.type, payload: entry }))
+        case projectsActions.CREATE_PROJECT_REQUESTED:
+            return state ? [ ...state, project(undefined, action) ] : state
+        case projectsActions.CREATE_PROJECT_DONE:
+            return state ? state.map(entry => entry.name === action.name ? project(entry, action) : entry) : state
+        case projectsActions.CREATE_PROJECT_ERROR:
+            return state ? state.filter(entry => entry.name !== action.name) : state
+        case projectsActions.UPDATE_PROJECT_REQUESTED:
+        case projectsActions.UPDATE_PROJECT_DONE:
+        case projectsActions.UPDATE_PROJECT_ERROR:
+            return state ? state.map(entry => entry.id === action.id ? project(entry, action) : entry) : state
         default:
             return state
     }
@@ -85,4 +49,8 @@ export default combineReducers({ loading, error, entries })
 
 export const getAreProjectsLoading = (state) => {
     return state.loading
+}
+
+export const getProjectById = (state, id) => {
+    return (state.entries && state.entries.filter(entry => entry.id === id).shift()) || null
 }

@@ -2,7 +2,7 @@ const chakram = require('chakram')
 const expect = chakram.expect
 const { postUser, deleteUser } = require('../requests/user')
 const { getAudioPath, AUDIO_1, AUDIO_2, AUDIO_NAME_VALID_1, AUDIO_NAME_VALID_2, postAudio, getAudios, getAudio, putAudioInfo, deleteAudio }  = require('../requests/audio')
-const { PROJECT_NAME_VALID_1, projectUpdate1Producer, postProject, getProjects, getProject, putProject, deleteProject } = require('../requests/project')
+const { PROJECT_NAME_VALID_1, projectUpdate1Producer, projectPatch1Producer, postProject, getProjects, getProject, putProject, patchProject, deleteProject } = require('../requests/project')
 
 describe('Project endpoint', function() {
 
@@ -11,6 +11,7 @@ describe('Project endpoint', function() {
     let postResponse
     let getListResponse
     let putResponse
+    let patchResponse
     let getResponse
     let deleteResponse
 
@@ -31,6 +32,9 @@ describe('Project endpoint', function() {
             return putProject(postResponse.body.id, projectUpdate1Producer(audio1PostResponse.body.id, audio2PostResponse.body.id))
         }).then(response => {
             putResponse = response
+            return patchProject(postResponse.body.id, projectPatch1Producer())
+        }).then(response => {
+            patchResponse = response
             return getProject(postResponse.body.id)
         }).then(response => {
             getResponse = response
@@ -53,6 +57,12 @@ describe('Project endpoint', function() {
                     type: "string"
                 },
                 id: {
+                    type: "integer"
+                },
+                createdAt: {
+                    type: "integer"
+                },
+                updatedAt: {
                     type: "integer"
                 },
                 additionalProperties: false
@@ -100,6 +110,10 @@ describe('Project endpoint', function() {
 
     it('returns 200 OK on valid project update', function() {
         return expect(putResponse).to.have.status(200)
+    })
+
+    it('returns 200 OK on valid project patch', function() {
+        return expect(patchResponse).to.have.status(200)
     })
 
     it('returns 200 OK on project GET', function() {
@@ -164,7 +178,10 @@ describe('Project endpoint', function() {
     })
 
     it('returns updated project on GET', function() {
-        return expect(getResponse).to.comprise.of.json(projectUpdate1Producer(audio1PostResponse.body.id, audio2PostResponse.body.id))
+        return expect(getResponse).to.comprise.of.json(Object.assign(
+            projectUpdate1Producer(audio1PostResponse.body.id, audio2PostResponse.body.id),
+            projectPatch1Producer()
+        ))
     })
 
     it('returns 200 on project DELETE', function() {

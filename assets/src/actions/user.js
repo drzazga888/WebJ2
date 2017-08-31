@@ -1,6 +1,7 @@
 import * as api from '../api'
 import { getIsUserLoading, getCredentials } from '../reducers'
 import * as messagesActions from '../actions/messages'
+import * as messages from '../messages'
 
 export const SIGN_IN_REQUESTED = "SIGN_IN_REQUESTED"
 export const SIGN_IN_DONE = "SIGN_IN_DONE"
@@ -16,19 +17,6 @@ export const REMOVE_PROFILE_REQUESTED = "REMOVE_REQUESTED"
 export const REMOVE_PROFILE_DONE = "REMOVE_DONE"
 export const REMOVE_PROFILE_ERROR = "REMOVE_ERROR"
 
-export const MESSAGE_JUST_REGISTERED = 'MESSAGE_JUST_REGISTERED'
-export const MESSAGE_USER_FORM_BAD_PARAMS = 'MESSAGE_USER_FORM_BAD_PARAMS'
-export const MESSAGE_USER_ALREADY_EXISTS = 'MESSAGE_USER_ALREADY_EXISTS'
-export const MESSAGE_REGISTER_ERROR = 'MESSAGE_REGISTER_ERROR'
-export const MESSAGE_LOGIN_BAD_CREDENTIALS = 'MESSAGE_LOGIN_BAD_CREDENTIALS'
-export const MESSAGE_LOGIN_ERROR = 'MESSAGE_LOGIN_BAD_CREDENTIALS'
-export const MESSAGE_LOGOUT = 'MESSAGE_LOGOUT'
-export const MESSAGE_UNAUTHORIZED = 'MESSAGE_UNAUTHORIZED'
-export const MESSAGE_PROFILE_UPDATED = 'MESSAGE_PROFILE_UPDATED'
-export const MESSAGE_PROFILE_UPDATE_ERROR = 'MESSAGE_PROFILE_UPDATE_ERROR'
-export const MESSAGE_PROFILE_REMOVED = 'MESSAGE_PROFILE_REMOVED'
-export const MESSAGE_PROFILE_REMOVE_ERROR = 'MESSAGE_PROFILE_REMOVE_ERROR'
-
 export const updateProfile = (formData) => (dispatch, getState) => {
     const state = getState()
     if (getIsUserLoading(state)) {
@@ -38,22 +26,22 @@ export const updateProfile = (formData) => (dispatch, getState) => {
     return api.putUser(getCredentials(state), formData).then(
         payload => {
             dispatch({ type: UPDATE_PROFILE_DONE, updatedData: formData })
-            messagesActions.showMessage(MESSAGE_PROFILE_UPDATED)(dispatch)
+            messagesActions.showMessage(messages.MESSAGE_PROFILE_UPDATED)(dispatch)
         },
         ({ payload, response }) => {
             dispatch({ type: UPDATE_PROFILE_ERROR, payload, statusCode: response.status })
             switch (response.status) {
                 case 400:
-                    messagesActions.showMessage(MESSAGE_USER_FORM_BAD_PARAMS)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_FORM_BAD_PARAMS)(dispatch)
                     break
                 case 401:
-                    messagesActions.showMessage(MESSAGE_UNAUTHORIZED)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_UNAUTHORIZED)(dispatch)
                     break
                 case 409:
-                    messagesActions.showMessage(MESSAGE_USER_ALREADY_EXISTS)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_USER_ALREADY_EXISTS)(dispatch)
                     break
                 default:
-                    messagesActions.showMessage(MESSAGE_PROFILE_UPDATE_ERROR)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_PROFILE_UPDATE_ERROR)(dispatch)
             }
         }
     )
@@ -68,16 +56,16 @@ export const removeProfile = () => (dispatch, getState) => {
     return api.deleteUser(getCredentials(state)).then(
         payload => {
             dispatch({ type: REMOVE_PROFILE_DONE })
-            messagesActions.showMessage(MESSAGE_PROFILE_REMOVED)(dispatch)
+            messagesActions.showMessage(messages.MESSAGE_PROFILE_REMOVED)(dispatch)
         },
         ({ payload, response }) => {
             dispatch({ type: REMOVE_PROFILE_ERROR, payload, statusCode: response.status })
             switch (response.status) {
                 case 401:
-                    messagesActions.showMessage(MESSAGE_UNAUTHORIZED)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_UNAUTHORIZED)(dispatch)
                     break
                 default:
-                    messagesActions.showMessage(MESSAGE_PROFILE_REMOVE_ERROR)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_PROFILE_REMOVE_ERROR)(dispatch)
             }
         }
     )
@@ -95,10 +83,10 @@ export const signIn = (credentials) => (dispatch, getState) => {
             dispatch({ type: SIGN_IN_ERROR, payload, statusCode: response.status })
             switch (response.status) {
                 case 401:
-                    messagesActions.showMessage(MESSAGE_LOGIN_BAD_CREDENTIALS)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_LOGIN_BAD_CREDENTIALS)(dispatch)
                     break
                 default:
-                    messagesActions.showMessage(MESSAGE_LOGIN_ERROR)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_LOGIN_ERROR)(dispatch)
             }
         }
     )
@@ -113,19 +101,19 @@ export const signUp = (formData) => (dispatch, getState) => {
     return api.postUser(formData).then(
         payload => {
             dispatch({ type: SIGN_UP_DONE, payload })
-            messagesActions.showMessage(MESSAGE_JUST_REGISTERED)(dispatch)
+            messagesActions.showMessage(messages.MESSAGE_JUST_REGISTERED)(dispatch)
         },
         ({ payload, response }) => {
             dispatch({ type: SIGN_UP_ERROR, payload, statusCode: response.status })
             switch (response.status) {
                 case 400:
-                    messagesActions.showMessage(MESSAGE_USER_FORM_BAD_PARAMS)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_FORM_BAD_PARAMS)(dispatch)
                     break
                 case 409:
-                    messagesActions.showMessage(MESSAGE_USER_ALREADY_EXISTS)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_USER_ALREADY_EXISTS)(dispatch)
                     break
                 default:
-                    messagesActions.showMessage(MESSAGE_REGISTER_ERROR)(dispatch)
+                    messagesActions.showMessage(messages.MESSAGE_REGISTER_ERROR)(dispatch)
             }
         }
     )
@@ -135,5 +123,5 @@ export const logout = () => (dispatch) => {
     dispatch({
         type: LOGOUT
     })
-    messagesActions.showMessage(MESSAGE_LOGOUT)(dispatch)
+    messagesActions.showMessage(messages.MESSAGE_LOGOUT)(dispatch)
 }

@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 
 import bean.Audio;
 import bean.Project;
+import bean.ProjectPostSuccessMessage;
 import bean.Sample;
 import bean.SuccessMessage;
 import bean.Track;
@@ -36,6 +37,7 @@ import exception.UserAlreadyExistsException;
 import exception.UserIsNotOwnerException;
 import filter.BasicSecurityContext;
 import util.MusicProducer;
+import util.PATCH;
 
 @Path("projects")
 @Stateless
@@ -70,7 +72,7 @@ public class ProjectController {
 		}
 		em.persist(project);
 		em.flush();
-		return Response.status(Status.CREATED).entity(new SuccessMessage(PROJECT_CREATED_MESSAGE, project.getId())).build();
+		return Response.status(Status.CREATED).entity(new ProjectPostSuccessMessage(PROJECT_CREATED_MESSAGE, project.getId(), project.getCreatedAt(), project.getUpdatedAt())).build();
 	}
 	
 	@GET
@@ -143,6 +145,31 @@ public class ProjectController {
 		project.setUpdatedAt(new Date());
 		if (!em.contains(project)) {
 			em.merge(project);
+		}
+		return Response.ok(new SuccessMessage(PROJECT_UPDATED_MESSAGE)).build();
+	}
+	
+	@PATCH
+	@Path("{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response patchProject(Project project, @Context SecurityContext securityContext, @PathParam("id") String id) {
+		User authUser = (User) ((BasicSecurityContext) securityContext).getUser();
+		Project existingProject = em.find(Project.class, Long.parseLong(id));
+		if (existingProject == null) {
+			throw new NotFoundException();
+		}
+		if (existingProject.getUser().getId() != authUser.getId()) {
+			throw new UserIsNotOwnerException();
+		}
+		project.sanitize();
+		if (em.createNamedQuery("Project.getByUserAndName").setParameter("id", authUser.getId()).setParameter("name", project.getName()).getResultList().size() > 0) {
+			throw new UserAlreadyExistsException();
+		}
+		existingProject.setName(project.getName());
+		existingProject.setUpdatedAt(new Date());
+		if (!em.contains(existingProject)) {
+			em.merge(existingProject);
 		}
 		return Response.ok(new SuccessMessage(PROJECT_UPDATED_MESSAGE)).build();
 	}

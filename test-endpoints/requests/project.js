@@ -5,6 +5,7 @@ const projectEndpoint = apiPath + 'projects'
 
 const PROJECT_NAME_VALID_1 = "My cool project"
 const PROJECT_NAME_VALID_2 = "My cool updated project"
+const PROJECT_NAME_VALID_3 = "My super cool updated project"
 
 function projectUpdate1Producer(audio1, audio2) {
     return {
@@ -47,6 +48,12 @@ function projectUpdate1Producer(audio1, audio2) {
     }
 }
 
+function projectPatch1Producer() {
+    return {
+        name: PROJECT_NAME_VALID_3
+    }
+}
+
 const postProject = name => chakram.post(projectEndpoint, {
     name: name
 }, {
@@ -74,10 +81,16 @@ const putProject = (id, project) => chakram.put(projectEndpoint + '/' + id, proj
     }
 })
 
+const patchProject = (id, project) => chakram.patch(projectEndpoint + '/' + id, project, {
+    headers: {
+        'Authorization': getBasicCredentials()
+    }
+})
+
 const deleteProject = id => chakram.delete(projectEndpoint + '/' + id, null, {
     headers: {
         'Authorization': getBasicCredentials()
     }
 })
 
-module.exports = { PROJECT_NAME_VALID_1, postProject, getProjects, getProject, putProject, deleteProject, projectUpdate1Producer }
+module.exports = { PROJECT_NAME_VALID_1, postProject, getProjects, getProject, putProject, patchProject, deleteProject, projectUpdate1Producer, projectPatch1Producer }
