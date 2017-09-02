@@ -315,33 +315,6 @@ describe('Projects part of the redux store', function() {
         })
     })
 
-    it('should throw away projects after clean action requested', function() {
-        const project1 = {
-            id: 17,
-            name: 'Fake name',
-            createdAt: 123456,
-            updatedAt: 123459,
-            duration: 12.5,
-            loaded: true
-        }
-        const project2 = {
-            id: 18,
-            name: 'Fake name 2',
-            createdAt: 823456,
-            updatedAt: 923459,
-            duration: 40.3,
-            loaded: true
-        }
-        const initState = {
-            projects: {
-                entries: [project1, project2]
-            }
-        }
-        state = reducer(initState, {})
-        dispatch(projectsActions.cleanProjects())
-        expect(state.projects).to.deep.equal({ loading: false, error: null, entries: null })
-    })
-
     beforeEach('mock clocks', function() {
         clock = sinon.useFakeTimers()
     })

@@ -66,3 +66,24 @@ export const deleteProject = (credentials, id) => fetch(basePath + 'projects/' +
     },
     method: 'delete'
 }).then(jsonOrThrow)
+
+export const fetchAudios = (credentials) => fetch(basePath + 'audios', {
+    headers: {
+        'Authorization': getBasicAuthorization(credentials)
+    },
+    method: 'get'
+}).then(jsonOrThrow)
+
+const convertArrayBufferToBase64 = (content) => new Uint8Array(content).reduce((data, byte) => data + String.fromCharCode(byte), '')
+
+const mergeArrayBufferWithForm = (form, content) => Object.assign({
+    base64StringAudio: convertArrayBufferToBase64(content)
+}, form)
+
+export const postAudio = (credentials, form, content) => fetch(basePath + 'audios', {
+    headers: {
+        'Authorization': getBasicAuthorization(credentials)
+    },
+    method: 'post',
+    body: JSON.stringify(mergeArrayBufferWithForm(form, content))
+}).then(jsonOrThrow)

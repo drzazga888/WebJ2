@@ -22,7 +22,6 @@ const loaded = (state = true, action) => {
 
 const id = (state = null, action) => {
     switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
         case projectsActions.CREATE_PROJECT_DONE:
             return action.payload.id
         default:
@@ -32,8 +31,6 @@ const id = (state = null, action) => {
 
 const name = (state = null, action) => {
     switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
-            return action.payload.name
         case projectsActions.CREATE_PROJECT_REQUESTED:
         case projectsActions.UPDATE_PROJECT_REQUESTED:
             return action.formData.name
@@ -46,8 +43,6 @@ const name = (state = null, action) => {
 
 const duration = (state = 0, action) => {
     switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
-            return action.payload.duration
         default:
             return state
     }
@@ -55,7 +50,6 @@ const duration = (state = 0, action) => {
 
 const createdAt = (state = null, action) => {
     switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
         case projectsActions.CREATE_PROJECT_DONE:
             return action.payload.createdAt
         default:
@@ -65,7 +59,6 @@ const createdAt = (state = null, action) => {
 
 const updatedAt = (state = null, action) => {
     switch (action.type) {
-        case projectsActions.FETCH_PROJECTS_DONE:
         case projectsActions.CREATE_PROJECT_DONE:
             return action.payload.updatedAt
         default:
