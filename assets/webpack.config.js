@@ -1,11 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: './src/index.html',
-  filename: 'index.html',
-  inject: 'body'
-});
+const FontelloPlugin = require("fontello-webpack-plugin");
 
 module.exports = {
   entry: './src/index.js',
@@ -36,7 +31,16 @@ module.exports = {
       }
     ]
   },
-  plugins: [HtmlWebpackPluginConfig],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html',
+      filename: 'index.html',
+      inject: 'body'
+    }),
+    new FontelloPlugin({
+      config: require('./src/fontello.config.json')
+    })
+  ],
   devServer: {
     historyApiFallback: {
       index: '/WebJ2/'

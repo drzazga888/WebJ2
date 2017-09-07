@@ -14,6 +14,16 @@ const Layout = ({ description, message, messageClass, children, userEmail }) => 
                 <li><Link to="/audios">Zarządzaj audio</Link></li>
                 <li><Link to="/doc">Dokumentacja</Link></li>
             </ul>
+            <ul className="stick-to-top-right-corner menu">
+                <li className="dropdown">
+                    <a className="icon-user" href="javascript:void(0);">{userEmail || 'Niezalogowany'}</a>
+                    <div className="dropdown-body">
+                        {!userEmail ? <p><Link to="/register">Rejestracja</Link></p> : null}
+                        {!userEmail ? <p><Link to="/login">Logowanie</Link></p> : null}
+                        {userEmail ? <p><Link to="/logout">Wyloguj</Link></p> : null}
+                    </div>
+                </li>
+            </ul>
         </nav>
         <main>
             {message ? <p className={`message ${messageClass || ''}`}>{message}</p> : null}
@@ -22,16 +32,6 @@ const Layout = ({ description, message, messageClass, children, userEmail }) => 
         <footer>
             <p><small>Autor: <strong>Kamil Drzazga</strong>.</small></p>
         </footer>
-        <ul className="stick-to-top-right-corner menu">
-            <li className="dropdown">
-                <a className="icon-user" href="javascript:void(0);">{userEmail || 'Niezalogowany'}</a>
-                <div className="dropdown-body">
-                    {!userEmail ? <p><Link to="/register">Rejestracja</Link></p> : null}
-                    {!userEmail ? <p><Link to="/login">Logowanie</Link></p> : null}
-                    {userEmail ? <p><Link to="/logout">Wyloguj</Link></p> : null}
-                </div>
-            </li>
-        </ul>
     </div>
 )
 

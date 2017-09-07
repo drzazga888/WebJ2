@@ -16,12 +16,12 @@ const App = () => (
         <Layout>
             <Switch>
                 <Route exact path="/" component={HomePage} />
-                <Route path="docs" component={DocsPage} />
-                <Route path="login" component={LoginPage} />
-                <Route path="register" component={RegisterPage} />
-                <Route path="audios" component={AudiosPage} />
-                <Route path="projects" component={ProjectsPage} />
-                <Route path="projects/{id}" component={MixerPage} />
+                <Route path="/doc" component={DocsPage} />
+                <Route path="/login" component={LoginPage} />
+                <Route path="/register" component={RegisterPage} />
+                <Route path="/audios" component={AudiosPage} />
+                <Route path="/projects" component={ProjectsPage} />
+                <Route path="/projects/{id}" component={MixerPage} />
                 <Route component={NotFoundPage} />
             </Switch>
         </Layout>
