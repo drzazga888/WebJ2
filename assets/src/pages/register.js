@@ -13,7 +13,11 @@ export default class RegisterPage extends React.Component {
 
     register = e => {
         e.preventDefault()
-        console.log('TODO')
+        if (this.state.password !== this.state.password2) {
+            this.refs.password2.setCustomValidity('Hasła muszą być takie same!')
+        } else {
+            console.log('TODO')
+        }
     }
 
     onFieldChange = ({ target }) => {
@@ -32,7 +36,7 @@ export default class RegisterPage extends React.Component {
                             <label>Nazwisko: <input type="text" name="lname" required value={this.state.lname} onChange={this.onFieldChange} /></label>
                             <label>E-mail: <input type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
                             <label>Hasło: (od 6 do 16 znaków) <input type="password" name="password" pattern=".{6,16}" required value={this.state.password} onChange={this.onFieldChange} /></label>
-                            <label>Powtórz hasło: <input type="password" name="password2" required value={this.state.password2} onChange={this.onFieldChange} /></label>
+                            <label>Powtórz hasło: <input ref="password2" type="password" name="password2" required value={this.state.password2} onChange={this.onFieldChange} /></label>
                             <button type="submit">Zarejestruj się</button>
                         </fieldset>
                     </form>
