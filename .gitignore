@@ -3,4 +3,3 @@ WebContent/WEB-INF/classes
 test-endpoints/audios
 node_modules
 .DS_Store
-assets/test/audios/*.wav
