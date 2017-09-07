@@ -1,0 +1,416 @@
+/* podstawowe elementy */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: #282828;
+    color: #C7E3E8;
+    font-family: sans-serif;
+    font-size: 18px;
+    margin: 0;
+}
+
+header {
+    text-align: center;
+    background: #3F5362;
+    overflow: hidden;
+}
+
+main {
+    background: #3F5362;
+    overflow: hidden;
+}
+
+section:after {
+    border-bottom: dashed 1px #72d3ff;
+}
+
+nav {
+    border-top: dashed 2px #72d3ff;
+    border-bottom: dashed 2px #72d3ff;
+}
+
+a {
+    color: #C7E3E8;
+}
+
+a:hover {
+    color: #72d3ff;
+}
+
+p,
+h1,
+h2,
+h3,
+h4{
+    margin: 20px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+    font-weight: normal;
+    color: #72d3ff;
+}
+
+h1 {
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 1.6em;
+}
+
+h3 {
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+
+h3 strong {
+    font-size: 4em;
+    font-weight: normal;
+    text-transform: none;
+    float: left;
+    margin: -20px 20px 10px 0;
+}
+
+h4 {
+    font-size: 1em;
+    text-transform: uppercase;
+}
+
+em {
+    color: #FFCE00;
+    font-style: normal;
+}
+
+fieldset {
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    max-width: 100%;
+    width: 400px;
+    border: dashed 2px #72d3ff;
+    border-radius: 8px;
+}
+
+label {
+    display: block;
+    margin: 20px;
+    text-align: left;
+}
+
+label input {
+    display: block;
+    margin: 5px 0;
+    width: 100%;
+}
+
+input,
+button,
+.button {
+    background: #282828;
+    border: solid 2px #72d3ff;
+    border-radius: 5px;
+    color: #C7E3E8;
+}
+
+input {
+    padding: 5px;
+}
+
+button,
+.button {
+    padding: 7px;
+    font-size: 1.1em;
+    margin: 0 20px 20px;
+    display: inline-block;
+    cursor: pointer;
+}
+
+button:hover,
+.button:hover {
+    color: #72d3ff;
+}
+
+img {
+    max-width: 100%;
+}
+
+/* klasy */
+
+.important-section {
+    background: url(./img/bkg.png) no-repeat center;
+    background-size: cover;
+    padding: 60px 30px;
+    text-shadow: rgba(0, 0, 0, 0.5) 2px 2px 8px;
+}
+
+.stick-to-top-right-corner {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.stick-to-top-left-corner {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.online {
+    color: #0f0;
+}
+
+.offline {
+    color: #f00;
+}
+
+.menu {
+    margin: 0 15px;
+    padding: 0;
+    list-style: none;
+    display: block;
+    text-align: center;
+}
+
+.menu > li {
+    display: inline-block;
+    text-align: left;
+}
+
+.menu > li > a {
+    display: block;
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 10px 15px;
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-body {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: #282828;
+    border-bottom: solid 3px #72D3FF;
+    margin-top: 2px;
+    width: 100%;
+}
+
+.dropdown-body p {
+    margin: 10px;
+}
+
+.message {
+    background: #282828;
+    border-left: solid 5px #72d3ff;
+    padding: 15px;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+.message.danger {
+    background: #422;
+    border-color: #f00;
+    color: #fcc;
+}
+
+.message.success {
+    background: #242;
+    border-color: #0f0;
+    color: #cfc;
+}
+
+.grid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.grid-item {
+    display: table-cell;
+    vertical-align: top;
+    position: relative;
+}
+
+.scrollable {
+    width: 100%;
+    overflow-x: scroll;
+    position: relative;
+}
+
+.inline-form * {
+    display: inline-block;
+}
+
+.inline-form input {
+    width: 300px;
+    border: none;
+    border-radius: 0;
+    background: none;
+    border-bottom: solid 2px #579;
+    font-size: 1em;
+}
+
+.inline-form input:focus {
+    border-color: #FFCE00;
+}
+
+.deleter {
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.deleter:hover {
+    color: #ff9381;
+}
+
+.deletable-list li {
+    margin: 15px 0;
+}
+
+.deletable-list li > * {
+    display: inline-block;
+}
+
+.deletable-list .deleter {
+    background: rgba(100%, 0%, 0%, 0.2);
+    border: solid 2px #f00;
+    padding: 7px;
+    margin-right: 10px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* mixer */
+
+#tracks {
+    padding: 20px;
+}
+
+#tracks aside {
+    width: 160px;
+    padding-top: 20px;
+}
+
+#tracks .timelines {
+    width: 1300px;
+    background-image: repeating-linear-gradient(
+        to right,
+        transparent,
+        transparent 29px,
+        rgb(30%, 65%, 80%) 30px
+    );
+}
+
+#tracks .timelines.dragging .sample {
+    pointer-events: none;
+}
+
+#tracks .time {
+    height: 20px;
+    position: relative;
+    font-size: 0.8em;
+}
+
+#tracks .time-item {
+    position: absolute;
+    top: 0;
+}
+
+#tracks .pipe {
+    width: 2px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #0ff;
+    box-shadow: #0099ff 0 0 3px;
+    left: 0;
+    display: none;
+}
+
+#tracks .track-head,
+#tracks .timeline {
+    margin: 20px 0;
+    height: 100px;
+}
+
+#tracks .track-head input {
+    border: none;
+    background: none;
+    border-bottom: solid 2px #579;
+    border-radius: 0;
+    width: 120px;
+    font-size: 1em;
+    margin: 10px 0 0 20px;
+    padding: 0;
+}
+
+#tracks .track-head input:focus {
+    border-color: #FFCE00;
+}
+
+#tracks .timeline {
+    position: relative;
+    transition: background-color 0.2s;
+    background-color: rgba(40, 40, 40, 0.3);
+}
+
+#tracks .timeline.emphase {
+    background-color: rgba(40%, 50%, 60%, 0.3);
+}
+
+#tracks .sample {
+    position: absolute;
+    top: 0;
+    height: 100%;
+    border: dashed 1px #C7E3E8;
+    overflow: hidden;
+    background: rgba(41, 150, 204, 0.3);
+    transition: box-shadow 0.2s;
+    font-size: 0.8em;
+    cursor: pointer;
+}
+
+#tracks .sample.ghost {
+    background: repeating-linear-gradient(-45deg,
+        rgba(80%, 80%, 20%, 0.1) 0px,
+        rgba(80%, 80%, 20%, 0.1) 9px,
+        rgba(50%, 50%, 50%, 0.1) 10px,
+        rgba(50%, 50%, 50%, 0.1) 19px);
+}
+
+#tracks .sample p {
+    margin: 3px;
+    white-space: nowrap;
+}
+
+#tracks .sample input {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+    color: #FFCE00;
+    width: 50px;
+}
+
+#tracks .sample .deleter {
+    background: rgba(100%, 0%, 0%, 0.2);
+    border: solid 2px #f00;
+    padding: 4px;
+    position: absolute;
+    top: 3px;
+    right: 3px;
+}
+
+#tracks .sample:hover {
+    box-shadow: #09f 0 0 10px;
+}

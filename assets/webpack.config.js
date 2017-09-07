@@ -12,15 +12,34 @@ module.exports = {
   output: {
     path: path.resolve('../WebContent'),
     filename: 'bundle.js',
-    publicPath: '/'
+    publicPath: '/WebJ2/'
   },
   module: {
     loaders: [
-      { test: /\.jsx?$/, loader: 'babel-loader', exclude: /node_modules/ }
+      {
+        test: /\.jsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [
+          { loader: "style-loader" },
+          { loader: "css-loader" }
+        ]
+      },
+      {
+        test: /\.(png|jpg|gif)$/,
+        use: [
+          { loader: 'url-loader' }
+        ]
+      }
     ]
   },
   plugins: [HtmlWebpackPluginConfig],
   devServer: {
-    historyApiFallback: true
+    historyApiFallback: {
+      index: '/WebJ2/'
+    }
   }
 }

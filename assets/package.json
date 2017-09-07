@@ -1,12 +1,12 @@
 {
   "name": "webj-web",
   "version": "1.0.0",
-  "description": "",
+  "description": "Web audio mixer",
+  "repository": "https://github.com/drzazga888/WebJ2",
   "main": "index.js",
   "scripts": {
-    "start": "webpack -d",
-    "dev": "webpack-dev-server -d",
-    "test": "mocha --compilers js:babel-core/register"
+    "build": "webpack -d",
+    "start": "webpack-dev-server -d"
   },
   "author": "",
   "license": "ISC",
@@ -15,12 +15,7 @@
     "path": "^0.12.7",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
-    "react-redux": "^5.0.6",
     "react-router-dom": "^4.2.2",
-    "redux": "^3.7.2",
-    "redux-persist": "^4.9.1",
-    "redux-persist-transform-encrypt": "^1.0.2",
-    "redux-thunk": "^2.2.0",
     "webpack": "^3.5.5"
   },
   "devDependencies": {
@@ -30,10 +25,10 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
-    "btoa": "^1.1.2",
-    "chai": "^4.1.1",
-    "fetch-mock": "^5.12.2",
-    "mocha": "^3.5.0",
-    "sinon": "^3.2.1"
+    "css-loader": "^0.28.7",
+    "file-loader": "^0.11.2",
+    "style-loader": "^0.18.2",
+    "url-loader": "^0.5.9",
+    "webpack-dev-server": "^2.7.1"
   }
 }

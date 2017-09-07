@@ -1,14 +1,14 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-const MainPage = ({ description, message, messageClass, children, userEmail }) => (
+const Layout = ({ description, message, messageClass, children, userEmail }) => (
     <div>
         <header>
             <h1>Web<em>J</em></h1>
             <h2>{description}</h2>
         </header>
         <nav>
-            <ul class="menu">
+            <ul className="menu">
                 <li><Link to="/">Strona główna</Link></li>
                 <li><Link to="/projects">Mixer</Link></li>
                 <li><Link to="/audios">Zarządzaj audio</Link></li>
@@ -16,7 +16,7 @@ const MainPage = ({ description, message, messageClass, children, userEmail }) =
             </ul>
         </nav>
         <main>
-            {message ? <p class={`message ${messageClass || ''}`}>{message}</p> : null}
+            {message ? <p className={`message ${messageClass || ''}`}>{message}</p> : null}
             {children}
         </main>
         <footer>
@@ -24,15 +24,15 @@ const MainPage = ({ description, message, messageClass, children, userEmail }) =
         </footer>
         <ul className="stick-to-top-right-corner menu">
             <li className="dropdown">
-                <a className="icon-user" href="javascript:void(0);">{userName || 'Niezalogowany'}</a>
-                <div class="dropdown-body">
-                    {!userName ? <p><Link to="/register">Rejestracja</Link></p> : null}
-                    {!userName ? <p><Link to="/sign-in">Logowanie</Link></p> : null}
-                    {userName ? <p><Link to="/logout">Wyloguj</Link></p> : null}
+                <a className="icon-user" href="javascript:void(0);">{userEmail || 'Niezalogowany'}</a>
+                <div className="dropdown-body">
+                    {!userEmail ? <p><Link to="/register">Rejestracja</Link></p> : null}
+                    {!userEmail ? <p><Link to="/login">Logowanie</Link></p> : null}
+                    {userEmail ? <p><Link to="/logout">Wyloguj</Link></p> : null}
                 </div>
             </li>
         </ul>
     </div>
 )
 
-export default MainPage
+export default Layout
