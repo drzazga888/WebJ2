@@ -30,13 +30,13 @@ export default class ProjectsPage extends React.Component {
                 <section>
                     <h3>Dostępne utwory</h3>
                     {this.props.projects && this.props.projects.length ? (
-                        <ul class="deletable-list">
+                        <ul className="deletable-list">
                             {this.props.projects.map(project => this._renderProject(project))}
                         </ul>
                     ) : (
                         <p>Brak utworów</p>
                     )}
-                    <a href="javascript:void(0)" onClick={this.createProject}><button class="icon-plus">Dodaj nowy utwór</button></a>
+                    <a href="javascript:void(0)" onClick={this.createProject}><button className="icon-plus">Dodaj nowy utwór</button></a>
                 </section>
             </div>
         )

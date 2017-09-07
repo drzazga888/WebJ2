@@ -25,8 +25,8 @@ export default class LoginPage extends React.Component {
                     <form onSubmit={this.login}>
                         <fieldset>
                             <legend>Formularz logowania</legend>
-                            <label>E-mail: <input type="email" name="email" required value={this.state.email} onChange={onFieldChange} /></label>
-                            <label>Hasło: (od 6 do 16 znaków) <input type="password" name="password" pattern=".{6,16}" required  value={this.state.password} onChange={onFieldChange}/></label>
+                            <label>E-mail: <input type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
+                            <label>Hasło: (od 6 do 16 znaków) <input type="password" name="password" pattern=".{6,16}" required  value={this.state.password} onChange={this.onFieldChange}/></label>
                             <button type="submit">Zaloguj się</button>
                         </fieldset>
                     </form>

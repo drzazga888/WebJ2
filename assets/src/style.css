@@ -414,3 +414,16 @@ img {
 #tracks .sample:hover {
     box-shadow: #09f 0 0 10px;
 }
+
+.expandable {
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.25s ease-out;
+    visibility: hidden;
+}
+
+.expander:hover .expandable {
+    transition: all 0.15s ease-in;
+    max-height: 200px;
+    visibility: visible;
+}
