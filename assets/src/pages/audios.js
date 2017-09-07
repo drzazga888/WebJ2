@@ -24,7 +24,7 @@ export default class AudiosPage extends React.Component {
 
     _renderAudio({ id, name }) {
         <li>
-            <a href="javascript:void(0)" onClick={this.deleteAudio.bind(this, id)} className="icon-cancel deleter">Usuń</a>
+            <a href="javascript:void(0)" onClick={this.deleteAudio.bind(this, id)} className="icon-trash deleter">Usuń</a>
             <span><small>#{id}</small> {name}</span>
         </li>
     }

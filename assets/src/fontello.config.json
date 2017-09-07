@@ -1,16 +1,28 @@
 {
-    "name": "",
-    "css_prefix_text": "icon-",
-    "css_use_suffix": false,
-    "hinting": true,
-    "units_per_em": 1000,
-    "ascent": 850,
-    "glyphs": [
-      {
-        "uid": "bbd66ef66bb8fa9edde54d9a90b89150",
-        "css": "user",
-        "code": 59392,
-        "src": "entypo"
-      }
-    ]
+  "name": "",
+  "css_prefix_text": "icon-",
+  "css_use_suffix": false,
+  "hinting": true,
+  "units_per_em": 1000,
+  "ascent": 850,
+  "glyphs": [
+    {
+      "uid": "bbd66ef66bb8fa9edde54d9a90b89150",
+      "css": "user",
+      "code": 59392,
+      "src": "entypo"
+    },
+    {
+      "uid": "bbfb51903f40597f0b70fd75bc7b5cac",
+      "css": "trash",
+      "code": 61944,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "44e04715aecbca7f266a17d5a7863c68",
+      "css": "plus",
+      "code": 59393,
+      "src": "fontawesome"
+    }
+  ]
 }

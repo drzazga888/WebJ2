@@ -19,7 +19,7 @@ export default class ProjectsPage extends React.Component {
 
     _renderProject({ id, name }) {
         <li>
-            <a href="javascript:void(0)" onClick={this.deleteProject.bind(this, id)} className="icon-cancel deleter">Usuń</a>
+            <a href="javascript:void(0)" onClick={this.deleteProject.bind(this, id)} className="icon-trash deleter">Usuń</a>
             <Link to={`/projects/${id}`}><small>#{id}</small> {name}</Link>
         </li>
     }
