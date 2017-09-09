@@ -13,15 +13,18 @@ export default class RegisterPage extends React.Component {
 
     register = e => {
         e.preventDefault()
-        if (this.state.password !== this.state.password2) {
-            this.refs.password2.setCustomValidity('Hasła muszą być takie same!')
-        } else {
-            console.log('TODO')
-        }
+        console.log('TODO')
     }
 
     onFieldChange = ({ target }) => {
         this.setState({ [target.name]: target.value })
+        if (target.name === 'password2') {
+            if (this.state.password !== target.value) {
+                this.refs.password2.setCustomValidity('Hasła muszą być takie same!')
+            } else {
+                this.refs.password2.setCustomValidity('')
+            }
+        }
     }
 
     render() {

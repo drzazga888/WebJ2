@@ -20,6 +20,7 @@ const Layout = ({ description, message, messageClass, children, userEmail }) => 
                     <div className="dropdown-body expandable">
                         {!userEmail ? <p><Link to="/register">Rejestracja</Link></p> : null}
                         {!userEmail ? <p><Link to="/login">Logowanie</Link></p> : null}
+                        {userEmail ? <p><Link to="/profile">Ustawienia konta</Link></p> : null}
                         {userEmail ? <p><Link to="/logout">Wyloguj</Link></p> : null}
                     </div>
                 </li>

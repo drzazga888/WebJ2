@@ -1,16 +1,20 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-export default class LoginPage extends React.Component {
+//import * as actions from '../actions/credentials'
+//import { getCredentialsLoaded } from '../reducers'
+
+class LoginPage extends React.Component {
 
     state = {
         email: '',
-        password: ''
+        password: '',
+        loaded: false
     }
 
     login = e => {
         e.preventDefault()
-        console.log('TODO')
     }
 
     onFieldChange = ({ target }) => {
@@ -18,6 +22,7 @@ export default class LoginPage extends React.Component {
     }
 
     render() {
+        const { loaded } = this.props
         return (
             <div>
                 <section>
@@ -25,9 +30,9 @@ export default class LoginPage extends React.Component {
                     <form onSubmit={this.login}>
                         <fieldset>
                             <legend>Formularz logowania</legend>
-                            <label>E-mail: <input type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
-                            <label>Hasło: (od 6 do 16 znaków) <input type="password" name="password" pattern=".{6,16}" required  value={this.state.password} onChange={this.onFieldChange}/></label>
-                            <button type="submit">Zaloguj się</button>
+                            <label>E-mail: <input disabled={!loaded} type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
+                            <label>Hasło: (od 6 do 16 znaków) <input disabled={!loaded} type="password" name="password" pattern=".{6,16}" required  value={this.state.password} onChange={this.onFieldChange}/></label>
+                            <button type="submit" disabled={!loaded}>{loaded ? 'Zaloguj się' : 'Logowanie...'}</button>
                         </fieldset>
                     </form>
                 </section>
@@ -36,3 +41,12 @@ export default class LoginPage extends React.Component {
     }
 
 }
+
+/*const stateToProps = (state) => null
+const dispatchToProps = {
+    setCredentials: actions.setCredentials
+    unsetCredentials: actions.unsetCredentials
+}
+
+export default connect(stateToProps, dispatchToProps)(LoginPage)*/
+export default LoginPage

@@ -1,7 +1,8 @@
 import React from 'react'
 import { Switch, BrowserRouter as Router, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import reduxThunk from 'redux-thunk'
 
 import Layout from './layout'
 import HomePage from './pages/home'
@@ -14,10 +15,10 @@ import ProjectsPage from './pages/projects'
 import MixerPage from './pages/mixer'
 import reducer from './reducers'
 
-const store = createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+//const store = createStore(reducer, composeEnhancers(applyMiddleware(reduxThunk)))
 
 const App = () => (
-    <Provider store={store}>
         <Router basename="WebJ2">
             <Layout>
                 <Switch>
@@ -32,7 +33,6 @@ const App = () => (
                 </Switch>
             </Layout>
         </Router>
-    </Provider>
 )
 
 export default App
