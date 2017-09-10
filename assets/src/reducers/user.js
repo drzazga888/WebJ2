@@ -8,7 +8,6 @@ const loaded = (state = true, action) => {
         case actions.USER_POST_REQUEST:
         case actions.USER_PUT_REQUEST:
         case actions.USER_DELETE_REQUEST:
-        case actions.USER_LOGOUT:
             return false
         case actions.USER_GET_DONE:
         case actions.USER_GET_ERROR:
@@ -18,6 +17,7 @@ const loaded = (state = true, action) => {
         case actions.USER_PUT_ERROR:
         case actions.USER_DELETE_DONE:
         case actions.USER_DELETE_ERROR:
+        case actions.USER_LOGOUT:
             return false
         default:
             return state
