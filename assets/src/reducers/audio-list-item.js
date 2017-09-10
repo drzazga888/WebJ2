@@ -37,7 +37,7 @@ const error = (state = null, action) => {
 const id = (state = null, action) => {
     switch (action.type) {
         case actions.AUDIO_POST_DONE:
-            return actions.payload.id
+            return action.payload.id
         default:
             return state
     }
@@ -47,7 +47,7 @@ const name = (state = null, action) => {
     switch (action.type) {
         case actions.AUDIO_POST_DONE:
         case actions.AUDIO_PATCH_DONE:
-            return actions.form.name
+            return action.form.name
         default:
             return state
     }
