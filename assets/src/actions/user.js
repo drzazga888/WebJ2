@@ -18,7 +18,7 @@ export const USER_DELETE_REQUEST = 'USER_DELETE_REQUEST'
 export const USER_DELETE_DONE = 'USER_DELETE_DONE'
 export const USER_DELETE_ERROR = 'USER_DELETE_ERROR'
 
-export const USER_LOGOUT
+export const USER_LOGOUT = 'USER_LOGOUT'
 
 export const getUser = (credentials) => (dispatch) => {
     dispatch({ type: USER_DELETE_REQUEST })

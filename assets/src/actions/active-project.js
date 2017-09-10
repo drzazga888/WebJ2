@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { getCrendentials } from '../reducers'
+import { getCrendentials, getActiveProjectId } from '../reducers'
 import { addSuccessMessage, addErrorFromResponseCode } from './messages'
 
 export const PROJECT_GET_REQUEST = 'PROJECT_GET_REQUEST'
