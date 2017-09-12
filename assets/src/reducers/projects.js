@@ -1,4 +1,4 @@
-import { combineReducer } from 'redux'
+import { combineReducers } from 'redux'
 
 import * as actions from '../actions/projects'
 import * as userActions from '../actions/user'
@@ -54,4 +54,4 @@ const entries = (state = null, action) => {
     }
 }
 
-export default combineReducer({ loaded, error, entries })
+export default combineReducers({ loaded, error, entries })

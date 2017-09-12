@@ -16,9 +16,10 @@ import MixerPage from './pages/mixer'
 import reducer from './reducers'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-//const store = createStore(reducer, composeEnhancers(applyMiddleware(reduxThunk)))
+const store = createStore(reducer, composeEnhancers(applyMiddleware(reduxThunk)))
 
 const App = () => (
+    <Provider store={store}>
         <Router basename="WebJ2">
             <Layout>
                 <Switch>
@@ -33,6 +34,7 @@ const App = () => (
                 </Switch>
             </Layout>
         </Router>
+    </Provider>
 )
 
 export default App

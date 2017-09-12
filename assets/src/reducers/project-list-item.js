@@ -1,4 +1,4 @@
-import { combineReducer } from 'redux'
+import { combineReducers } from 'redux'
 
 import * as actions from '../actions/projects'
 
@@ -81,4 +81,4 @@ const updatedAt = (state = null, action) => {
     }
 }
 
-export default combineReducer({ loaded, error, id, name, duration, createdAt, updatedAt })
+export default combineReducers({ loaded, error, id, name, duration, createdAt, updatedAt })
