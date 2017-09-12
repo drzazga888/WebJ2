@@ -5,7 +5,7 @@ export default (state = [], action) => {
         case actions.REMOVE_MESSAGE:
             return removeMessageIfExists(state, action.message)
         case actions.ADD_MESSAGE:
-            return [ ...removeMessageIfExists(state, action.message), { message: action.message, type: action.type }]
+            return [ ...removeMessageIfExists(state, action.message), { message: action.message, severity: action.severity }]
         default:
             return state
     }

@@ -18,7 +18,7 @@ const loaded = (state = true, action) => {
         case actions.USER_DELETE_DONE:
         case actions.USER_DELETE_ERROR:
         case actions.USER_LOGOUT:
-            return false
+            return true
         default:
             return state
     }
@@ -101,3 +101,4 @@ const password = (state = null, action) => {
 export default combineReducers({ loaded, error, fname, lname, email, password })
 
 export const getCredentials = (state) => ({ email: state.email, password: state.password })
+export const getUserLoaded = (state) => state.loaded

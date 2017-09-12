@@ -3,10 +3,10 @@ const messageTimeout = 5000
 export const ADD_MESSAGE = 'ADD_MESSAGE'
 export const REMOVE_MESSAGE = 'REMOVE_MESSAGE'
 
-const addMessage = (message, type) => (dispatch) => {
-    dispatch({ ADD_MESSAGE, message, type })
+const addMessage = (message, severity) => (dispatch) => {
+    dispatch({ type: ADD_MESSAGE, message, severity })
     setTimeout(() => {
-        dispatch({ REMOVE_MESSAGE, message })
+        dispatch({ type: REMOVE_MESSAGE, message })
     }, messageTimeout)
 }
 
@@ -29,6 +29,6 @@ export const addErrorFromResponseCode = (code) => {
         case 415:
             return addErrorMessage('Błędny typ pliku - obsługiwane są jedynie pliki typu .wav')
         default:
-            return addErrorMessage('Wystąpił błąd podczas przetwarzania żądania: ' + code)
+            return addErrorMessage('Wystąpił błąd podczas przetwarzania żądania: ' + (code || 'brak kodu odpowiedzi'))
     }
 }

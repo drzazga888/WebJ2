@@ -46,11 +46,11 @@ export const postAudio = (form, content) => (dispatch, getState) => {
     api.postAudio(credentials, form, content).then(
         (payload) => {
             dispatch({ type: AUDIO_POST_DONE, payload, form, content })
-            addSuccessMessage('Nowy plik audio został pomyślnie utworzony')
+            addSuccessMessage('Nowy plik audio został pomyślnie utworzony')(dispatch)
         },
         (error) => {
             dispatch({ type: AUDIO_POST_ERROR, error })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }
@@ -61,11 +61,11 @@ export const patchAudio = (form, id) => (dispatch, getState) => {
     api.patchAudio(credentials, id, form).then(
         (payload) => {
             dispatch({ type: AUDIO_PATCH_DONE, payload, form, id })
-            addSuccessMessage(`Plik audio ${id} został pomyślnie zaktualizowany`)
+            addSuccessMessage(`Plik audio ${id} został pomyślnie zaktualizowany`)(dispatch)
         },
         (error) => {
             dispatch({ type: AUDIO_PATCH_ERROR, error, id })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }
@@ -76,11 +76,11 @@ export const deleteAudio = (id) => (dispatch, getState) => {
     api.deleteAudio(credentials, id).then(
         (payload) => {
             dispatch({ type: AUDIO_DELETE_DONE, payload, id })
-            addSuccessMessage(`Plik audio ${id} został właśnie usunięty`)
+            addSuccessMessage(`Plik audio ${id} został właśnie usunięty`)(dispatch)
         },
         (error) => {
             dispatch({ type: AUDIO_DELETE_ERROR, error, id })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }

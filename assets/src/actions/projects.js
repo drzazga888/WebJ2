@@ -33,11 +33,11 @@ export const postProject = (form) => (dispatch, getState) => {
     api.postProject(credentials, form).then(
         (payload) => {
             dispatch({ type: PROJECT_POST_DONE, payload, form })
-            addSuccessMessage('Projekt został utworzony')
+            addSuccessMessage('Projekt został utworzony')(dispatch)
         },
         (error) => {
             dispatch({ type: PROJECT_POST_ERROR, error })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }
@@ -48,11 +48,11 @@ export const patchProject = (form, id) => (dispatch, getState) => {
     api.patchProject(credentials, id, form).then(
         (payload) => {
             dispatch({ type: PROJECT_PATCH_DONE, payload, form, id })
-            addSuccessMessage(`Nazwa projektu ${id} została zmieniona`)
+            addSuccessMessage(`Nazwa projektu ${id} została zmieniona`)(dispatch)
         },
         (error) => {
             dispatch({ type: PROJECT_PATCH_ERROR, error, id })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }
@@ -63,11 +63,11 @@ export const deleteProject = (id) => (dispatch, getState) => {
     api.deleteProject(credentials, id).then(
         (payload) => {
             dispatch({ type: PROJECT_DELETE_DONE, payload, id })
-            addSuccessMessage(`Projekt ${id} został usunięty`)
+            addSuccessMessage(`Projekt ${id} został usunięty`)(dispatch)
         },
         (error) => {
             dispatch({ type: PROJECT_DELETE_ERROR, error, id })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }

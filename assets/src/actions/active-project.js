@@ -30,11 +30,11 @@ export const putActiveProject = (form) => (dispatch, getState) => {
     api.putProject(credentials, id, form).then(
         (payload) => {
             dispatch({ type: PROJECT_PUT_DONE, payload, form })
-            addSuccessMessage(`Projekt ${id} został zaktualizowany`)
+            addSuccessMessage(`Projekt ${id} został zaktualizowany`)(dispatch)
         },
         (error) => {
             dispatch({ type: PROJECT_PUT_ERROR, error })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }

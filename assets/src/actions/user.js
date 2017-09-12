@@ -21,15 +21,15 @@ export const USER_DELETE_ERROR = 'USER_DELETE_ERROR'
 export const USER_LOGOUT = 'USER_LOGOUT'
 
 export const getUser = (credentials) => (dispatch) => {
-    dispatch({ type: USER_DELETE_REQUEST })
+    dispatch({ type: USER_GET_REQUEST })
     api.getUser(credentials).then(
         (payload) => {
             dispatch({ type: USER_GET_DONE, payload, credentials })
-            addSuccessMessage('Zostałeś pomyślnie zalogowany')
+            addSuccessMessage('Zostałeś pomyślnie zalogowany')(dispatch)
         },
         (error) => {
             dispatch({ type: USER_GET_ERROR, error })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }
@@ -40,11 +40,11 @@ export const postUser = (form) => (dispatch, getState) => {
     api.postUser(credentials, form).then(
         (payload) => {
             dispatch({ type: USER_POST_DONE, payload, form })
-            addSuccessMessage('Zostałeś pomyślnie zarejestrowany. Teraz możesz się zalogować')
+            addSuccessMessage('Zostałeś pomyślnie zarejestrowany. Teraz możesz się zalogować')(dispatch)
         },
         (error) => {
             dispatch({ type: USER_POST_ERROR, error })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }
@@ -55,11 +55,11 @@ export const putUser = (form) => (dispatch, getState) => {
     api.postUser(credentials, form).then(
         (payload) => {
             dispatch({ type: USER_PUT_DONE, payload, form })
-            addSuccessMessage('Dane profilowe zostały zaktualizowane')
+            addSuccessMessage('Dane profilowe zostały zaktualizowane')(dispatch)
         },
         (error) => {
             dispatch({ type: USER_PUT_ERROR, error })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }
@@ -70,11 +70,11 @@ export const deleteUser = () => (dispatch, getState) => {
     api.postUser(credentials).then(
         (payload) => {
             dispatch({ type: USER_DELETE_DONE, payload })
-            addSuccessMessage('Twój profil został usunięty')
+            addSuccessMessage('Twój profil został usunięty')(dispatch)
         },
         (error) => {
             dispatch({ type: USER_DELETE_ERROR, error })
-            addErrorFromResponseCode(error)
+            addErrorFromResponseCode(error)(dispatch)
         }
     )
 }

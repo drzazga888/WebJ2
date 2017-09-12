@@ -2,19 +2,19 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-//import * as actions from '../actions/credentials'
-//import { getCredentialsLoaded } from '../reducers'
+import * as actions from '../actions/user'
+import { getCredentialsLoaded, getUserLoaded } from '../reducers'
 
 class LoginPage extends React.Component {
 
     state = {
         email: '',
-        password: '',
-        loaded: false
+        password: ''
     }
 
     login = e => {
         e.preventDefault()
+        this.props.login(this.state)
     }
 
     onFieldChange = ({ target }) => {
@@ -42,11 +42,12 @@ class LoginPage extends React.Component {
 
 }
 
-/*const stateToProps = (state) => null
+const stateToProps = (state) => ({
+    loaded: getUserLoaded(state)
+})
+
 const dispatchToProps = {
-    setCredentials: actions.setCredentials
-    unsetCredentials: actions.unsetCredentials
+    login: actions.getUser
 }
 
-export default connect(stateToProps, dispatchToProps)(LoginPage)*/
-export default LoginPage
+export default connect(stateToProps, dispatchToProps)(LoginPage)
