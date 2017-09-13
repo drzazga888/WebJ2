@@ -1,11 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-const Layout = ({ description, message, messageClass, children, userEmail }) => (
+import * as userActions from './actions/user'
+import { getMessages, getUserEmail } from './reducers'
+
+const Layout = ({ messages, children, userEmail, logout, history }) => (
     <div>
         <header>
             <h1>Web<em>J</em></h1>
-            <h2>{description}</h2>
         </header>
         <nav>
             <ul className="menu">
@@ -21,13 +24,17 @@ const Layout = ({ description, message, messageClass, children, userEmail }) => 
                         {!userEmail ? <p><Link to="/register">Rejestracja</Link></p> : null}
                         {!userEmail ? <p><Link to="/login">Logowanie</Link></p> : null}
                         {userEmail ? <p><Link to="/profile">Ustawienia konta</Link></p> : null}
-                        {userEmail ? <p><Link to="/logout">Wyloguj</Link></p> : null}
+                        {userEmail ? <p><a href="javascript:void(0)" onClick={(e) => {
+                            e.preventDefault()
+                            logout()
+                            history.push('/')
+                        }}>Wyloguj</a></p> : null}
                     </div>
                 </li>
             </ul>
         </nav>
         <main>
-            {message ? <p className={`message ${messageClass || ''}`}>{message}</p> : null}
+            {messages.map(({ message, severity }) => <p key={message} className={`message ${severity || ''}`}>{message}</p>)}
             {children}
         </main>
         <footer>
@@ -36,4 +43,13 @@ const Layout = ({ description, message, messageClass, children, userEmail }) => 
     </div>
 )
 
-export default Layout
+const mapStateToProps = (state) => ({
+    messages: getMessages(state),
+    userEmail: getUserEmail(state)
+})
+
+const mapDispatchToProps = {
+    logout: userActions.logout
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Layout))

@@ -32,6 +32,7 @@ export default class AudiosPage extends React.Component {
     render() {
         return (
             <div>
+                <h2>Pliki audio</h2>
                 <section>
                     <h3>Obecne pliki</h3>
                     {this.props.audios && this.props.audios.length ? (

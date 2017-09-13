@@ -102,3 +102,4 @@ export default combineReducers({ loaded, error, fname, lname, email, password })
 
 export const getCredentials = (state) => ({ email: state.email, password: state.password })
 export const getUserLoaded = (state) => state.loaded
+export const getUserEmail = (state) => state.email

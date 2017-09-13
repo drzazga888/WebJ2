@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 const MixerPage = ({ content, audios, getMusicDownloadPath }) => (
     <div>
+        <h2>Edycja utworu</h2>
         <section>
             <h3>Mixer</h3>
             <p>ID piosenki: <span id="song-id">{this.props.params.id}</span></p>

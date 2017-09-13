@@ -3,13 +3,19 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import * as actions from '../actions/user'
-import { getCredentialsLoaded, getUserLoaded } from '../reducers'
+import { getCredentialsLoaded, getUserLoaded, getUserEmail } from '../reducers'
 
 class LoginPage extends React.Component {
 
     state = {
         email: '',
         password: ''
+    }
+
+    componentDidUpdate() {
+        if (this.props.signedIn) {
+            this.props.history.push('/')
+        }
     }
 
     login = e => {
@@ -25,6 +31,7 @@ class LoginPage extends React.Component {
         const { loaded } = this.props
         return (
             <div>
+                <h2>Panel logowania</h2>
                 <section>
                     <h3>Zaloguj się do aplikacji</h3>
                     <form onSubmit={this.login}>
@@ -43,7 +50,8 @@ class LoginPage extends React.Component {
 }
 
 const stateToProps = (state) => ({
-    loaded: getUserLoaded(state)
+    loaded: getUserLoaded(state),
+    signedIn: getUserEmail(state)
 })
 
 const dispatchToProps = {

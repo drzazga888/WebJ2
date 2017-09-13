@@ -215,7 +215,7 @@ img {
     margin: 20px auto;
 }
 
-.message.danger {
+.message.error {
     background: #422;
     border-color: #f00;
     color: #fcc;

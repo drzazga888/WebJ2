@@ -27,6 +27,7 @@ export default class ProjectsPage extends React.Component {
     render() {
         return (
             <div>
+                <h2>Lista projektów</h2>
                 <section>
                     <h3>Dostępne utwory</h3>
                     {this.props.projects && this.props.projects.length ? (

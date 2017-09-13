@@ -79,6 +79,9 @@ export const deleteUser = () => (dispatch, getState) => {
     )
 }
 
-export const logout = () => ({
-    type: USER_LOGOUT
-})
+export const logout = () => (dispatch) => {
+    dispatch({
+        type: USER_LOGOUT
+    })
+    addSuccessMessage('Zostałeś pomyślnie wylogowany')(dispatch)
+}

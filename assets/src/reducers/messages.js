@@ -15,3 +15,5 @@ const removeMessageIfExists = (state, message) => {
     const pos = Object.keys(state).filter(i => state[i].message === message).shift()
     return pos ? [ ...state.slice(0, pos), ...state.slice(pos + 1) ] : state
 }
+
+export const getMessages = (state) => state

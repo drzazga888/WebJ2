@@ -2,6 +2,7 @@ import React from 'react'
 
 const DocsPage = () => (
     <div>
+        <h2>Dokumentacja</h2>
         <section>
             <h3>Klient - JavaScript</h3>
             <p>Aplikacja po stronie klienta składa się z plików <code>js</code>.</p>

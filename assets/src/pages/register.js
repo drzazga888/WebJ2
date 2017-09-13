@@ -30,6 +30,7 @@ export default class RegisterPage extends React.Component {
     render() {
         return (
             <div>
+                <h2>Panel Rejestracji</h2>
                 <section>
                     <h3>Zarejestruj się by móc korzystać z usługi</h3>
                     <form onSubmit={this.register}>
