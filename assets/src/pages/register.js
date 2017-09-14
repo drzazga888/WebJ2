@@ -1,7 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-export default class RegisterPage extends React.Component {
+import * as actions from '../actions/user'
+import { getUserLoaded, getUserError, getUserEmail } from '../reducers'
+
+class RegisterPage extends React.Component {
 
     state = {
         fname: '',
@@ -13,7 +17,13 @@ export default class RegisterPage extends React.Component {
 
     register = e => {
         e.preventDefault()
-        console.log('TODO')
+        this.props.register(this.state)
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.loaded && this.props.loaded && !this.props.error) {
+            this.props.history.push('/')
+        }
     }
 
     onFieldChange = ({ target }) => {
@@ -28,6 +38,10 @@ export default class RegisterPage extends React.Component {
     }
 
     render() {
+        const { signedIn, loaded } = this.props
+        if (signedIn) {
+            return <p>Panel rejestracji jest dostępny dla niezarejestrowanych użytkowników</p>
+        }
         return (
             <div>
                 <h2>Panel Rejestracji</h2>
@@ -36,12 +50,12 @@ export default class RegisterPage extends React.Component {
                     <form onSubmit={this.register}>
                         <fieldset>
                             <legend>Formularz rejestracji</legend>
-                            <label>Imię: <input type="text" name="fname" required value={this.state.fname} onChange={this.onFieldChange} /></label>
-                            <label>Nazwisko: <input type="text" name="lname" required value={this.state.lname} onChange={this.onFieldChange} /></label>
-                            <label>E-mail: <input type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
-                            <label>Hasło: (od 6 do 16 znaków) <input type="password" name="password" pattern=".{6,16}" required value={this.state.password} onChange={this.onFieldChange} /></label>
-                            <label>Powtórz hasło: <input ref="password2" type="password" name="password2" required value={this.state.password2} onChange={this.onFieldChange} /></label>
-                            <button type="submit">Zarejestruj się</button>
+                            <label>Imię: <input disabled={!loaded} type="text" name="fname" maxLength="40" required value={this.state.fname} onChange={this.onFieldChange} /></label>
+                            <label>Nazwisko: <input disabled={!loaded} type="text" name="lname" maxLength="40" required value={this.state.lname} onChange={this.onFieldChange} /></label>
+                            <label>E-mail: <input disabled={!loaded} type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
+                            <label>Hasło: (od 6 do 16 znaków) <input disabled={!loaded} type="password" name="password" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^\x26*-]).{8,}" required value={this.state.password} onChange={this.onFieldChange} /></label>
+                            <label>Powtórz hasło: <input disabled={!loaded} ref="password2" type="password" name="password2" required value={this.state.password2} onChange={this.onFieldChange} /></label>
+                            <button type="submit">{loaded ? `Zarejestruj się` : `Rejestrowanie...`}</button>
                         </fieldset>
                     </form>
                 </section>
@@ -50,3 +64,15 @@ export default class RegisterPage extends React.Component {
     }
 
 }
+
+const stateToProps = (state) => ({
+    loaded: getUserLoaded(state),
+    error: getUserError(state),
+    signedIn: getUserEmail(state)
+})
+
+const dispatchToProps = {
+    register: actions.postUser
+}
+
+export default connect(stateToProps, dispatchToProps)(RegisterPage)

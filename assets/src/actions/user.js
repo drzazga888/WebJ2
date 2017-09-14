@@ -34,10 +34,9 @@ export const getUser = (credentials) => (dispatch) => {
     )
 }
 
-export const postUser = (form) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+export const postUser = (form) => (dispatch) => {
     dispatch({ type: USER_POST_REQUEST })
-    api.postUser(credentials, form).then(
+    api.postUser(form).then(
         (payload) => {
             dispatch({ type: USER_POST_DONE, payload, form })
             addSuccessMessage('Zostałeś pomyślnie zarejestrowany. Teraz możesz się zalogować')(dispatch)

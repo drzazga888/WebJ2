@@ -28,7 +28,10 @@ class LoginPage extends React.Component {
     }
 
     render() {
-        const { loaded } = this.props
+        const { loaded, signedIn } = this.props
+        if (signedIn) {
+            return <p>Zostałeś już zalogowany</p>
+        }
         return (
             <div>
                 <h2>Panel logowania</h2>
@@ -38,7 +41,7 @@ class LoginPage extends React.Component {
                         <fieldset>
                             <legend>Formularz logowania</legend>
                             <label>E-mail: <input disabled={!loaded} type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
-                            <label>Hasło: (od 6 do 16 znaków) <input disabled={!loaded} type="password" name="password" pattern=".{6,16}" required  value={this.state.password} onChange={this.onFieldChange}/></label>
+                            <label>Hasło: <input disabled={!loaded} type="password" name="password" required  value={this.state.password} onChange={this.onFieldChange}/></label>
                             <button type="submit" disabled={!loaded}>{loaded ? 'Zaloguj się' : 'Logowanie...'}</button>
                         </fieldset>
                     </form>
