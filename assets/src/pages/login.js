@@ -2,8 +2,10 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-import * as actions from '../actions/user'
-import { getCredentialsLoaded, getUserLoaded, getUserEmail } from '../reducers'
+import * as userActions from '../actions/user'
+import * as audiosActions from '../actions/audios'
+import * as projectsActions from '../actions/projects'
+import { getUserLoaded, getUserEmail } from '../reducers'
 
 class LoginPage extends React.Component {
 
@@ -15,6 +17,8 @@ class LoginPage extends React.Component {
     componentDidUpdate() {
         if (this.props.signedIn) {
             this.props.history.push('/')
+            this.props.fetchAudios()
+            this.props.fetchProjects()
         }
     }
 
@@ -58,7 +62,9 @@ const stateToProps = (state) => ({
 })
 
 const dispatchToProps = {
-    login: actions.getUser
+    login: userActions.getUser,
+    fetchAudios: audiosActions.getAudios,
+    fetchProjects: projectsActions.getProjects
 }
 
 export default connect(stateToProps, dispatchToProps)(LoginPage)

@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { getCrendentials } from '../reducers'
+import { getCredentials } from '../reducers'
 import { addSuccessMessage, addErrorFromResponseCode } from './messages'
 
 export const USER_GET_REQUEST = 'USER_GET_REQUEST'
@@ -49,7 +49,7 @@ export const postUser = (form) => (dispatch) => {
 }
 
 export const putUser = (form) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: USER_PUT_REQUEST })
     api.postUser(credentials, form).then(
         (payload) => {
@@ -64,7 +64,7 @@ export const putUser = (form) => (dispatch, getState) => {
 }
 
 export const deleteUser = () => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: USER_DELETE_REQUEST })
     api.postUser(credentials).then(
         (payload) => {

@@ -34,7 +34,7 @@ const error = (state = null, action) => {
 const entries = (state = null, action) => {
     switch (action.type) {
         case actions.PROJECTS_GET_DONE:
-            return action.payload.map(entry => projectListItem(entry))
+            return action.payload.map(entry => projectListItem(entry, {}))
         case actions.PROJECT_POST_REQUEST:
         case actions.PROJECT_POST_DONE:
         case actions.PROJECT_POST_ERROR:

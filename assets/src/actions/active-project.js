@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { getCrendentials, getActiveProjectId } from '../reducers'
+import { getCredentials, getActiveProjectId } from '../reducers'
 import { addSuccessMessage, addErrorFromResponseCode } from './messages'
 
 export const PROJECT_GET_REQUEST = 'PROJECT_GET_REQUEST'
@@ -11,7 +11,7 @@ export const PROJECT_PUT_DONE = 'PROJECT_PUT_DONE'
 export const PROJECT_PUT_ERROR = 'PROJECT_PUT_ERROR'
 
 export const getProject = (id) => (dispatch) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_GET_REQUEST })
     api.getProject(credentials, id).then(
         (payload) => dispatch({ type: PROJECT_GET_DONE, payload, id }),
@@ -21,7 +21,7 @@ export const getProject = (id) => (dispatch) => {
 
 export const putActiveProject = (form) => (dispatch, getState) => {
     const state = getState()
-    const credentials = getCrendentials(state)
+    const credentials = getCredentials(state)
     const id = getActiveProjectId(state)
     if (!id) {
         throw new Error('You need to fetch project firstly before update')

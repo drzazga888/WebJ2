@@ -34,7 +34,7 @@ const error = (state = null, action) => {
 const entries = (state = null, action) => {
     switch (action.type) {
         case actions.AUDIOS_GET_DONE:
-            return action.payload.map(entry => audioListItem(entry))
+            return action.payload.map(entry => audioListItem(entry, {}))
         case actions.AUDIO_POST_DONE:
         case actions.AUDIO_POST_REQUEST:
         case actions.AUDIO_POST_ERROR:
@@ -58,3 +58,7 @@ const entries = (state = null, action) => {
 }
 
 export default combineReducers({ loaded, error, entries })
+
+export const getAudiosEntries = (state) => state.entries
+export const getAudiosLoaded = (state) => state.loaded
+export const getAudiosError = (state) => state.error

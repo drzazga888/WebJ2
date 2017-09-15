@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { getCrendentials } from '../reducers'
+import { getCredentials } from '../reducers'
 import { addSuccessMessage, addErrorFromResponseCode } from './messages'
 
 export const AUDIOS_GET_REQUEST = 'AUDIOS_GET_REQUEST'
@@ -22,8 +22,8 @@ export const AUDIO_DELETE_REQUEST = 'AUDIO_DELETE_REQUEST'
 export const AUDIO_DELETE_DONE = 'AUDIO_DELETE_DONE'
 export const AUDIO_DELETE_ERROR = 'AUDIO_DELETE_ERROR'
 
-export const getAudios = () => (dispatch) => {
-    const credentials = getCrendentials(getState())
+export const getAudios = () => (dispatch, getState) => {
+    const credentials = getCredentials(getState())
     dispatch({ type: AUDIOS_GET_REQUEST })
     api.getAudios(credentials).then(
         (payload) => dispatch({ type: AUDIOS_GET_DONE, payload }),
@@ -31,8 +31,8 @@ export const getAudios = () => (dispatch) => {
     )
 }
 
-export const getAudio = (id) => (dispatch) => {
-    const credentials = getCrendentials(getState())
+export const getAudio = (id) => (dispatch, getState) => {
+    const credentials = getCredentials(getState())
     dispatch({ type: AUDIO_GET_REQUEST })
     api.getAudio(credentials, id).then(
         (payload) => dispatch({ type: AUDIO_GET_DONE, payload, id }),
@@ -41,7 +41,7 @@ export const getAudio = (id) => (dispatch) => {
 }
 
 export const postAudio = (form, content) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: AUDIO_POST_REQUEST })
     api.postAudio(credentials, form, content).then(
         (payload) => {
@@ -56,7 +56,7 @@ export const postAudio = (form, content) => (dispatch, getState) => {
 }
 
 export const patchAudio = (form, id) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: AUDIO_PATCH_REQUEST })
     api.patchAudio(credentials, id, form).then(
         (payload) => {
@@ -71,7 +71,7 @@ export const patchAudio = (form, id) => (dispatch, getState) => {
 }
 
 export const deleteAudio = (id) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: AUDIO_DELETE_REQUEST })
     api.deleteAudio(credentials, id).then(
         (payload) => {

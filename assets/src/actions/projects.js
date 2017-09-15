@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { getCrendentials } from '../reducers'
+import { getCredentials } from '../reducers'
 import { addSuccessMessage, addErrorFromResponseCode } from './messages'
 
 export const PROJECTS_GET_REQUEST = 'PROJECTS_GET_REQUEST'
@@ -18,8 +18,8 @@ export const PROJECT_DELETE_REQUEST = 'PROJECT_DELETE_REQUEST'
 export const PROJECT_DELETE_DONE = 'PROJECT_DELETE_DONE'
 export const PROJECT_DELETE_ERROR = 'PROJECT_DELETE_ERROR'
 
-export const getProjects = () => (dispatch) => {
-    const credentials = getCrendentials(getState())
+export const getProjects = () => (dispatch, getState) => {
+    const credentials = getCredentials(getState())
     dispatch({ type: PROJECTS_GET_REQUEST })
     api.getProjects(credentials).then(
         (payload) => dispatch({ type: PROJECTS_GET_DONE, payload }),
@@ -28,7 +28,7 @@ export const getProjects = () => (dispatch) => {
 }
 
 export const postProject = (form) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_POST_REQUEST })
     api.postProject(credentials, form).then(
         (payload) => {
@@ -43,7 +43,7 @@ export const postProject = (form) => (dispatch, getState) => {
 }
 
 export const patchProject = (form, id) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_PATCH_REQUEST })
     api.patchProject(credentials, id, form).then(
         (payload) => {
@@ -58,7 +58,7 @@ export const patchProject = (form, id) => (dispatch, getState) => {
 }
 
 export const deleteProject = (id) => (dispatch, getState) => {
-    const credentials = getCrendentials(getState())
+    const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_DELETE_REQUEST })
     api.deleteProject(credentials, id).then(
         (payload) => {
