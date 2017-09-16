@@ -1,5 +1,5 @@
 import * as api from '../api'
-import { getCredentials } from '../reducers'
+import { getCredentials, getAudioContent } from '../reducers'
 import { addSuccessMessage, addErrorFromResponseCode } from './messages'
 
 export const AUDIOS_GET_REQUEST = 'AUDIOS_GET_REQUEST'
@@ -32,9 +32,13 @@ export const getAudios = () => (dispatch, getState) => {
 }
 
 export const getAudio = (id) => (dispatch, getState) => {
-    const credentials = getCredentials(getState())
-    dispatch({ type: AUDIO_GET_REQUEST })
-    api.getAudio(credentials, id).then(
+    const state = getState()
+    const credentials = getCredentials(state)
+    if (getAudioContent(id, state)) {
+        return Promise.resolve()
+    }
+    dispatch({ type: AUDIO_GET_REQUEST, id })
+    return api.getAudio(credentials, id).then(
         (payload) => dispatch({ type: AUDIO_GET_DONE, payload, id }),
         (error) => dispatch({ type: AUDIO_GET_ERROR, error, id })
     )

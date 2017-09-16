@@ -106,3 +106,5 @@ const contentError = (state = null, action) => {
 }
 
 export default combineReducers({ loaded, error, id, name, length, amplitudeOverTime, content, contentLoaded, contentError })
+
+export const getAudioContent = (state) => state.content

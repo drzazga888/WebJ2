@@ -3,3 +3,6 @@ WebContent/WEB-INF/classes
 test-endpoints/audios
 node_modules
 .DS_Store
+assets/src/css/animation.css
+assets/src/css/fontello-*
+assets/src/font

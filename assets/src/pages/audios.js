@@ -1,10 +1,10 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
-import moment from 'moment'
 
 import { getAudiosEntries, getAudiosLoaded, getAudiosError } from '../reducers'
-import AmplitudeOverTime from '../components/amplitude-over-time'
+import AudioWrapper from '../components/audio-wrapper'
+import * as audioActions from '../actions/audios'
 
 class AudiosPage extends React.Component {
 
@@ -27,18 +27,6 @@ class AudiosPage extends React.Component {
         console.log('TODO')
     }
 
-    _renderAudio({ id, name, amplitudeOverTime, length }) {
-        const momentLen = moment(length * 1000)
-        return (
-            <li key={id}>
-                <span><small>#{id}</small> {name}</span>
-                <span>, Długość: <em>{`${momentLen.minutes()}:${momentLen.format('ss:SSS')}`}</em></span>
-                <AmplitudeOverTime amplitudeOverTime={amplitudeOverTime} width={400} height={50} color="#D45D5A" />
-                <a href="javascript:void(0)" onClick={this.deleteAudio.bind(this, id)} className="icon-trash deleter">Usuń</a>
-            </li>
-        )
-    }
-
     render() {
         const { entries, loaded, error } = this.props
         return (
@@ -47,9 +35,7 @@ class AudiosPage extends React.Component {
                 <section>
                     <h3>Obecne pliki</h3>
                     {this.props.entries && this.props.entries.length ? (
-                        <ul className="deletable-list">
-                            {this.props.entries.map(audio => this._renderAudio(audio))}
-                        </ul>
+                        <div className="audios">{this.props.entries.map(audio => <AudioWrapper {...audio} key={audio.id} getAudio={() => this.props.getAudio(audio.id)} />)}</div>
                     ) : (
                         <p>Brak utworów</p>
                     )}   
@@ -78,6 +64,8 @@ const mapStateToProps = (state) => ({
     error: getAudiosError(state)
 })
 
-const mapDispatchToProps = {}
+const mapDispatchToProps = {
+    getAudio: audioActions.getAudio
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(AudiosPage)

@@ -16,6 +16,7 @@ export const getUserEmail = (state) => fromUser.getUserEmail(state.user)
 export const getAudiosEntries = (state) => fromAudios.getAudiosEntries(state.audios)
 export const getAudiosLoaded = (state) => fromAudios.getAudiosLoaded(state.audios)
 export const getAudiosError = (state) => fromAudios.getAudiosError(state.audios)
+export const getAudioContent = (id, state) => fromAudios.getAudioContent(id, state.audios)
 
 export const getActiveProjectId = (state) => fromActiveProject.getActiveProjectId(state.activeProject)
 

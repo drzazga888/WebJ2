@@ -2,7 +2,7 @@ import { combineReducers } from 'redux'
 
 import * as actions from '../actions/audios'
 import * as userActions from '../actions/user'
-import audioListItem from './audio-list-item'
+import audioListItem, * as fromAudioListItem from './audio-list-item'
 
 const loaded = (state = true, action) => {
     switch (action.type) {
@@ -62,3 +62,7 @@ export default combineReducers({ loaded, error, entries })
 export const getAudiosEntries = (state) => state.entries
 export const getAudiosLoaded = (state) => state.loaded
 export const getAudiosError = (state) => state.error
+export const getAudioContent = (id, state) => {
+    const found = state.entries ? state.entries.filter(entry => entry.id === id).shift() : null
+    return found ? fromAudioListItem.getAudioContent(found) : null
+}

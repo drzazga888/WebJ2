@@ -1,6 +1,5 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const FontelloPlugin = require("fontello-webpack-plugin");
 
 module.exports = {
   entry: './src/index.js',
@@ -28,6 +27,12 @@ module.exports = {
         use: [
           { loader: 'url-loader' }
         ]
+      },
+      {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        use: [
+          { loader: 'url-loader' }
+        ]
       }
     ]
   },
@@ -36,9 +41,6 @@ module.exports = {
       template: './src/index.html',
       filename: 'index.html',
       inject: 'body'
-    }),
-    new FontelloPlugin({
-      config: require('./src/fontello.config.json')
     })
   ],
   devServer: {
