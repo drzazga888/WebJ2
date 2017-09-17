@@ -20,7 +20,7 @@ const store = createStore(reducer, composeEnhancers(applyMiddleware(reduxThunk))
 
 const App = () => (
     <Provider store={store}>
-        <Router basename="WebJ2">
+        <Router basename="webj2">
             <Layout>
                 <Switch>
                     <Route exact path="/" component={HomePage} />

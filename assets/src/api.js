@@ -1,16 +1,7 @@
+import { jsonOrThrow, blobOrThrow, getBasicAuthorization } from './converters'
+
+//const basePath = '/webj2/api/'
 const basePath = 'https://localhost:9443/webj2/api/'
-
-const getBasicAuthorization = ({ email, password }) => `Basic ${btoa(`${email}:${password}`)}`
-
-const jsonOrThrow = (response) => response.ok ? response.json() : Promise.reject(response.status)
-
-const arrayBufferOrThrow = (response) => response.ok ? response.arrayBuffer() : Promise.reject(response.status)
-
-const convertArrayBufferToBase64 = (content) => new Uint8Array(content).reduce((data, byte) => data + String.fromCharCode(byte), '')
-
-const mergeArrayBufferWithForm = (form, content) => Object.assign({
-    base64StringAudio: convertArrayBufferToBase64(content)
-}, form)
 
 // user
 
@@ -59,7 +50,7 @@ export const getAudio = (credentials, id) => fetch(basePath + 'audios/' + id, {
         'Authorization': getBasicAuthorization(credentials)
     },
     method: 'get'
-}).then(arrayBufferOrThrow)
+}).then(blobOrThrow)
 
 export const postAudio = (credentials, form, content) => fetch(basePath + 'audios', {
     headers: {

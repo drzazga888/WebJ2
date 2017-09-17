@@ -17,7 +17,6 @@
 			<property name="javax.persistence.schema-generation.scripts.create-target" value="insert.sql"/>
 			<property name="javax.persistence.schema-generation.scripts.drop-target" value="drop.sql"/>
 			<property name="eclipselink.logging.level" value="FINEST"/>
-			<property name="javax.persistence.sql-load-script-source" value="META-INF/load_script.sql"/>
 		</properties>
 	</persistence-unit>
 </persistence>

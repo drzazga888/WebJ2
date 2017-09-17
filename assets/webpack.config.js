@@ -6,7 +6,7 @@ module.exports = {
   output: {
     path: path.resolve('../WebContent'),
     filename: 'bundle.js',
-    publicPath: '/WebJ2/'
+    publicPath: '/webj2/'
   },
   module: {
     loaders: [
@@ -45,7 +45,7 @@ module.exports = {
   ],
   devServer: {
     historyApiFallback: {
-      index: '/WebJ2/'
+      index: '/webj2/'
     }
   }
 }

@@ -17,6 +17,8 @@ import net.beadsproject.beads.events.AudioContextStopTrigger;
 
 public class AudioInfoExtractor {
 	
+	private final int CHUNK_AND_HOP_SIZE = 1024;
+	
 	private Sample sample;
 
 	public AudioInfoExtractor(String filename) throws IOException {
@@ -27,10 +29,17 @@ public class AudioInfoExtractor {
 		return sample.getLength() / 1000;
 	}
 	
+	private ShortFrameSegmenter getSegmentator(AudioContext ac) {
+		ShortFrameSegmenter sfs = new ShortFrameSegmenter(ac);
+		sfs.setChunkSize(CHUNK_AND_HOP_SIZE);
+		sfs.setHopSize(CHUNK_AND_HOP_SIZE);
+		return sfs;
+	}
+	
 	public float[] getRmsOverTime() {
 		AudioContext ac = new AudioContext(new NonrealtimeIO());
 		
-		ShortFrameSegmenter sfs = new ShortFrameSegmenter(ac);
+		ShortFrameSegmenter sfs = getSegmentator(ac);
 		sfs.addInput(ac.out);
 		ac.out.addDependent(sfs);
 		

@@ -1,3 +1,5 @@
+import { blobToDataURL, dataURLToBlob, blobToArrayBuffer } from 'blob-util'
+
 import * as api from '../api'
 import { getCredentials, getAudioContent } from '../reducers'
 import { addSuccessMessage, addErrorFromResponseCode } from './messages'
@@ -34,12 +36,16 @@ export const getAudios = () => (dispatch, getState) => {
 export const getAudio = (id) => (dispatch, getState) => {
     const state = getState()
     const credentials = getCredentials(state)
-    if (getAudioContent(id, state)) {
-        return Promise.resolve()
+    const audioContent = getAudioContent(id, state)
+    if (audioContent) {
+        return dataURLToBlob(audioContent).then(blob => blobToArrayBuffer(blob))
     }
     dispatch({ type: AUDIO_GET_REQUEST, id })
     return api.getAudio(credentials, id).then(
-        (payload) => dispatch({ type: AUDIO_GET_DONE, payload, id }),
+        (payload) => {
+            blobToDataURL(payload).then(dataUrl => dispatch({ type: AUDIO_GET_DONE, payload: dataUrl, id }))
+            return blobToArrayBuffer(payload)
+        },
         (error) => dispatch({ type: AUDIO_GET_ERROR, error, id })
     )
 }
