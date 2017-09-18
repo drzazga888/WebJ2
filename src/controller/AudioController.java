@@ -2,6 +2,7 @@ package controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,10 @@ import javax.ws.rs.core.Response.Status;
 
 import bean.Audio;
 import bean.AudioPostSuccessMessage;
+import bean.Project;
+import bean.Sample;
 import bean.SuccessMessage;
+import bean.Track;
 import bean.User;
 import exception.UserAlreadyExistsException;
 import exception.UserIsNotOwnerException;
@@ -138,7 +142,27 @@ public class AudioController {
 		if (audio.getUser().getId() != authUser.getId()) {
 			throw new UserIsNotOwnerException();
 		}
+		List<Project> projects = em.createNamedQuery("Project.getByUser", Project.class).setParameter("id", authUser.getId()).getResultList();
+		for (Project project: projects) {
+			System.out.println(project);
+			for (Track track : project.getTracks()) {
+				List<Sample> tracks = track.getSamples();
+				Iterator<Sample> iTrack = tracks.iterator();
+				while (iTrack.hasNext()) {
+					Sample sample = iTrack.next();
+					if (sample.getAudio().getId() == audio.getId()) {
+						System.out.println(sample);
+						iTrack.remove();
+						if (!em.contains(sample)) {
+							em.merge(sample);
+						}
+						em.remove(sample);
+					}
+				}
+			}
+		}
 		audio.deleteAudioFile();
+		em.flush();
 		em.remove(audio);
 		return Response.ok(AUDIO_DELETED_PAYLOAD).build();
 	}

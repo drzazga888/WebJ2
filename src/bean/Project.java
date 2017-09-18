@@ -41,7 +41,7 @@ public class Project implements Sanitizable {
 	@Column(name = "name", length = MAX_PROJECT_NAME_LENGTH, nullable = false)
 	private String name;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
 	private List<Track> tracks;
 	
 	@Column(nullable = false)

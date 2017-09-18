@@ -212,7 +212,7 @@ img {
     border-left: solid 5px #72d3ff;
     padding: 15px;
     max-width: 800px;
-    margin: 20px auto;
+    margin: 20px;
 }
 
 .message.error {
@@ -415,6 +415,14 @@ img {
     box-shadow: #09f 0 0 10px;
 }
 
+.msg-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    opacity: 0.8;
+}
+
 .expandable {
     max-height: 0;
     overflow: hidden;
@@ -429,11 +437,22 @@ img {
 }
 
 .preview-item-title {
-    color: #fff;
-    text-transform: none;
-    font-weight: bold;
+    display: flex;
     margin: 0;
+    color: #C7E3E8;
     font-size: 1.2em;
+}
+
+.preview-item-title-content {
+    display: block;
+    flex: 1;
+    border: none;
+    border-bottom: solid 2px #72d3ff;
+    border-radius: 0;
+    background: none;
+    padding: 0;
+    font-size: 0.9em;
+    font-weight: bold;
 }
 
 .preview-item-tiles {
@@ -441,8 +460,13 @@ img {
     margin-top: 10px;
 }
 
+.indeterminate {
+    opacity: 0.5;
+}
+
 .param {
     display: flex;
+    margin-right: 20px;
 }
 
 .param-label {
@@ -460,7 +484,8 @@ img {
 
 .audio-wrapper {
     display: flex;
-    width: 800px;
+    width: 1000px;
+    margin: 10px auto;
     align-items: center;
 }
 
@@ -475,11 +500,18 @@ img {
 
 .audio-control {
     font-size: 2em;
+}
+
+.audio-delete {
+    font-size: 1.5em;
+}
+
+.clickable {
     transition: color 0.25s;
     cursor: pointer;
 }
 
-.audio-control:hover {
+.clickable:hover {
     color: #FFCE00;
 }
 

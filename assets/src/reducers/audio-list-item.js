@@ -4,12 +4,10 @@ import * as actions from '../actions/audios'
 
 const loaded = (state = true, action) => {
     switch (action.type) {
-        case actions.AUDIO_POST_REQUEST:
         case actions.AUDIO_PATCH_REQUEST:
         case actions.AUDIO_DELETE_REQUEST:
             return false
         case actions.AUDIO_POST_DONE:
-        case actions.AUDIO_POST_ERROR:
         case actions.AUDIO_PATCH_DONE:
         case actions.AUDIO_PATCH_ERROR:
         case actions.AUDIO_DELETE_ERROR:
@@ -21,11 +19,9 @@ const loaded = (state = true, action) => {
 
 const error = (state = null, action) => {
     switch (action.type) {
-        case actions.AUDIO_POST_ERROR:
         case actions.AUDIO_PATCH_ERROR:
         case actions.AUDIO_DELETE_ERROR:
             return action.error
-        case actions.AUDIO_POST_REQUEST:
         case actions.AUDIO_PATCH_REQUEST:
         case actions.AUDIO_DELETE_REQUEST:
             return null

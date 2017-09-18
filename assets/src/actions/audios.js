@@ -67,7 +67,7 @@ export const postAudio = (form, content) => (dispatch, getState) => {
 
 export const patchAudio = (form, id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
-    dispatch({ type: AUDIO_PATCH_REQUEST })
+    dispatch({ type: AUDIO_PATCH_REQUEST, id })
     api.patchAudio(credentials, id, form).then(
         (payload) => {
             dispatch({ type: AUDIO_PATCH_DONE, payload, form, id })
@@ -82,7 +82,7 @@ export const patchAudio = (form, id) => (dispatch, getState) => {
 
 export const deleteAudio = (id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
-    dispatch({ type: AUDIO_DELETE_REQUEST })
+    dispatch({ type: AUDIO_DELETE_REQUEST, id })
     api.deleteAudio(credentials, id).then(
         (payload) => {
             dispatch({ type: AUDIO_DELETE_DONE, payload, id })

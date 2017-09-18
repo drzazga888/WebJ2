@@ -16,15 +16,16 @@ export default class AudioWrapper extends React.PureComponent {
     }
 
     render() {
-        const { id, name, amplitudeOverTime, length, contentLoaded } = this.props
+        const { id, name, amplitudeOverTime, length, contentLoaded, onNameChange, onDelete, loaded } = this.props
         const { crosshairPos, playing } = this.state
         const audioControlClasses = contentLoaded ? playing ? 'icon-stop' : 'icon-play' : 'icon-spin1 animate-spin'
         const audioControlTitle = playing ? 'Zatrzymaj' : 'Posłuchaj'
         const audioControlAction = playing ? this.stopAudio : this.playAudio
         return (
             <div className="audio-wrapper">
-                <PreviewItem className="audio-details" id={id} name={name} />
-                <i href="javascript:void(0)" className={`audio-control ${audioControlClasses}`} title={audioControlTitle} onClick={audioControlAction}></i>
+                <PreviewItem className="audio-details" id={id} name={name} loaded={loaded} onNameChange={onNameChange} />
+                <i href="javascript:void(0)" className={'clickable audio-delete icon-trash'} title='Usuń plik audio' onClick={onDelete}></i>
+                <i href="javascript:void(0)" className={`clickable audio-control ${audioControlClasses}`} title={audioControlTitle} onClick={audioControlAction}></i>
                 <div className="audio-preview">
                     <div className="audio-preview-length">{getSecondsFormatted(length)}</div>
                     <AmplitudeOverTime className="audio-preview-box" data={amplitudeOverTime} width={450} height={70} color="#D45D5A" />

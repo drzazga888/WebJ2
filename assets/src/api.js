@@ -1,4 +1,4 @@
-import { jsonOrThrow, blobOrThrow, getBasicAuthorization } from './converters'
+import { jsonOrThrow, blobOrThrow, mergeArrayBufferWithForm, getBasicAuthorization } from './converters'
 
 //const basePath = '/webj2/api/'
 const basePath = 'https://localhost:9443/webj2/api/'
@@ -54,7 +54,8 @@ export const getAudio = (credentials, id) => fetch(basePath + 'audios/' + id, {
 
 export const postAudio = (credentials, form, content) => fetch(basePath + 'audios', {
     headers: {
-        'Authorization': getBasicAuthorization(credentials)
+        'Authorization': getBasicAuthorization(credentials),
+        'Content-Type': 'application/json'
     },
     method: 'post',
     body: JSON.stringify(mergeArrayBufferWithForm(form, content))
@@ -62,9 +63,10 @@ export const postAudio = (credentials, form, content) => fetch(basePath + 'audio
 
 export const patchAudio = (credentials, id, form) => fetch(basePath + 'audios/' + id, {
     headers: {
-        'Authorization': getBasicAuthorization(credentials)
+        'Authorization': getBasicAuthorization(credentials),
+        'Content-Type': 'application/json'
     },
-    method: 'patch',
+    method: 'PATCH',
     body: JSON.stringify(form)
 }).then(jsonOrThrow)
 
@@ -114,7 +116,7 @@ export const patchProject = (credentials, id, form) => fetch(basePath + 'project
         'Authorization': getBasicAuthorization(credentials),
         'Content-Type': 'application/json'
     },
-    method: 'patch',
+    method: 'PATCH',
     body: JSON.stringify(form)
 }).then(jsonOrThrow)
 

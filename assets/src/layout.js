@@ -34,7 +34,9 @@ const Layout = ({ messages, children, userEmail, logout, history }) => (
             </ul>
         </nav>
         <main>
-            {messages.map(({ message, severity }) => <p key={message} className={`message ${severity || ''}`}>{message}</p>)}
+            <div className="msg-container">
+                {messages.map(({ message, severity }) => <p key={message} className={`message ${severity || ''}`}>{message}</p>)}
+            </div>
             {children}
         </main>
         <footer>

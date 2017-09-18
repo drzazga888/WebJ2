@@ -7,9 +7,12 @@ import audioListItem, * as fromAudioListItem from './audio-list-item'
 const loaded = (state = true, action) => {
     switch (action.type) {
         case actions.AUDIOS_GET_REQUEST:
+        case actions.AUDIO_POST_REQUEST:
             return false
         case actions.AUDIOS_GET_DONE:
         case actions.AUDIOS_GET_ERROR:
+        case actions.AUDIO_POST_DONE:
+        case actions.AUDIO_POST_ERROR:
         case userActions.USER_DELETE_DONE:
         case userActions.USER_LOGOUT:
             return true
@@ -36,8 +39,7 @@ const entries = (state = null, action) => {
         case actions.AUDIOS_GET_DONE:
             return action.payload.map(entry => audioListItem(entry, {}))
         case actions.AUDIO_POST_DONE:
-        case actions.AUDIO_POST_REQUEST:
-        case actions.AUDIO_POST_ERROR:
+            return [ ...(state || []), audioListItem(undefined, action) ]
         case actions.AUDIO_PATCH_DONE:
         case actions.AUDIO_PATCH_REQUEST:
         case actions.AUDIO_PATCH_ERROR:
