@@ -26,5 +26,8 @@ export const getProjectsLoaded = (state) => fromProjects.getProjectsLoaded(state
 export const getProjectsError = (state) => fromProjects.getProjectsError(state.projects)
 
 export const getActiveProjectId = (state) => fromActiveProject.getActiveProjectId(state.activeProject)
+export const getActiveProjectError = (state) => fromActiveProject.getActiveProjectError(state.activeProject)
+export const getActiveProjectLoaded = (state) => fromActiveProject.getActiveProjectLoaded(state.activeProject)
+export const getActiveProjectData = (state) => fromActiveProject.getActiveProjectData(state.activeProject)
 
 export const getMessages = (state) => fromMessages.getMessages(state.messages)

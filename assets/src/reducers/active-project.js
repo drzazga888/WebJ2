@@ -64,3 +64,6 @@ const data = (state = null, action) => {
 export default combineReducers({ loaded, error, id, data })
 
 export const getActiveProjectId = (state) => state.id
+export const getActiveProjectError = (state) => state.error
+export const getActiveProjectLoaded = (state) => state.loaded
+export const getActiveProjectData = (state) => state.data

@@ -10,7 +10,7 @@ export const PROJECT_PUT_REQUEST = 'PROJECT_PUT_REQUEST'
 export const PROJECT_PUT_DONE = 'PROJECT_PUT_DONE'
 export const PROJECT_PUT_ERROR = 'PROJECT_PUT_ERROR'
 
-export const getProject = (id) => (dispatch) => {
+export const getProject = (id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_GET_REQUEST })
     api.getProject(credentials, id).then(
