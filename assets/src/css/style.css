@@ -459,6 +459,8 @@ img {
 .preview-item-tiles {
     display: flex;
     margin-top: 10px;
+    opacity: 0.8;
+    font-size: 0.9em;
 }
 
 .indeterminate {
@@ -483,7 +485,8 @@ img {
     font-weight: bold;
 }
 
-.audio-wrapper {
+.audio-wrapper,
+.project-wrapper {
     display: flex;
     width: 1000px;
     margin: 10px auto;
@@ -503,7 +506,12 @@ img {
     font-size: 2em;
 }
 
-.audio-delete {
+.project-mix {
+    font-size: 1.7em;
+}
+
+.audio-delete,
+.project-delete {
     font-size: 1.5em;
 }
 
@@ -528,7 +536,8 @@ img {
     padding: 2px;
 }
 
-.audio-details {
+.audio-details,
+.project-details {
     flex: 1;
 }
 

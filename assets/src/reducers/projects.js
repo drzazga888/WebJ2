@@ -7,9 +7,12 @@ import projectListItem from './project-list-item'
 const loaded = (state = true, action) => {
     switch (action.type) {
         case actions.PROJECTS_GET_REQUEST:
+        case actions.PROJECT_POST_REQUEST:
             return false
         case actions.PROJECTS_GET_DONE:
-        case actions.PROJECT_DELETE_ERROR:
+        case actions.PROJECTS_GET_ERROR:
+        case actions.PROJECT_POST_DONE:
+        case actions.PROJECT_POST_ERROR:
         case userActions.USER_DELETE_DONE:
         case userActions.USER_LOGOUT:
             return true
@@ -35,6 +38,8 @@ const entries = (state = null, action) => {
     switch (action.type) {
         case actions.PROJECTS_GET_DONE:
             return action.payload.map(entry => projectListItem(entry, {}))
+        case actions.PROJECT_POST_DONE:
+            return [ ...(state || []), projectListItem(undefined, action) ]
         case actions.PROJECT_POST_REQUEST:
         case actions.PROJECT_POST_DONE:
         case actions.PROJECT_POST_ERROR:
@@ -55,3 +60,7 @@ const entries = (state = null, action) => {
 }
 
 export default combineReducers({ loaded, error, entries })
+
+export const getProjectsEntries = (state) => state.entries
+export const getProjectsLoaded = (state) => state.loaded
+export const getProjectsError = (state) => state.error

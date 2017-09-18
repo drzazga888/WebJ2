@@ -71,6 +71,12 @@
       "css": "cancel",
       "code": 59400,
       "src": "entypo"
+    },
+    {
+      "uid": "52177c3387cdac48d6ed18bebe84c34a",
+      "css": "headphones",
+      "code": 59401,
+      "src": "iconic"
     }
   ]
 }

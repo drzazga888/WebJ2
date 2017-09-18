@@ -36,7 +36,7 @@ export default class PreviewItem extends React.PureComponent {
     }
 
     render() {
-        const { className, name, onNameChange, loaded, ...params } = this.props
+        const { className, name, onNameChange, loaded, mapping,  ...params } = this.props
         const { uiName } = this.state
         const finalClassName = `preview-item${className ? ` ${className}` : ''}${loaded ? '' : ' indeterminate'}`
         const editMode = uiName !== name
@@ -48,10 +48,14 @@ export default class PreviewItem extends React.PureComponent {
                     { editMode ? <i className="clickable change-name-cancel icon-cancel" title="Anuluj zmianę nazwy" onClick={this.onCancelNameChange}></i> : null }
                 </h4>
                 <div className="preview-item-tiles">
-                    {Object.entries(params).map(([ label, children ]) => <Param key={label} label={label}>{children}</Param>)}
+                    {Object.entries(params).map(([ label, children ]) => <Param key={label} label={mapping[label] || label}>{children}</Param>)}
                 </div>
             </div>
         )
+    }
+
+    static defaultProps = {
+        mapping: {}
     }
 
 }

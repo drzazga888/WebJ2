@@ -1,46 +1,90 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
-export default class ProjectsPage extends React.Component {
+import { getProjectsEntries, getProjectsLoaded, getProjectsError, getUserEmail } from '../reducers'
+import ProjectWrapper from '../components/project-wrapper'
+import * as projectsActions from '../actions/projects'
 
-    deleteProject(id, e) {
+class ProjectsPage extends React.Component {
+
+    state = {
+        newProjectName: ''
+    }
+
+    changeNewProjectName = ({ target }) => {
+        this.setState({ newProjectName: target.value })
+    }
+
+    addNewProject = (e) => {
         e.preventDefault()
-        console.log('TODO', id)
+        this.props.postProject({ name: this.state.newProjectName })
+        this.setState({ newProjectName: '' })
+    }
+    
+    renderPage() {
+        const { error, loaded, entries } = this.props
+        return (
+            <div className={loaded ? '' : 'indeterminate'}>
+                <section>
+                    <h3>Dostępne utwory</h3>
+                    {entries && entries.length ? (
+                        <div className="projects">{entries.map(project => <ProjectWrapper {...project}
+                            key={project.id}
+                            onDelete={() => this.onDelete(project.id)}
+                            onNameChange={name => this.onNameChange(project.id, name)}
+                        />)}</div>
+                    ) : (
+                        <p>Brak utworów</p>
+                    )}
+                </section>
+                <section>
+                    <h3>Dodawanie nowych projektów</h3>
+                    <form onSubmit={this.addNewProject}>
+                        <fieldset>
+                            <legend>Formularz dodawania projektu</legend>
+                            <label>Nazwa projektu: <input type="text" name="newProjectName" required value={this.state.newProjectName} onChange={this.changeNewProjectName} /></label>
+                            <button type="submit">Utwórz projekt</button>
+                        </fieldset>
+                    </form>
+                </section>
+            </div>
+        )
     }
 
-    onFieldChange = ({ target }) => {
-        this.setState({ [target.name]: target.value })
+    onNameChange = (id, name) => {
+        this.props.patchProject({ name }, id)
     }
 
-    createProject = e => {
-        e.preventDefault()
-        console.log('TODO', id)
-    }
 
-    _renderProject({ id, name }) {
-        <li>
-            <a href="javascript:void(0)" onClick={this.deleteProject.bind(this, id)} className="icon-trash deleter">Usuń</a>
-            <Link to={`/projects/${id}`}><small>#{id}</small> {name}</Link>
-        </li>
+    onDelete = id => {
+        if (confirm(`Czy na pewno chcesz usunąć projekt ${id}?`)) {
+            this.props.deleteProject(id)
+        }
     }
 
     render() {
         return (
             <div>
                 <h2>Lista projektów</h2>
-                <section>
-                    <h3>Dostępne utwory</h3>
-                    {this.props.projects && this.props.projects.length ? (
-                        <ul className="deletable-list">
-                            {this.props.projects.map(project => this._renderProject(project))}
-                        </ul>
-                    ) : (
-                        <p>Brak utworów</p>
-                    )}
-                    <a href="javascript:void(0)" onClick={this.createProject}><button className="icon-plus">Dodaj nowy utwór</button></a>
-                </section>
+                {this.props.userLoggenIn ? this.renderPage() : <p>Musisz się zalogować, aby korzystać z tej strony</p>}
             </div>
         )
     }
 
 }
+
+const mapStateToProps = (state) => ({
+    entries: getProjectsEntries(state),
+    loaded: getProjectsLoaded(state),
+    error: getProjectsError(state),
+    userLoggenIn: getUserEmail(state)
+})
+
+const mapDispatchToProps = {
+    patchProject: projectsActions.patchProject,
+    deleteProject: projectsActions.deleteProject,
+    postProject: projectsActions.postProject
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsPage)

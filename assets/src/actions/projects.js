@@ -44,7 +44,7 @@ export const postProject = (form) => (dispatch, getState) => {
 
 export const patchProject = (form, id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
-    dispatch({ type: PROJECT_PATCH_REQUEST })
+    dispatch({ type: PROJECT_PATCH_REQUEST, id })
     api.patchProject(credentials, id, form).then(
         (payload) => {
             dispatch({ type: PROJECT_PATCH_DONE, payload, form, id })
@@ -59,7 +59,7 @@ export const patchProject = (form, id) => (dispatch, getState) => {
 
 export const deleteProject = (id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
-    dispatch({ type: PROJECT_DELETE_REQUEST })
+    dispatch({ type: PROJECT_DELETE_REQUEST, id })
     api.deleteProject(credentials, id).then(
         (payload) => {
             dispatch({ type: PROJECT_DELETE_DONE, payload, id })

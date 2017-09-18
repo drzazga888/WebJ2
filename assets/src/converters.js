@@ -1,3 +1,5 @@
+import moment from 'moment'
+
 export const getBasicAuthorization = ({ email, password }) => `Basic ${btoa(`${email}:${password}`)}`
 
 export const jsonOrThrow = (response) => response.ok ? response.json() : Promise.reject(response.status)
@@ -9,3 +11,8 @@ export const convertArrayBufferToBase64 = (content) => new Uint8Array(content).r
 export const mergeArrayBufferWithForm = (form, content) => Object.assign({
     base64StringAudio: content.replace(/^data:audio\/wav;base64,/, '')
 }, form)
+
+export const getSecondsFormatted = (v) => {
+    const momentV = moment(v * 1000)
+    return `${momentV.minutes()}:${momentV.format('ss:SSS')}`
+}

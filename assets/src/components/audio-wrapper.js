@@ -1,13 +1,8 @@
-import moment from 'moment'
 import React from 'react'
 
 import AmplitudeOverTime from './amplitude-over-time'
 import PreviewItem from './preview-item'
-
-const getSecondsFormatted = (v) => {
-    const momentV = moment(v * 1000)
-    return `${momentV.minutes()}:${momentV.format('ss:SSS')}`
-}
+import { getSecondsFormatted } from '../converters'
 
 export default class AudioWrapper extends React.PureComponent {
 
@@ -24,8 +19,8 @@ export default class AudioWrapper extends React.PureComponent {
         return (
             <div className="audio-wrapper">
                 <PreviewItem className="audio-details" id={id} name={name} loaded={loaded} onNameChange={onNameChange} />
-                <i href="javascript:void(0)" className={'clickable audio-delete icon-trash'} title='Usuń plik audio' onClick={onDelete}></i>
-                <i href="javascript:void(0)" className={`clickable audio-control ${audioControlClasses}`} title={audioControlTitle} onClick={audioControlAction}></i>
+                <i className={'clickable audio-delete icon-trash'} title='Usuń plik audio' onClick={onDelete}></i>
+                <i className={`clickable audio-control ${audioControlClasses}`} title={audioControlTitle} onClick={audioControlAction}></i>
                 <div className="audio-preview">
                     <div className="audio-preview-length">{getSecondsFormatted(length)}</div>
                     <AmplitudeOverTime className="audio-preview-box" data={amplitudeOverTime} width={450} height={70} color="#D45D5A" />

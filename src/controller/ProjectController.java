@@ -28,6 +28,7 @@ import javax.ws.rs.core.Response.Status;
 
 import bean.Audio;
 import bean.Project;
+import bean.ProjectPatchSuccessMessage;
 import bean.ProjectPostSuccessMessage;
 import bean.Sample;
 import bean.SuccessMessage;
@@ -173,7 +174,7 @@ public class ProjectController {
 		if (!em.contains(existingProject)) {
 			em.merge(existingProject);
 		}
-		return Response.ok(PROJECT_UPDATED_PAYLOAD).build();
+		return Response.ok(new ProjectPatchSuccessMessage(existingProject.getUpdatedAt())).build();
 	}
 	
 	@DELETE

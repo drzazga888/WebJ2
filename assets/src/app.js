@@ -30,8 +30,8 @@ const App = () => (
                     <Route path="/register" component={RegisterPage} />
                     <Route path="/profile" component={ProfilePage} />
                     <Route path="/audios" component={AudiosPage} />
-                    <Route path="/projects" component={ProjectsPage} />
-                    <Route path="/projects/{id}" component={MixerPage} />
+                    <Route exact path="/projects" component={ProjectsPage} />
+                    <Route path="/projects/:id" component={MixerPage} />
                     <Route component={NotFoundPage} />
                 </Switch>
             </Layout>

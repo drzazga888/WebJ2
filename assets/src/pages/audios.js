@@ -13,11 +13,6 @@ class AudiosPage extends React.Component {
         newAudioName: '',
     }
 
-    deleteAudio(id, e) {
-        e.preventDefault()
-        console.log('TODO', id)
-    }
-
     changeNewAudioName = ({ target }) => {
         this.setState({ newAudioName: target.value })
     }
@@ -55,15 +50,15 @@ class AudiosPage extends React.Component {
     }
 
     renderPage() {
-        const { entries, loaded, error } = this.props
+        const { entries, loaded, error, getAudio } = this.props
         return (
             <div className={loaded ? '' : 'indeterminate'}>
                 <section>
                     <h3>Obecne pliki</h3>
-                    {this.props.entries && this.props.entries.length ? (
-                        <div className="audios">{this.props.entries.map(audio => <AudioWrapper {...audio}
+                    {entries && entries.length ? (
+                        <div className="audios">{entries.map(audio => <AudioWrapper {...audio}
                             key={audio.id}
-                            getAudio={() => this.props.getAudio(audio.id)}
+                            getAudio={() => getAudio(audio.id)}
                             onDelete={() => this.onDelete(audio.id)}
                             onNameChange={name => this.onNameChange(audio.id, name)}
                         />)}</div>

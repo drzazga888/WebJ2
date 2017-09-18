@@ -21,6 +21,10 @@ export const getAudiosLoaded = (state) => fromAudios.getAudiosLoaded(state.audio
 export const getAudiosError = (state) => fromAudios.getAudiosError(state.audios)
 export const getAudioContent = (id, state) => fromAudios.getAudioContent(id, state.audios)
 
+export const getProjectsEntries = (state) => fromProjects.getProjectsEntries(state.projects)
+export const getProjectsLoaded = (state) => fromProjects.getProjectsLoaded(state.projects)
+export const getProjectsError = (state) => fromProjects.getProjectsError(state.projects)
+
 export const getActiveProjectId = (state) => fromActiveProject.getActiveProjectId(state.activeProject)
 
 export const getMessages = (state) => fromMessages.getMessages(state.messages)
