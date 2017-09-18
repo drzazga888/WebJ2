@@ -13,6 +13,7 @@ import LoginPage from './pages/login'
 import RegisterPage from './pages/register'
 import ProjectsPage from './pages/projects'
 import MixerPage from './pages/mixer'
+import ProfilePage from './pages/profile'
 import reducer from './reducers'
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -27,6 +28,7 @@ const App = () => (
                     <Route path="/doc" component={DocsPage} />
                     <Route path="/login" component={LoginPage} />
                     <Route path="/register" component={RegisterPage} />
+                    <Route path="/profile" component={ProfilePage} />
                     <Route path="/audios" component={AudiosPage} />
                     <Route path="/projects" component={ProjectsPage} />
                     <Route path="/projects/{id}" component={MixerPage} />

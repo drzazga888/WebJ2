@@ -70,7 +70,8 @@ public class UserController {
 		user.setId(existingUser.getId());
 		user.sanitize();
 		user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
-		if (em.createNamedQuery("User.getByEmail").setParameter("email", user.getEmail()).getResultList().size() > 0) {
+		List<User> usersByEmail = em.createNamedQuery("User.getByEmail", User.class).setParameter("email", user.getEmail()).getResultList();
+		if (usersByEmail.size() > 0 && usersByEmail.get(0).getId() != existingUser.getId()) {
 			throw new UserAlreadyExistsException();
 		}
 		if (!em.contains(user)) {

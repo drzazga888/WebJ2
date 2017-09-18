@@ -62,6 +62,7 @@ h1 {
 
 h2 {
     font-size: 1.6em;
+    border-bottom: solid 2px #72d3ff;
 }
 
 h3 {
@@ -529,4 +530,8 @@ img {
 
 .audio-details {
     flex: 1;
+}
+
+.centered {
+    text-align: center;
 }
