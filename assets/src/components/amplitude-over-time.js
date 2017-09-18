@@ -10,8 +10,22 @@ export default class AmplitudeOverTime extends React.PureComponent {
         this._paint()
     }
 
+    prepareData() {
+        const { start, duration, offset, data, audioDuration } = this.props
+        if (duration) {
+            const sampleStart = start + offset
+            const sampleEnd = sampleStart + duration
+            const numberOfRepeats = Math.ceil(sampleEnd / audioDuration)
+            const repeatedData = (new Array(numberOfRepeats)).fill(null).reduce(c => c.concat(data), [])
+            const coef = repeatedData.length / (numberOfRepeats * audioDuration)
+            return repeatedData.slice(Math.floor(sampleStart * coef), Math.floor(sampleEnd * coef))
+        }
+        return data
+    }
+
     _paint() {
-        const { data, color } = this.props
+        const { color } = this.props
+        const data  = this.prepareData()
         const canvas = this.refs.canvas
         const ctx = canvas.getContext('2d')
         const maxV = Math.max(...data)
@@ -28,9 +42,10 @@ export default class AmplitudeOverTime extends React.PureComponent {
     }
 
     render() {
-        const { className, width, height, data, color, ...rest } = this.props
+        const { className, width, height, data, color, start, duration, audioDuration, offset, ...rest } = this.props
         const finalClassName = `amplitude-over-time${className ? ` ${className}` : ''}`
-        return <canvas ref="canvas" className={finalClassName} width={width} height={height} {...rest}></canvas>
+        const realWidth = width || (duration * 300)
+        return <canvas ref="canvas" className={finalClassName} width={realWidth} height={height} {...rest}></canvas>
     }
 
 }

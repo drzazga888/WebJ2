@@ -77,6 +77,12 @@
       "css": "minus",
       "code": 59401,
       "src": "fontawesome"
+    },
+    {
+      "uid": "76857a03fbaa6857fe063b6c25aa98ed",
+      "css": "volume-up",
+      "code": 59402,
+      "src": "fontawesome"
     }
   ]
 }

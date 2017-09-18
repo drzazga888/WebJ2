@@ -298,18 +298,13 @@ img {
 }
 
 #tracks aside {
+    padding-top: 60px;
     width: 160px;
-    padding-top: 20px;
 }
 
 #tracks .timelines {
     width: 1300px;
-    background-image: repeating-linear-gradient(
-        to right,
-        transparent,
-        transparent 29px,
-        rgb(30%, 65%, 80%) 30px
-    );
+    padding-top: 60px;
 }
 
 #tracks .timelines.dragging .sample {
@@ -317,14 +312,38 @@ img {
 }
 
 #tracks .time {
-    height: 20px;
-    position: relative;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
     font-size: 0.8em;
 }
 
 #tracks .time-item {
     position: absolute;
     top: 0;
+    bottom: 0;
+    width: 1px;
+}
+
+#tracks .time-item:after {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: block;
+    width: 1px;
+    content: '';
+    pointer-events: none;
+    background:rgb(76, 166, 204);
+}
+
+#tracks .time-item-value {
+    transform: rotate(-90deg);
+    position: relative;
+    left: -10px;
+    top: 60px;
 }
 
 #tracks .pipe {
@@ -493,7 +512,8 @@ img {
     align-items: center;
 }
 
-.amplitude-over-time {
+.audio-wrapper .amplitude-over-time,
+.audio-draggable .amplitude-over-time {
     border: solid 1px #D45D5A;
     background: rgba(0, 0, 0, 0.2);
 }
@@ -543,4 +563,85 @@ img {
 
 .centered {
     text-align: center;
+}
+
+.pixels-per-second-range {
+    vertical-align: middle;
+}
+
+.track-gain {
+    font-size: 0.9em;
+    margin: 5px 20px;
+    display: flex;
+    align-items: center;
+}
+
+
+.track-gain em {
+    flex: 1;
+    margin-left: 5px;
+    position: relative;
+}
+
+.track-gain input {
+    margin: 0 !important;
+    width: 100% !important;
+}
+
+.sample-amplitude {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.sample-controls {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.audio-draggable {
+    position: relative;
+    margin: 10px;
+}
+
+.audio-draggable .audio-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 450px;
+    height: 70px;
+    text-shadow: #000 2px 2px 8px;
+}
+
+.audio-draggable .audio-control {
+    position: absolute;
+    top: 25px;
+    right: 0px;
+}
+
+.audio-draggable .preview-item {
+    margin: 5px;
+}
+
+.audio-draggable .preview-item-title-content {
+    border: none;
+    text-shadow: #000 2px 2px 8px;
+}
+
+.audios-draggable {
+    display: flex;
+    margin: 10px;
 }
