@@ -1,22 +1,24 @@
 import React from 'react'
+import { DragSource } from 'react-dnd'
 
 import AmplitudeOverTime from './amplitude-over-time'
 import PreviewItem from './preview-item'
 import { getSecondsFormatted } from '../converters'
+import { AUDIO_DRAGGABLE_TYPE } from '../constants'
 
-export default class AudioDraggable extends React.PureComponent {
+class AudioDraggable extends React.PureComponent {
 
     state = {
         playing: false
     }
 
     render() {
-        const { id, name, amplitudeOverTime, length, contentLoaded, loaded } = this.props
+        const { id, name, amplitudeOverTime, length, contentLoaded, loaded, connectDragSource } = this.props
         const { crosshairPos, playing } = this.state
         const audioControlClasses = contentLoaded ? playing ? 'icon-stop' : 'icon-play' : 'icon-spin1 animate-spin'
         const audioControlTitle = playing ? 'Zatrzymaj' : 'Posłuchaj'
         const audioControlAction = playing ? this.stopAudio : this.playAudio
-        return (
+        return connectDragSource(
             <div className="audio-draggable audio-preview">
                 <AmplitudeOverTime className="audio-preview-box" data={amplitudeOverTime} width={450} height={70} color="#D45D5A" />
                 <div className="audio-overlay">
@@ -63,3 +65,14 @@ export default class AudioDraggable extends React.PureComponent {
     }
 
 }
+
+const audioDraggableSource = {
+    beginDrag(props) {
+        console.log('beginDrag audio', props)
+        return {}
+    }
+}
+
+export default DragSource(AUDIO_DRAGGABLE_TYPE, audioDraggableSource, connect => ({
+    connectDragSource: connect.dragSource()
+}))(AudioDraggable)

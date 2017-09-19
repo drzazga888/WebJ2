@@ -93,6 +93,13 @@ export const getProject = (credentials, id) => fetch(basePath + 'projects/' + id
     method: 'get'
 }).then(jsonOrThrow)
 
+export const getProjectAudio = (credentials, id) => fetch(basePath + 'projects/' + id + '/audio', {
+    headers: {
+        'Authorization': getBasicAuthorization(credentials)
+    },
+    method: 'get'
+}).then(blobOrThrow)
+
 export const postProject = (credentials, form) => fetch(basePath + 'projects', {
     headers: {
         'Authorization': getBasicAuthorization(credentials),

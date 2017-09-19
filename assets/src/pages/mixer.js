@@ -1,14 +1,17 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { DragDropContext, DragSource } from 'react-dnd'
+import HTML5Backend from 'react-dnd-html5-backend'
 
 import { getUserEmail, getActiveProjectError, getActiveProjectLoaded, getActiveProjectData,
     getAudiosEntries, getAudiosLoaded, getAudiosError } from '../reducers'
 import * as activeProjectActions from '../actions/active-project'
 import * as audiosActions from '../actions/audios'
 import { getSecondsFormatted } from '../converters'
-import AmplitudeOverTime from '../components/amplitude-over-time'
 import AudioDraggable from '../components/audio-draggable'
+import Track from '../components/track'
 
 class MixerPage extends React.PureComponent {
 
@@ -76,50 +79,16 @@ class MixerPage extends React.PureComponent {
         )
     }
 
-    getAudioName(audioId) {
-        return this.props.audiosEntries ? this.props.audiosEntries.filter(a => audioId === a.id).shift().name : audioId
-    }
-
-    getAudioAmplitudeOverTime(audioId) {
-        return this.props.audiosEntries ? this.props.audiosEntries.filter(a => audioId === a.id).shift().amplitudeOverTime : []
-    }
-
-    getAudioDuration(audioId) {
-        return this.props.audiosEntries ? this.props.audiosEntries.filter(a => audioId === a.id).shift().length : 0
-    }
-
-    renderSample(s, i, j) {
-        const bindedChangeFun = this.changeSampleParam.bind(this, i, j)
-        return (
-            <div key={j} draggable={true} className="sample" style={{
-                left: (this.state.pixelsPerSecond * s.start) + 'px',
-                width: (this.state.pixelsPerSecond * s.duration) + 'px'
-            }}>
-                <AmplitudeOverTime
-                    className="sample-amplitude"
-                    data={this.getAudioAmplitudeOverTime(s.audioId)}
-                    offset={s.offset}
-                    duration={s.duration}
-                    start={s.start}
-                    audioDuration={this.getAudioDuration(s.audioId)}
-                    height={100}
-                    color="rgba(0, 0, 0, 0.3)"
-                />
-                <div className="sample-controls">
-                    <p><strong>{this.getAudioName(s.audioId)}</strong></p>
-                    <p>start [s]: <em><input name="start" type="number" step={0.01} min={0} max={999.9} className="start" value={s.start} onChange={bindedChangeFun} /></em></p>
-                    <p>offset [s]: <em><input name="offset" type="number" step={0.01} min={0} max={999.9} className="offset" value={s.offset} onChange={bindedChangeFun} /></em></p>
-                    <p>długość [s]: <em><input name="duration" type="number" step={0.01} min={0} max={999.9} className="duration" value={s.duration} onChange={bindedChangeFun} /></em></p>
-                    <p>wzmocnienie: <em><input name="gain" type="number" step={0.01} min={0} max={10.0} className="gain" value={s.gain} onChange={bindedChangeFun} /></em></p>
-                    <p className="deleter icon-cancel" onClick={() => this.removeSample(i, j)}></p>
-                </div>
-            </div>
-        )
-    }
-
     renderTracks() {
         return this.state.data.tracks.map((t, i) => (
-            <div key={i} className="track timeline">{t.samples.map((s, j) => this.renderSample(s, i, j))}</div>
+            <Track
+                {...t}
+                pixelsPerSecond={this.state.pixelsPerSecond}
+                audios={this.props.audiosEntries}
+                changeSampleParam={this.changeSampleParam.bind(this, i)}
+                removeSample={this.removeSample.bind(this, i)}
+                key={i}
+            />
         ))
     }
 
@@ -277,4 +246,7 @@ const mapDispatchToProps = {
     getAudio: audiosActions.getAudio
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(MixerPage)
+export default compose(
+    DragDropContext(HTML5Backend),
+    connect(mapStateToProps, mapDispatchToProps)
+)(MixerPage)

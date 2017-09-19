@@ -1,0 +1,2 @@
+export const AUDIO_DRAGGABLE_TYPE = 'AUDIO'
+export const SAMPLE_DRAGGABLE_TYPE = 'SAMPLE'

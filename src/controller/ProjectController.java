@@ -48,7 +48,6 @@ public class ProjectController {
 	private static final String PROJECT_UPDATED_MESSAGE = "project was successfully updated";
 	
 	private static final SuccessMessage PROJECT_DELETED_PAYLOAD = new SuccessMessage(PROJECT_DELETED_MESSAGE);
-	private static final SuccessMessage PROJECT_UPDATED_PAYLOAD = new SuccessMessage(PROJECT_UPDATED_MESSAGE);
 	
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;

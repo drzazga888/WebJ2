@@ -634,6 +634,7 @@ img {
 
 .audio-draggable .preview-item {
     margin: 5px;
+    pointer-events: none;
 }
 
 .audio-draggable .preview-item-title-content {
@@ -644,4 +645,5 @@ img {
 .audios-draggable {
     display: flex;
     margin: 10px;
+    cursor: copy;
 }
