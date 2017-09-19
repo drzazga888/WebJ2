@@ -1,9 +1,11 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import { NavLink, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import * as userActions from './actions/user'
 import { getMessages, getUserEmail } from './reducers'
+
+const AppNavLink = props => <NavLink {...props} activeClassName="active" />
 
 const Layout = ({ messages, children, userEmail, logout, history }) => (
     <div>
@@ -12,18 +14,18 @@ const Layout = ({ messages, children, userEmail, logout, history }) => (
         </header>
         <nav>
             <ul className="menu">
-                <li><Link to="/">Strona główna</Link></li>
-                <li><Link to="/projects">Projekty</Link></li>
-                <li><Link to="/audios">Zarządzaj audio</Link></li>
-                <li><Link to="/doc">Dokumentacja</Link></li>
+                <li><AppNavLink exact to="/">Strona główna</AppNavLink></li>
+                <li><AppNavLink to="/projects">Projekty</AppNavLink></li>
+                <li><AppNavLink to="/audios">Zarządzaj audio</AppNavLink></li>
+                <li><AppNavLink to="/doc">Dokumentacja</AppNavLink></li>
             </ul>
             <ul className="stick-to-top-right-corner menu">
                 <li className="dropdown expander">
                     <a className="icon-user" href="javascript:void(0);">{userEmail || 'Niezalogowany'}</a>
                     <div className="dropdown-body expandable">
-                        {!userEmail ? <p><Link to="/register">Rejestracja</Link></p> : null}
-                        {!userEmail ? <p><Link to="/login">Logowanie</Link></p> : null}
-                        {userEmail ? <p><Link to="/profile">Ustawienia konta</Link></p> : null}
+                        {!userEmail ? <p><AppNavLink to="/register">Rejestracja</AppNavLink></p> : null}
+                        {!userEmail ? <p><AppNavLink to="/login">Logowanie</AppNavLink></p> : null}
+                        {userEmail ? <p><AppNavLink to="/profile">Ustawienia konta</AppNavLink></p> : null}
                         {userEmail ? <p><a href="javascript:void(0)" onClick={(e) => {
                             e.preventDefault()
                             logout()

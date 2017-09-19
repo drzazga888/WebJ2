@@ -83,6 +83,12 @@
       "css": "volume-up",
       "code": 59402,
       "src": "fontawesome"
+    },
+    {
+      "uid": "191bcf63575a78def53c907c3d3bf7f0",
+      "css": "floppy",
+      "code": 59403,
+      "src": "entypo"
     }
   ]
 }

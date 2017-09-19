@@ -219,12 +219,11 @@ class MixerPage extends React.PureComponent {
     }
 
     renderMixer() {
-        const { loaded, match } = this.props
+        const { loaded } = this.props
         const { data }  = this.state
         const songLength = this.getSongLength()
         return (
             <div>
-                <p>ID piosenki: <span id="song-id">{match.params.id}</span></p>
                 <label className="inline-form">Nazwa utworu: <input type="text" id="mixer-name" required value={data.name} onChange={this.changeSongName} /></label>
                 <div id="tracks" className="grid">
                     <aside className="grid-item">{data.tracks.map((t, i) => this.renderTrackHead(t, i))}</aside>
@@ -240,8 +239,10 @@ class MixerPage extends React.PureComponent {
                         </div>
                     </div>
                 </div>
-                <button id="new-track" className="icon-plus" onClick={this.addNewTrack}>Dodaj ścieżkę</button>
-                <button id="play" className="icon-play">Graj</button>
+                <button className="icon-floppy">Zapisz</button>
+                <button className="icon-plus" onClick={this.addNewTrack}>Dodaj ścieżkę</button>
+                <button className="icon-play">Graj</button>
+                <button className="icon-download">Utwórz</button>
                 <span className="icon-resize-horizontal">
                     Rozciągnij: 
                     <input type="range" className="pixels-per-second-range" min={1} max={2000} value={Math.sqrt(2000 * this.state.pixelsPerSecond)} onChange={this.changePixelsPerSecond} />
@@ -249,7 +250,6 @@ class MixerPage extends React.PureComponent {
                 </span>
                 &nbsp;&nbsp;&nbsp;
                 <span>Długość utworu: <em>{getSecondsFormatted(songLength)}</em> s</span>
-                <a href="javascript:void(0)"><button>Utwórz</button></a>
             </div>
         )
     }
@@ -282,7 +282,7 @@ class MixerPage extends React.PureComponent {
     render() {
         return (
             <div>
-                <h2>Edycja utworu</h2>
+                <h2>Edycja utworu <small>ID piosenki: <strong id="song-id">{this.props.match.params.id}</strong></small></h2>
                 {this.props.userLoggenIn ? this.renderPage() : <p>Musisz się zalogować, aby korzystać z tej strony</p>}
             </div>
         )

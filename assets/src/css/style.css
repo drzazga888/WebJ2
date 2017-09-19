@@ -36,7 +36,8 @@ a {
     color: #C7E3E8;
 }
 
-a:hover {
+a:hover,
+a.active {
     color: #72d3ff;
 }
 
@@ -661,4 +662,11 @@ img {
 
 .invisible {
     opacity: 0;
+}
+
+h2 small {
+    color: #C7E3E8;
+    margin-left: 20px;
+    font-style: italic;
+    font-size: 0.65em;
 }
