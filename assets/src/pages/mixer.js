@@ -231,7 +231,7 @@ class MixerPage extends React.PureComponent {
                     <div className="grid-item">
                         <div className="scrollable">
                             <div className="timelines" style={{
-                                width: (this.state.pixelsPerSecond * songLength) + 'px'
+                                width: (this.state.pixelsPerSecond * Math.max(songLength, 1)) + 'px'
                             }}>
                                 {this.renderTimes(songLength)}
                                 <div className="pipe"></div>
