@@ -224,6 +224,21 @@ class MixerPage extends React.PureComponent {
         this.props.putActiveProject(this.state.data)
     }
 
+    downloadProjectAudio = () => {
+        if (this.state.dataChanged) {
+            alert('Należy najpierw zapisać projekt przed pobraniem utworu')
+        } else {
+            this.props.getProjectAudio().then(data => {
+                let a = document.createElement('a')
+                a.href = URL.createObjectURL(data)
+                a.download = this.props.data.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()
+                document.body.appendChild(a)
+                a.click()
+                document.body.removeChild(a)
+            })
+        }
+    }
+
     renderMixer() {
         const { loaded } = this.props
         const { data, dataChanged }  = this.state
@@ -248,7 +263,7 @@ class MixerPage extends React.PureComponent {
                 <button disabled={!dataChanged} className="icon-floppy" onClick={this.saveData}>{dataChanged ? 'Zapisz' : 'Aktualne'}</button>
                 <button className="icon-plus" onClick={this.addNewTrack}>Dodaj ścieżkę</button>
                 <button className="icon-play">Graj</button>
-                <button className="icon-download">Utwórz</button>
+                <button onClick={this.downloadProjectAudio} className="icon-download">Utwórz</button>
                 <span className="icon-resize-horizontal">
                     Rozciągnij: 
                     <input type="range" className="pixels-per-second-range" min={1} max={2000} value={Math.sqrt(2000 * this.state.pixelsPerSecond)} onChange={this.changePixelsPerSecond} />
@@ -309,7 +324,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
     getProject: activeProjectActions.getProject,
     getAudio: audiosActions.getAudio,
-    putActiveProject: activeProjectActions.putActiveProject
+    putActiveProject: activeProjectActions.putActiveProject,
+    getProjectAudio: activeProjectActions.getProjectAudio
 }
 
 export default compose(

@@ -38,3 +38,10 @@ export const putActiveProject = (form) => (dispatch, getState) => {
         }
     )
 }
+
+export const getProjectAudio = () => (dispatch, getState) => {
+    const state = getState()
+    const credentials = getCredentials(state)
+    const id = getActiveProjectId(state)
+    return api.getProjectAudio(credentials, id)
+}
