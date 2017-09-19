@@ -75,12 +75,12 @@ class AudioDraggable extends React.PureComponent {
 
 const audioDraggableSource = {
     beginDrag(props, monitor) {
-        props.startDrag({ type: AUDIO_DRAGGABLE_TYPE, id: props.id })
         return { id: props.id }
     }
 }
 
-export default DragSource(AUDIO_DRAGGABLE_TYPE, audioDraggableSource, connect => ({
+export default DragSource(AUDIO_DRAGGABLE_TYPE, audioDraggableSource, (connect, monitor) => ({
     connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview()
+    connectDragPreview: connect.dragPreview(),
+    isDragging: monitor.isDragging()
 }))(AudioDraggable)

@@ -19,24 +19,63 @@ class MixerPage extends React.PureComponent {
         super(props)
         this.state = {
             pixelsPerSecond: 160,
-            data: this.props.data,
-            dragged: null
+            data: this.props.data
         }
     }
 
-    startDrag = (source) => {
-        console.log('start drag', source)
-        this.setState({ dragged: { source, dest: null }})
+    addSample = (i, audioId, start) => {
+        const { data } = this.state
+        const { audiosEntries } = this.props
+        this.setState({ data: Object.assign({}, data, {
+            tracks: [
+                ...(data.tracks.slice(0, i)),
+                Object.assign({}, data.tracks[i], {
+                    samples: [
+                        ...(data.tracks[i].samples),
+                        {
+                            audioId,
+                            start,
+                            offset: 0,
+                            gain: 1,
+                            duration: audiosEntries ? audiosEntries.filter(audio => audio.id === audioId).shift().length : 0
+                        }
+                    ]
+                }),
+                ...(data.tracks.slice(i + 1))
+            ]
+        })})
     }
 
-    endDrag = () => {
-        console.log('end drag')
-        this.setState({ dragged: null })
-    }
-
-    changeDragDest = (dest) => {
-        console.log('change dest', dest)
-        this.setState({ dragged: Object.assign({}, this.state.dragged, { dest })})
+    moveSample = (i, j, newI, start) => {
+        const { data } = this.state
+        const sample = data.tracks[i].samples[j]
+        const cleanedState = Object.assign({}, data, {
+            tracks: [
+                ...(data.tracks.slice(0, i)),
+                Object.assign({}, data.tracks[i], {
+                    samples: [
+                        ...(data.tracks[i].samples.slice(0, j)),
+                        ...(data.tracks[i].samples.slice(j + 1))
+                    ]
+                }),
+                ...(data.tracks.slice(i + 1))
+            ]
+        })
+        const newState = Object.assign({}, cleanedState, {
+            tracks: [
+                ...(cleanedState.tracks.slice(0, newI)),
+                Object.assign({}, cleanedState.tracks, {
+                    samples: [
+                        ...(cleanedState.tracks[newI].samples),
+                        Object.assign({}, sample, {
+                            start
+                        })
+                    ]
+                }),
+                ...(cleanedState.tracks.slice(newI + 1))
+            ]
+        })
+        this.setState({ data: newState })
     }
 
     componentWillReceiveProps(nextProps) {
@@ -103,11 +142,11 @@ class MixerPage extends React.PureComponent {
                 audios={this.props.audiosEntries}
                 changeSampleParam={this.changeSampleParam.bind(this, i)}
                 removeSample={this.removeSample.bind(this, i)}
-                key={i}
-                startDrag={this.startDrag}
-                changeDragDest={this.changeDragDest}
-                endDrag={this.endDrag}
+                moveSample={this.moveSample}
+                addSample={this.addSample}
                 i={i}
+                key={i}
+                tracks={this.state.data.tracks}
             />
         ))
     }
@@ -219,7 +258,7 @@ class MixerPage extends React.PureComponent {
         const { audiosEntries, getAudio } = this.props
         return (
             <div className="audios-draggable">
-                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} startDrag={this.startDrag} getAudio={() => getAudio(audio.id)} {...audio} />)}
+                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} getAudio={() => getAudio(audio.id)} {...audio} />)}
             </div>
         )
     }

@@ -13,7 +13,7 @@ export default class AmplitudeOverTime extends React.PureComponent {
     prepareData() {
         const { start, duration, offset, data, audioDuration } = this.props
         if (duration) {
-            const sampleStart = start + offset
+            const sampleStart = offset
             const sampleEnd = sampleStart + duration
             const numberOfRepeats = Math.ceil(sampleEnd / audioDuration)
             const repeatedData = (new Array(numberOfRepeats)).fill(null).reduce(c => c.concat(data), [])
@@ -25,10 +25,10 @@ export default class AmplitudeOverTime extends React.PureComponent {
 
     _paint() {
         const { color } = this.props
+        const maxV = Math.max(...(this.props.data))
         const data  = this.prepareData()
         const canvas = this.refs.canvas
         const ctx = canvas.getContext('2d')
-        const maxV = Math.max(...data)
         const w = canvas.width
         const h = canvas.height
         const len = data.length

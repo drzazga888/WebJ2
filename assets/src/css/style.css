@@ -305,6 +305,7 @@ img {
 #tracks .timelines {
     width: 1300px;
     padding-top: 60px;
+    position: relative;
 }
 
 #tracks .timelines.dragging .sample {
@@ -645,4 +646,19 @@ img {
 .audios-draggable {
     display: flex;
     margin: 10px;
+}
+
+.track-layer {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+}
+
+.invisible {
+    opacity: 0;
 }

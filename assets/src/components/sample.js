@@ -14,9 +14,9 @@ class Sample extends React.PureComponent {
     }
     
     render() {
-        const { onChangeParam, onRemove, offset, duration, start, gain, amplitudeOverTime, audioDuration, name, pixelsPerSecond, connectDragSource } = this.props
+        const { onChangeParam, onRemove, offset, duration, start, gain, amplitudeOverTime, audioDuration, name, pixelsPerSecond, connectDragSource, className } = this.props
         return connectDragSource(
-            <div className="sample" style={{
+            <div className={`sample${className ? ` ${className}` : ''}`} style={{
                 left: (pixelsPerSecond * start) + 'px',
                 width: (pixelsPerSecond * duration) + 'px'
             }}>
@@ -42,16 +42,21 @@ class Sample extends React.PureComponent {
         , { dropEffect: 'move' })
     }
 
+    static defaultProps = {
+        onChangeParam() {},
+        onRemove() {}
+    }
+
 }
 
 const sampleDraggableSource = {
     beginDrag(props, monitor) {
-        props.startDrag({ type: SAMPLE_DRAGGABLE_TYPE, i: props.i, j: props.j })
         return { i: props.i, j: props.j }
     }
 }
 
-export default DragSource(SAMPLE_DRAGGABLE_TYPE, sampleDraggableSource, connect => ({
+export default DragSource(SAMPLE_DRAGGABLE_TYPE, sampleDraggableSource, (connect, monitor) => ({
     connectDragSource: connect.dragSource(),
-    connectDragPreview: connect.dragPreview()
+    connectDragPreview: connect.dragPreview(),
+    isDragging: monitor.isDragging()
 }))(Sample)
