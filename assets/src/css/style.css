@@ -645,5 +645,4 @@ img {
 .audios-draggable {
     display: flex;
     margin: 10px;
-    cursor: copy;
 }

@@ -5,6 +5,7 @@ import AmplitudeOverTime from './amplitude-over-time'
 import PreviewItem from './preview-item'
 import { getSecondsFormatted } from '../converters'
 import { AUDIO_DRAGGABLE_TYPE } from '../constants'
+import dragImg from '../img/sample_drag.png'
 
 class AudioDraggable extends React.PureComponent {
 
@@ -12,8 +13,14 @@ class AudioDraggable extends React.PureComponent {
         playing: false
     }
 
+    componentDidMount() {
+        const img = new Image()
+        img.src = dragImg
+        img.onload = () => this.props.connectDragPreview(img)
+    }
+
     render() {
-        const { id, name, amplitudeOverTime, length, contentLoaded, loaded, connectDragSource } = this.props
+        const { id, name, amplitudeOverTime, length, contentLoaded, loaded, connectDragSource, connectDragPreview } = this.props
         const { crosshairPos, playing } = this.state
         const audioControlClasses = contentLoaded ? playing ? 'icon-stop' : 'icon-play' : 'icon-spin1 animate-spin'
         const audioControlTitle = playing ? 'Zatrzymaj' : 'Posłuchaj'
@@ -27,7 +34,7 @@ class AudioDraggable extends React.PureComponent {
                     <i className={`clickable audio-control ${audioControlClasses}`} title={audioControlTitle} onClick={audioControlAction}></i>
                 </div>
             </div>
-        )
+        , { dropEffect: 'copy' })
     }
 
     ensureAudio = () => {
@@ -67,12 +74,13 @@ class AudioDraggable extends React.PureComponent {
 }
 
 const audioDraggableSource = {
-    beginDrag(props) {
-        console.log('beginDrag audio', props)
-        return {}
+    beginDrag(props, monitor) {
+        props.startDrag({ type: AUDIO_DRAGGABLE_TYPE, id: props.id })
+        return { id: props.id }
     }
 }
 
 export default DragSource(AUDIO_DRAGGABLE_TYPE, audioDraggableSource, connect => ({
-    connectDragSource: connect.dragSource()
+    connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview()
 }))(AudioDraggable)

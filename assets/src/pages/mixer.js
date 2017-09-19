@@ -19,8 +19,24 @@ class MixerPage extends React.PureComponent {
         super(props)
         this.state = {
             pixelsPerSecond: 160,
-            data: this.props.data
+            data: this.props.data,
+            dragged: null
         }
+    }
+
+    startDrag = (source) => {
+        console.log('start drag', source)
+        this.setState({ dragged: { source, dest: null }})
+    }
+
+    endDrag = () => {
+        console.log('end drag')
+        this.setState({ dragged: null })
+    }
+
+    changeDragDest = (dest) => {
+        console.log('change dest', dest)
+        this.setState({ dragged: Object.assign({}, this.state.dragged, { dest })})
     }
 
     componentWillReceiveProps(nextProps) {
@@ -88,6 +104,10 @@ class MixerPage extends React.PureComponent {
                 changeSampleParam={this.changeSampleParam.bind(this, i)}
                 removeSample={this.removeSample.bind(this, i)}
                 key={i}
+                startDrag={this.startDrag}
+                changeDragDest={this.changeDragDest}
+                endDrag={this.endDrag}
+                i={i}
             />
         ))
     }
@@ -199,7 +219,7 @@ class MixerPage extends React.PureComponent {
         const { audiosEntries, getAudio } = this.props
         return (
             <div className="audios-draggable">
-                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} getAudio={() => getAudio(audio.id)} {...audio} />)}
+                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} startDrag={this.startDrag} getAudio={() => getAudio(audio.id)} {...audio} />)}
             </div>
         )
     }
