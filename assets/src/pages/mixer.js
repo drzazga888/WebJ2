@@ -19,7 +19,8 @@ class MixerPage extends React.PureComponent {
         super(props)
         this.state = {
             pixelsPerSecond: 160,
-            data: this.props.data
+            data: this.props.data,
+            dataChanged: false
         }
     }
 
@@ -43,7 +44,7 @@ class MixerPage extends React.PureComponent {
                 }),
                 ...(data.tracks.slice(i + 1))
             ]
-        })})
+        }), dataChanged: true })
     }
 
     moveSample = (i, j, newI, start) => {
@@ -64,7 +65,7 @@ class MixerPage extends React.PureComponent {
         const newState = Object.assign({}, cleanedState, {
             tracks: [
                 ...(cleanedState.tracks.slice(0, newI)),
-                Object.assign({}, cleanedState.tracks, {
+                Object.assign({}, cleanedState.tracks[newI], {
                     samples: [
                         ...(cleanedState.tracks[newI].samples),
                         Object.assign({}, sample, {
@@ -75,13 +76,14 @@ class MixerPage extends React.PureComponent {
                 ...(cleanedState.tracks.slice(newI + 1))
             ]
         })
-        this.setState({ data: newState })
+        this.setState({ data: newState, dataChanged: true })
     }
 
     componentWillReceiveProps(nextProps) {
-        if (this.props.data !== nextProps.data) {
+        if (!this.props.loaded && nextProps.loaded) {
             this.setState({
-                data: nextProps.data
+                data: nextProps.data,
+                dataChanged: false
             })
         }
     }
@@ -154,21 +156,21 @@ class MixerPage extends React.PureComponent {
     addNewTrack = () => {
         this.setState({ data: Object.assign({}, this.state.data, {
             tracks: [ ...this.state.data.tracks, { name: '', gain: 1, samples: [] }]
-        })})
+        }), dataChanged: true })
     }
 
     removeTrack = (i) => {
         if (!this.state.data.tracks[i].samples.length || confirm('Czy na pewno chcesz usunąć ścieżkę, która zawiera sample?')) {
             this.setState({ data: Object.assign({}, this.state.data, {
                 tracks: [ ...(this.state.data.tracks.slice(0, i)), ...(this.state.data.tracks.slice(i + 1)) ]
-            })})
+            }), dataChanged: true })
         }
     }
 
     changeSongName = ({ target }) => {
         this.setState({ data: Object.assign({}, this.state.data, {
             name: target.value
-        })})
+        }), dataChanged: true })
     }
 
     changeTrackName = (i, name) => {
@@ -178,7 +180,7 @@ class MixerPage extends React.PureComponent {
                 Object.assign({}, this.state.data.tracks[i], { name }),
                 ...(this.state.data.tracks.slice(i + 1))
             ]
-        })})
+        }), dataChanged: true })
     }
 
     changeTrackGain = (i, gain) => {
@@ -188,7 +190,7 @@ class MixerPage extends React.PureComponent {
                 Object.assign({}, this.state.data.tracks[i], { gain }),
                 ...(this.state.data.tracks.slice(i + 1))
             ]
-        })})
+        }), dataChanged: true })
     }
 
     removeSample = (i, j) => {
@@ -201,7 +203,7 @@ class MixerPage extends React.PureComponent {
                 ]}),
                 ...(this.state.data.tracks.slice(i + 1))
             ]
-        })})
+        }), dataChanged: true })
     }
 
     changeSampleParam = (i, j, { target }) => {
@@ -215,15 +217,19 @@ class MixerPage extends React.PureComponent {
                 ]}),
                 ...(this.state.data.tracks.slice(i + 1))
             ]
-        })})
+        }), dataChanged: true})
+    }
+
+    saveData = () => {
+        this.props.putActiveProject(this.state.data)
     }
 
     renderMixer() {
         const { loaded } = this.props
-        const { data }  = this.state
+        const { data, dataChanged }  = this.state
         const songLength = this.getSongLength()
         return (
-            <div>
+            <div className={loaded ? '' : ' indeterminate'}>
                 <label className="inline-form">Nazwa utworu: <input type="text" id="mixer-name" required value={data.name} onChange={this.changeSongName} /></label>
                 <div id="tracks" className="grid">
                     <aside className="grid-item">{data.tracks.map((t, i) => this.renderTrackHead(t, i))}</aside>
@@ -239,7 +245,7 @@ class MixerPage extends React.PureComponent {
                         </div>
                     </div>
                 </div>
-                <button className="icon-floppy">Zapisz</button>
+                <button disabled={!dataChanged} className="icon-floppy" onClick={this.saveData}>{dataChanged ? 'Zapisz' : 'Aktualne'}</button>
                 <button className="icon-plus" onClick={this.addNewTrack}>Dodaj ścieżkę</button>
                 <button className="icon-play">Graj</button>
                 <button className="icon-download">Utwórz</button>
@@ -255,9 +261,9 @@ class MixerPage extends React.PureComponent {
     }
 
     renderAudios() {
-        const { audiosEntries, getAudio } = this.props
+        const { audiosEntries, getAudio, audiosLoaded } = this.props
         return (
-            <div className="audios-draggable">
+            <div className={`audios-draggable${audiosLoaded ? '' : ' indeterminate'}`}>
                 {audiosEntries.map((audio) => <AudioDraggable key={audio.id} getAudio={() => getAudio(audio.id)} {...audio} />)}
             </div>
         )
@@ -269,11 +275,11 @@ class MixerPage extends React.PureComponent {
             <div>
                 <section>
                     <h3>Mixer</h3>
-                    {!loaded ? <p>Ładowanie</p> : (!data ? <p>Brak danych</p> : this.renderMixer())}
+                    {data ? this.renderMixer() : (loaded ? <p>Brak danych</p> : <p>Ładowanie</p>)}
                 </section>
                 <section>
                     <h3>Dostępna muzyka</h3>
-                    {!audiosLoaded ? <p>Ładowanie</p> : (!audiosEntries ? <p>Brak danych</p> : this.renderAudios())}
+                    {audiosEntries ? this.renderAudios() : (audiosLoaded ? <p>Brak danych</p> : <p>Ładowanie</p>)}
                 </section>
             </div>
         )
@@ -302,7 +308,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
     getProject: activeProjectActions.getProject,
-    getAudio: audiosActions.getAudio
+    getAudio: audiosActions.getAudio,
+    putActiveProject: activeProjectActions.putActiveProject
 }
 
 export default compose(

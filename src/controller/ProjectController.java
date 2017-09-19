@@ -114,7 +114,8 @@ public class ProjectController {
 			throw new UserIsNotOwnerException();
 		}
 		project.deepSanitize();
-		if (em.createNamedQuery("Project.getByUserAndName").setParameter("id", authUser.getId()).setParameter("name", project.getName()).getResultList().size() > 0) {
+		List<Project> projectsByName = em.createNamedQuery("Project.getByUserAndName", Project.class).setParameter("id", authUser.getId()).setParameter("name", project.getName()).getResultList();
+		if (projectsByName.size() > 0 && projectsByName.get(0).getId() != existingProject.getId()) {
 			throw new UserAlreadyExistsException();
 		}
 		for (Track track : project.getTracks()) {
