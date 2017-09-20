@@ -275,6 +275,7 @@ class MixerPage extends React.PureComponent {
     }
 
     stop = () => {
+        this.playInterval && clearInterval(this.playInterval)
         this.stopTimeout && clearTimeout(this.stopTimeout)
         this.timeouts && this.timeouts.forEach(t => clearTimeout(t))
         this.audioSrcs && this.audioSrcs.forEach(a => a.stop())
@@ -295,13 +296,14 @@ class MixerPage extends React.PureComponent {
                 this.audioSrcs.push(audioSrc)
             }, s.start * 1000))
         })]), [])
-        this.setState({ playingCursor: true })
+        this.setState({ playingCursor: 0 })
+        this.playInterval = setInterval(() => this.setState({ playingCursor: this.state.playingCursor + 0.05 }), 50)
         this.stopTimeout = setTimeout(() => this.stop(), this.getSongLength() * 1000)
     }
 
     renderMixer() {
         const { loaded } = this.props
-        const { data, dataChanged, audioBuffers, playingCursor } = this.state
+        const { data, dataChanged, audioBuffers, playingCursor, pixelsPerSecond } = this.state
         const songLength = this.getSongLength()
         const playDisabled = !audioBuffers || Object.values(audioBuffers).some(ab => ab === null)
         return (
@@ -315,7 +317,10 @@ class MixerPage extends React.PureComponent {
                                 width: (this.state.pixelsPerSecond * Math.max(songLength, 1)) + 'px'
                             }}>
                                 {this.renderTimes(songLength)}
-                                <div className="pipe"></div>
+                                <div className="pipe" style={{
+                                    display: playingCursor ? 'block' : 'none',
+                                    left: playingCursor ? (playingCursor * pixelsPerSecond) + 'px' : 'auto'
+                                }}></div>
                                 {this.renderTracks()}
                             </div>
                         </div>
