@@ -16,7 +16,7 @@ const getSample = ({ pixelsPerSecond, clientOffset, initialClientOffset, item, i
             const audio = getAudio(audios, sample.audioId)
             return <Sample
                 {...sample}
-                start={newStart}
+                start={Math.round(newStart * 100) / 100}
                 pixelsPerSecond={pixelsPerSecond}
                 amplitudeOverTime={audio.amplitudeOverTime || []}
                 audioDuration={audio.length || 0}
@@ -27,7 +27,7 @@ const getSample = ({ pixelsPerSecond, clientOffset, initialClientOffset, item, i
             const audio = getAudio(audios, item.id)
             const newStart = Math.max((clientOffset.x - 180) / pixelsPerSecond - audio.length / 2, 0)
             return <Sample
-                start={newStart}
+                start={Math.round(newStart * 100) / 100}
                 duration={audio.length || 0}
                 offset={0}
                 gain={1}

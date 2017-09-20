@@ -35,7 +35,7 @@ class MixerPage extends React.PureComponent {
                         ...(data.tracks[i].samples),
                         {
                             audioId,
-                            start,
+                            start: Math.round(start * 100) / 100,
                             offset: 0,
                             gain: 1,
                             duration: audiosEntries ? audiosEntries.filter(audio => audio.id === audioId).shift().length : 0
@@ -69,7 +69,7 @@ class MixerPage extends React.PureComponent {
                     samples: [
                         ...(cleanedState.tracks[newI].samples),
                         Object.assign({}, sample, {
-                            start
+                            start: Math.round(start * 100) / 100
                         })
                     ]
                 }),
@@ -266,10 +266,10 @@ class MixerPage extends React.PureComponent {
                 <button onClick={this.downloadProjectAudio} className="icon-download">Utwórz</button>
                 <span className="icon-resize-horizontal">
                     Rozciągnij: 
-                    <input type="range" className="pixels-per-second-range" min={1} max={2000} value={Math.sqrt(2000 * this.state.pixelsPerSecond)} onChange={this.changePixelsPerSecond} />
-                    <em>{Number(this.state.pixelsPerSecond).toFixed(4)}</em> px/s
+                    <input type="range" className="pixels-per-second-range" min={200} max={2000} value={Math.sqrt(2000 * this.state.pixelsPerSecond)} onChange={this.changePixelsPerSecond} />
+                    <em>{Number(this.state.pixelsPerSecond).toFixed(2)}</em> px/s
                 </span>
-                &nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <span>Długość utworu: <em>{getSecondsFormatted(songLength)}</em> s</span>
             </div>
         )
