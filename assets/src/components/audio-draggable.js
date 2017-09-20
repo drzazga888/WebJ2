@@ -9,8 +9,12 @@ import dragImg from '../img/sample_drag.png'
 
 class AudioDraggable extends React.PureComponent {
 
-    state = {
-        playing: false
+    constructor(props) {
+        super(props)
+        this.state = {
+            playing: false
+        }
+        this.audioContext = new AudioContext()
     }
 
     componentDidMount() {
@@ -37,33 +41,13 @@ class AudioDraggable extends React.PureComponent {
         , { dropEffect: 'copy' })
     }
 
-    ensureAudio = () => {
-        if (this.decodedAudio) {
-            return Promise.resolve(this.decodedAudio)
-        } else {
-            return this.props.getAudio(this.props.id).then((audioData) => {
-                if (!this.audioContext) {
-                    this.audioContext = new AudioContext()
-                }
-                return new Promise((resolve, reject) => {
-                    this.audioContext.decodeAudioData(audioData, (buffer) => {
-                        this.decodedAudio = buffer
-                        resolve(this.decodedAudio)
-                    })
-                })
-            })
-        }
-    }
-
     playAudio = () => {
-        this.ensureAudio().then(buffer => {
-            this.audioSrc = this.audioContext.createBufferSource()
-            this.audioSrc.buffer = buffer
-            this.audioSrc.connect(this.audioContext.destination)
-            this.audioSrc.onended = () => this.setState({ playing: false })
-            this.audioSrc.start(0)
-            this.setState({ playing: true })
-        })
+        this.audioSrc = this.audioContext.createBufferSource()
+        this.audioSrc.buffer = this.props.audioBuffer
+        this.audioSrc.connect(this.audioContext.destination)
+        this.audioSrc.onended = () => this.setState({ playing: false })
+        this.audioSrc.start(0)
+        this.setState({ playing: true })
     }
 
     stopAudio = () => {

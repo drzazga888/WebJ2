@@ -20,7 +20,8 @@ class MixerPage extends React.PureComponent {
         this.state = {
             pixelsPerSecond: 160,
             data: this.props.data,
-            dataChanged: false
+            dataChanged: false,
+            audioBuffers: {}
         }
     }
 
@@ -96,6 +97,34 @@ class MixerPage extends React.PureComponent {
         if (this.props.userLoggenIn) {
             this.props.getProject(this.props.match.params.id)
         }
+        if (this.props.audiosEntries) {
+            this.fetchAudios()
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        if (!prevProps.audiosEntries && this.props.audiosEntries) {
+            this.fetchAudios()
+        }
+    }
+
+    ensureAudio = (id) => {
+        return this.props.getAudio(id).then((audioData) => {
+            if (!this.audioContext) {
+                this.audioContext = new AudioContext()
+            }
+            return new Promise((resolve, reject) => {
+                this.audioContext.decodeAudioData(audioData, buffer => resolve(buffer))
+            })
+        })
+    }
+
+    fetchAudios() {
+        this.props.audiosEntries.forEach(audio => {
+            this.ensureAudio(audio.id).then(buffer => {
+                this.setState({ audioBuffers: Object.assign({ [audio.id]: buffer }, this.state.audioBuffers) })
+            })
+        })
     }
 
     renderTrackHead(track, i) {
@@ -279,7 +308,7 @@ class MixerPage extends React.PureComponent {
         const { audiosEntries, getAudio, audiosLoaded } = this.props
         return (
             <div className={`audios-draggable${audiosLoaded ? '' : ' indeterminate'}`}>
-                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} getAudio={() => getAudio(audio.id)} {...audio} />)}
+                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} audioBuffer={this.state.audioBuffers[audio.id]} {...audio} />)}
             </div>
         )
     }
