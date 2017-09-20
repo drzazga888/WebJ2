@@ -22,7 +22,7 @@ export const USER_LOGOUT = 'USER_LOGOUT'
 
 export const getUser = (credentials) => (dispatch) => {
     dispatch({ type: USER_GET_REQUEST })
-    api.getUser(credentials).then(
+    return api.getUser(credentials).then(
         (payload) => {
             dispatch({ type: USER_GET_DONE, payload, credentials })
             addSuccessMessage('Zostałeś pomyślnie zalogowany')(dispatch)
@@ -36,7 +36,7 @@ export const getUser = (credentials) => (dispatch) => {
 
 export const postUser = (form) => (dispatch) => {
     dispatch({ type: USER_POST_REQUEST })
-    api.postUser(form).then(
+    return api.postUser(form).then(
         (payload) => {
             dispatch({ type: USER_POST_DONE, payload, form })
             addSuccessMessage('Zostałeś pomyślnie zarejestrowany. Teraz możesz się zalogować')(dispatch)
@@ -51,7 +51,7 @@ export const postUser = (form) => (dispatch) => {
 export const putUser = (form) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: USER_PUT_REQUEST })
-    api.putUser(credentials, form).then(
+    return api.putUser(credentials, form).then(
         (payload) => {
             dispatch({ type: USER_PUT_DONE, payload, form })
             addSuccessMessage('Dane profilowe zostały zaktualizowane')(dispatch)
@@ -66,7 +66,7 @@ export const putUser = (form) => (dispatch, getState) => {
 export const deleteUser = () => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: USER_DELETE_REQUEST })
-    api.deleteUser(credentials).then(
+    return api.deleteUser(credentials).then(
         (payload) => {
             dispatch({ type: USER_DELETE_DONE, payload })
             addSuccessMessage('Twój profil został usunięty')(dispatch)

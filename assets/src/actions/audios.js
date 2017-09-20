@@ -27,7 +27,7 @@ export const AUDIO_DELETE_ERROR = 'AUDIO_DELETE_ERROR'
 export const getAudios = () => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: AUDIOS_GET_REQUEST })
-    api.getAudios(credentials).then(
+    return api.getAudios(credentials).then(
         (payload) => dispatch({ type: AUDIOS_GET_DONE, payload }),
         (error) => dispatch({ type: AUDIOS_GET_ERROR, error })
     )
@@ -53,7 +53,7 @@ export const getAudio = (id) => (dispatch, getState) => {
 export const postAudio = (form, content) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: AUDIO_POST_REQUEST })
-    api.postAudio(credentials, form, content).then(
+    return api.postAudio(credentials, form, content).then(
         (payload) => {
             dispatch({ type: AUDIO_POST_DONE, payload, form, content })
             addSuccessMessage('Nowy plik audio został pomyślnie utworzony')(dispatch)
@@ -68,7 +68,7 @@ export const postAudio = (form, content) => (dispatch, getState) => {
 export const patchAudio = (form, id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: AUDIO_PATCH_REQUEST, id })
-    api.patchAudio(credentials, id, form).then(
+    return api.patchAudio(credentials, id, form).then(
         (payload) => {
             dispatch({ type: AUDIO_PATCH_DONE, payload, form, id })
             addSuccessMessage(`Plik audio ${id} został pomyślnie zaktualizowany`)(dispatch)
@@ -83,7 +83,7 @@ export const patchAudio = (form, id) => (dispatch, getState) => {
 export const deleteAudio = (id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: AUDIO_DELETE_REQUEST, id })
-    api.deleteAudio(credentials, id).then(
+    return api.deleteAudio(credentials, id).then(
         (payload) => {
             dispatch({ type: AUDIO_DELETE_DONE, payload, id })
             addSuccessMessage(`Plik audio ${id} został właśnie usunięty`)(dispatch)

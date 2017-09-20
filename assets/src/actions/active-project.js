@@ -13,7 +13,7 @@ export const PROJECT_PUT_ERROR = 'PROJECT_PUT_ERROR'
 export const getProject = (id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_GET_REQUEST })
-    api.getProject(credentials, id).then(
+    return api.getProject(credentials, id).then(
         (payload) => dispatch({ type: PROJECT_GET_DONE, payload, id }),
         (error) => dispatch({ type: PROJECT_GET_ERROR, error, id })
     )
@@ -27,7 +27,7 @@ export const putActiveProject = (form) => (dispatch, getState) => {
         throw new Error('You need to fetch project firstly before update')
     }
     dispatch({ type: PROJECT_PUT_REQUEST })
-    api.putProject(credentials, id, form).then(
+    return api.putProject(credentials, id, form).then(
         (payload) => {
             dispatch({ type: PROJECT_PUT_DONE, payload, form })
             addSuccessMessage(`Projekt ${id} został zaktualizowany`)(dispatch)

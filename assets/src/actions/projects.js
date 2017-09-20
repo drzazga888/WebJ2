@@ -21,7 +21,7 @@ export const PROJECT_DELETE_ERROR = 'PROJECT_DELETE_ERROR'
 export const getProjects = () => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: PROJECTS_GET_REQUEST })
-    api.getProjects(credentials).then(
+    return api.getProjects(credentials).then(
         (payload) => dispatch({ type: PROJECTS_GET_DONE, payload }),
         (error) => dispatch({ type: PROJECTS_GET_ERROR, error })
     )
@@ -30,7 +30,7 @@ export const getProjects = () => (dispatch, getState) => {
 export const postProject = (form) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_POST_REQUEST })
-    api.postProject(credentials, form).then(
+    return api.postProject(credentials, form).then(
         (payload) => {
             dispatch({ type: PROJECT_POST_DONE, payload, form })
             addSuccessMessage('Projekt został utworzony')(dispatch)
@@ -45,7 +45,7 @@ export const postProject = (form) => (dispatch, getState) => {
 export const patchProject = (form, id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_PATCH_REQUEST, id })
-    api.patchProject(credentials, id, form).then(
+    return api.patchProject(credentials, id, form).then(
         (payload) => {
             dispatch({ type: PROJECT_PATCH_DONE, payload, form, id })
             addSuccessMessage(`Nazwa projektu ${id} została zmieniona`)(dispatch)
@@ -60,7 +60,7 @@ export const patchProject = (form, id) => (dispatch, getState) => {
 export const deleteProject = (id) => (dispatch, getState) => {
     const credentials = getCredentials(getState())
     dispatch({ type: PROJECT_DELETE_REQUEST, id })
-    api.deleteProject(credentials, id).then(
+    return api.deleteProject(credentials, id).then(
         (payload) => {
             dispatch({ type: PROJECT_DELETE_DONE, payload, id })
             addSuccessMessage(`Projekt ${id} został usunięty`)(dispatch)
