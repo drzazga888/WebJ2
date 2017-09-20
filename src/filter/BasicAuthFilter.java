@@ -17,7 +17,7 @@ import javax.ws.rs.ext.Provider;
 
 import bean.Credentials;
 import bean.User;
-import exception.BadCredentialsException;
+import exception.NotAuthorizedException;
 import util.BCrypt;
 
 @Provider
@@ -56,7 +56,7 @@ public class BasicAuthFilter implements ContainerRequestFilter {
 		} else if (!request.getUriInfo().getPath().contains("users") || request.getMethod() != HttpMethod.POST) {
 			Credentials requestCredentials = getCredentialsFromRequest(request);
 			if (requestCredentials == null) {
-				throw new BadCredentialsException();
+				throw new NotAuthorizedException();
 			}
 			User user;
 			try {
@@ -68,7 +68,7 @@ public class BasicAuthFilter implements ContainerRequestFilter {
 				user = null;
 			}
 			if (user == null || !BCrypt.checkpw(requestCredentials.getPassword(), user.getPassword())) {
-				throw new BadCredentialsException();
+				throw new NotAuthorizedException();
 			}
 			request.setSecurityContext(new BasicSecurityContext(user, request.getUriInfo().getRequestUri().getScheme()));
 		}

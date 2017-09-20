@@ -7,15 +7,15 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import bean.ErrorMessage;
-import exception.BadCredentialsException;
+import exception.NotAuthorizedException;
 
 @Provider
-public class BadCredentialsMapper implements ExceptionMapper<BadCredentialsException> {
+public class BadCredentialsMapper implements ExceptionMapper<NotAuthorizedException> {
 	
 	private final static String BAD_CREDENTIALS_DESCRIPTION = "Bad login or password";
 
 	@Override
-	public Response toResponse(BadCredentialsException e) {
+	public Response toResponse(NotAuthorizedException e) {
 		return Response
 				.status(Status.UNAUTHORIZED)
 				.entity(new ErrorMessage(BAD_CREDENTIALS_DESCRIPTION))

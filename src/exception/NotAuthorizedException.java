@@ -4,7 +4,7 @@ import javax.ejb.ApplicationException;
 import javax.ws.rs.WebApplicationException;
 
 @ApplicationException
-public class BadCredentialsException extends WebApplicationException {
+public class NotAuthorizedException extends WebApplicationException {
 
 	private static final long serialVersionUID = 1L;
 
