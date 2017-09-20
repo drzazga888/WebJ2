@@ -274,13 +274,34 @@ class MixerPage extends React.PureComponent {
         }
     }
 
-    play() {
-        
+    stop = () => {
+        this.stopTimeout && clearTimeout(this.stopTimeout)
+        this.timeouts && this.timeouts.forEach(t => clearTimeout(t))
+        this.audioSrcs && this.audioSrcs.forEach(a => a.stop())
+        this.setState({ playingCursor: null })
+    }
+
+    play = () => {
+        this.stop()
+        this.timeouts = []
+        this.audioSrcs = []
+        this.state.data.tracks.reduce((c, t) => c.concat([ t.samples.map(s => {
+            let audioSrc = this.audioContext.createBufferSource()
+            audioSrc.buffer = this.state.audioBuffers[s.audioId]
+            audioSrc.connect(this.audioContext.destination)
+            audioSrc.loop = true
+            this.timeouts.push(setTimeout(() => {
+                audioSrc.start(0, s.offset, s.duration)
+                this.audioSrcs.push(audioSrc)
+            }, s.start * 1000))
+        })]), [])
+        this.setState({ playingCursor: true })
+        this.stopTimeout = setTimeout(() => this.stop(), this.getSongLength() * 1000)
     }
 
     renderMixer() {
         const { loaded } = this.props
-        const { data, dataChanged, audioBuffers } = this.state
+        const { data, dataChanged, audioBuffers, playingCursor } = this.state
         const songLength = this.getSongLength()
         const playDisabled = !audioBuffers || Object.values(audioBuffers).some(ab => ab === null)
         return (
@@ -302,7 +323,7 @@ class MixerPage extends React.PureComponent {
                 </div>
                 <button disabled={!dataChanged} className="icon-floppy" onClick={this.saveData}>{dataChanged ? 'Zapisz' : 'Aktualne'}</button>
                 <button className="icon-plus" onClick={this.addNewTrack}>Dodaj ścieżkę</button>
-                <button disabled={playDisabled} className="icon-play" onClick={this.play}>Graj</button>
+                <button disabled={playDisabled} className={playingCursor ? 'icon-stop' : 'icon-play'} onClick={playingCursor ? this.stop : this.play}>{playingCursor ? 'Zatrzymaj' : 'Graj'}</button>
                 <button onClick={this.downloadProjectAudio} className="icon-download">Utwórz</button>
                 <span className="icon-resize-horizontal">
                     Rozciągnij: 
