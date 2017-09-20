@@ -288,9 +288,12 @@ class MixerPage extends React.PureComponent {
         this.audioSrcs = []
         this.state.data.tracks.reduce((c, t) => c.concat([ t.samples.map(s => {
             let audioSrc = this.audioContext.createBufferSource()
+            let gainCrtl = this.audioContext.createGain()
             audioSrc.buffer = this.state.audioBuffers[s.audioId]
-            audioSrc.connect(this.audioContext.destination)
+            audioSrc.connect(gainCrtl)
             audioSrc.loop = true
+            gainCrtl.gain.value = s.gain * t.gain
+            gainCrtl.connect(this.audioContext.destination)
             this.timeouts.push(setTimeout(() => {
                 audioSrc.start(0, s.offset, s.duration)
                 this.audioSrcs.push(audioSrc)
