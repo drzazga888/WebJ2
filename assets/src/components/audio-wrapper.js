@@ -34,11 +34,8 @@ export default class AudioWrapper extends React.PureComponent {
             return Promise.resolve(this.decodedAudio)
         } else {
             return this.props.getAudio(this.props.id).then((audioData) => {
-                if (!this.audioContext) {
-                    this.audioContext = new AudioContext()
-                }
                 return new Promise((resolve, reject) => {
-                    this.audioContext.decodeAudioData(audioData, (buffer) => {
+                    this.props.audioContext.decodeAudioData(audioData, (buffer) => {
                         this.decodedAudio = buffer
                         resolve(this.decodedAudio)
                     })
@@ -49,9 +46,9 @@ export default class AudioWrapper extends React.PureComponent {
 
     playAudio = () => {
         this.ensureAudio().then(buffer => {
-            this.audioSrc = this.audioContext.createBufferSource()
+            this.audioSrc = this.props.audioContext.createBufferSource()
             this.audioSrc.buffer = buffer
-            this.audioSrc.connect(this.audioContext.destination)
+            this.audioSrc.connect(this.props.audioContext.destination)
             this.audioSrc.onended = () => this.setState({ playing: false })
             this.audioSrc.start(0)
             this.setState({ playing: true })

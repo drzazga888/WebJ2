@@ -14,7 +14,6 @@ class AudioDraggable extends React.PureComponent {
         this.state = {
             playing: false
         }
-        this.audioContext = new AudioContext()
     }
 
     componentDidMount() {
@@ -42,9 +41,9 @@ class AudioDraggable extends React.PureComponent {
     }
 
     playAudio = () => {
-        this.audioSrc = this.audioContext.createBufferSource()
+        this.audioSrc = this.props.audioContext.createBufferSource()
         this.audioSrc.buffer = this.props.audioBuffer
-        this.audioSrc.connect(this.audioContext.destination)
+        this.audioSrc.connect(this.props.audioContext.destination)
         this.audioSrc.onended = () => this.setState({ playing: false })
         this.audioSrc.start(0)
         this.setState({ playing: true })

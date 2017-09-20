@@ -17,7 +17,6 @@ const Layout = ({ messages, children, userEmail, logout, history }) => (
                 <li><AppNavLink exact to="/">Strona główna</AppNavLink></li>
                 <li><AppNavLink to="/projects">Projekty</AppNavLink></li>
                 <li><AppNavLink to="/audios">Zarządzaj audio</AppNavLink></li>
-                <li><AppNavLink to="/doc">Dokumentacja</AppNavLink></li>
             </ul>
             <ul className="stick-to-top-right-corner menu">
                 <li className="dropdown expander">

@@ -8,9 +8,18 @@ import * as audioActions from '../actions/audios'
 
 class AudiosPage extends React.Component {
 
-    state = {
-        newAudioContent: null,
-        newAudioName: '',
+    constructor(props) {
+        super(props)
+        this.state = {
+            newAudioContent: null,
+            newAudioName: '',
+        }
+        this.audioContext = new AudioContext()
+    }
+
+    componentWillUnmount() {
+        this.audioContext && this.audioContext.close()
+        this.audioContext = null
     }
 
     changeNewAudioName = ({ target }) => {
@@ -26,7 +35,7 @@ class AudiosPage extends React.Component {
                 this.setState({ newAudioContent: null })
             } else {
                 const r = new FileReader()
-                r.onload = () => this.setState({ newAudioContent: r.result })
+                r.onload = () => this.setState({ newAudioContent: r.result, newAudioName: file.name.replace(/\.[^/.]+$/, "") })
                 r.readAsDataURL(file)
             }
         }
@@ -61,6 +70,7 @@ class AudiosPage extends React.Component {
                             getAudio={() => getAudio(audio.id)}
                             onDelete={() => this.onDelete(audio.id)}
                             onNameChange={name => this.onNameChange(audio.id, name)}
+                            audioContext={this.audioContext}
                         />)}</div>
                     ) : (
                         <p>Brak utworów</p>

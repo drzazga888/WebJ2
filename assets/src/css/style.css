@@ -654,6 +654,8 @@ img {
 .audios-draggable {
     display: flex;
     margin: 10px;
+    justify-content: center;
+    flex-flow: wrap;
 }
 
 .track-layer {

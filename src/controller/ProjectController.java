@@ -64,6 +64,7 @@ public class ProjectController {
 		project.setUser(user);
 		Track track = new Track();
 		track.setName("");
+		track.setGain(1.0f);
 		project.setTracks(Arrays.asList(track));
 		project.sanitize();
 		if (em.createNamedQuery("Project.getByUserAndName").setParameter("id", user.getId()).setParameter("name", requestProject.getName()).getResultList().size() > 0) {

@@ -95,6 +95,11 @@ class MixerPage extends React.PureComponent {
         }
     }
 
+    componentWillUnmount() {
+        this.audioContext && this.audioContext.close()
+        this.audioContext = null
+    }
+
     changePixelsPerSecond = ({ target }) => {
         this.setState({ pixelsPerSecond: (target.value * target.value) / 2000 })
     }
@@ -348,7 +353,7 @@ class MixerPage extends React.PureComponent {
         const { audiosEntries, getAudio, audiosLoaded } = this.props
         return (
             <div className={`audios-draggable${audiosLoaded ? '' : ' indeterminate'}`}>
-                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} audioBuffer={this.state.audioBuffers[audio.id]} {...audio} />)}
+                {audiosEntries.map((audio) => <AudioDraggable key={audio.id} audioContext={this.audioContext} audioBuffer={this.state.audioBuffers[audio.id]} {...audio} />)}
             </div>
         )
     }
