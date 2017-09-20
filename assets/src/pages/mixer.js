@@ -21,7 +21,8 @@ class MixerPage extends React.PureComponent {
             pixelsPerSecond: 160,
             data: this.props.data,
             dataChanged: false,
-            audioBuffers: {}
+            audioBuffers: this.props.audiosEntries ? this.props.audiosEntries.reduce((c, a) => (c[a.id] = null, c), {}) : null,
+            playingCursor: null
         }
     }
 
@@ -81,10 +82,15 @@ class MixerPage extends React.PureComponent {
     }
 
     componentWillReceiveProps(nextProps) {
-        if (!this.props.loaded && nextProps.loaded) {
+        if (this.props.data !== nextProps.data) {
             this.setState({
                 data: nextProps.data,
                 dataChanged: false
+            })
+        }
+        if (!this.props.audiosEntries && nextProps.audiosEntries) {
+            this.setState({
+                audioBuffers: nextProps.audiosEntries.reduce((c, a) => (c[a.id] = null, c), {})
             })
         }
     }
@@ -122,7 +128,7 @@ class MixerPage extends React.PureComponent {
     fetchAudios() {
         this.props.audiosEntries.forEach(audio => {
             this.ensureAudio(audio.id).then(buffer => {
-                this.setState({ audioBuffers: Object.assign({ [audio.id]: buffer }, this.state.audioBuffers) })
+                this.setState({ audioBuffers: Object.assign({}, this.state.audioBuffers, { [audio.id]: buffer }) })
             })
         })
     }
@@ -268,10 +274,15 @@ class MixerPage extends React.PureComponent {
         }
     }
 
+    play() {
+        
+    }
+
     renderMixer() {
         const { loaded } = this.props
-        const { data, dataChanged }  = this.state
+        const { data, dataChanged, audioBuffers } = this.state
         const songLength = this.getSongLength()
+        const playDisabled = !audioBuffers || Object.values(audioBuffers).some(ab => ab === null)
         return (
             <div className={loaded ? '' : ' indeterminate'}>
                 <label className="inline-form">Nazwa utworu: <input type="text" id="mixer-name" required value={data.name} onChange={this.changeSongName} /></label>
@@ -291,7 +302,7 @@ class MixerPage extends React.PureComponent {
                 </div>
                 <button disabled={!dataChanged} className="icon-floppy" onClick={this.saveData}>{dataChanged ? 'Zapisz' : 'Aktualne'}</button>
                 <button className="icon-plus" onClick={this.addNewTrack}>Dodaj ścieżkę</button>
-                <button className="icon-play">Graj</button>
+                <button disabled={playDisabled} className="icon-play" onClick={this.play}>Graj</button>
                 <button onClick={this.downloadProjectAudio} className="icon-download">Utwórz</button>
                 <span className="icon-resize-horizontal">
                     Rozciągnij: 
@@ -314,7 +325,8 @@ class MixerPage extends React.PureComponent {
     }
 
     renderPage() {
-        const { loaded, data, audiosLoaded, audiosEntries } = this.props
+        const { loaded, audiosLoaded, audiosEntries } = this.props
+        const { data } = this.state
         return (
             <div>
                 <section>
