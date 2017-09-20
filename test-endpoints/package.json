@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha test/project.js --timeout 15000"
+    "test": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --timeout 15000"
   },
   "author": "",
   "license": "ISC",
