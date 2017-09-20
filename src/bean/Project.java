@@ -191,7 +191,7 @@ public class Project implements Sanitizable {
 	
 	/**
 	 * Returns path to the result project song
-	 * @return
+	 * @return Path to the project song
 	 */
 	public String resultPath() {
 		return id != null ? "./projects/" + id + ".wav" : null;

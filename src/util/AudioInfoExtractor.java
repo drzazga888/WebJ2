@@ -33,7 +33,7 @@ public class AudioInfoExtractor {
 	/**
 	 * Class (only) constructor
 	 * @param filename Path to the audio file you want to process
-	 * @throws IOException
+	 * @throws IOException Exception thrown when file cannot be opened
 	 */
 	public AudioInfoExtractor(String filename) throws IOException {
 		this.sample = new Sample(filename);

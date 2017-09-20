@@ -105,7 +105,7 @@ public class Track implements Sanitizable {
 	/**
 	 * It combines track fields to create new object that
 	 * could be used e.g. as a JAX-RS JSON response
-	 * @return
+	 * @return Prepared track object
 	 */
 	public Object prepareForResponse() {
 		Track track = new Track();

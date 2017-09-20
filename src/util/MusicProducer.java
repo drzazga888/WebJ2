@@ -74,7 +74,7 @@ public class MusicProducer {
 	
 	/**
 	 * Produces audio and saves it to the file
-	 * @throws IOException
+	 * @throws IOException Thrown when audio files are corrupted or blocked
 	 */
 	public void createFromProject() throws IOException {
 		Gain masterGain = new Gain(ac, project.countSamples(), MASTER_GAIN_VALUE);

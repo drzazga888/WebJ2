@@ -160,7 +160,7 @@ public class Sample implements Sanitizable {
 	 * Creates object that could be send as a response,
 	 * makes use of audioId fields instead of audio,
 	 * do not returns user data
-	 * @return
+	 * @return Prepared object
 	 */
 	public Object prepareForResponse() {
 		Sample sample = new Sample();
