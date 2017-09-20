@@ -27,6 +27,11 @@ import exception.UserAlreadyExistsException;
 import filter.BasicSecurityContext;
 import util.BCrypt;
 
+/**
+ * REST endpoints concerning user profile
+ * @author kdrzazga
+ *
+ */
 @Path("users")
 @Stateless
 public class UserController {
@@ -40,6 +45,11 @@ public class UserController {
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
 	
+	/**
+	 * Returns user details, it could be user as a sign-in request
+	 * @param securityContext Security context with authenticated user
+	 * @return User details
+	 */
 	@GET
 	@Path("me")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -48,6 +58,11 @@ public class UserController {
 		return Response.ok(user.prepareForResponse()).build();
 	}
 	
+	/**
+	 * Not restricted endpoint that produces new user.
+	 * @param user User data from the request form
+	 * @return Action status
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -61,6 +76,12 @@ public class UserController {
 		return Response.status(Status.CREATED).entity(new SuccessMessage(USER_CREATED_MESSAGE)).build();
 	}
 	
+	/**
+	 * Updated user data
+	 * @param user User data from the request form
+	 * @param securityContext Security context with authenticated user
+	 * @return Action status
+	 */
 	@PUT
 	@Path("me")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -80,6 +101,11 @@ public class UserController {
 		return Response.ok(USER_UPDATED_PAYLOAD).build();
 	}
 	
+	/**
+	 * Removes user from the application
+	 * @param securityContext Security context with authenticated user
+	 * @return Action status
+	 */
 	@DELETE
 	@Path("me")
 	@Produces(MediaType.APPLICATION_JSON)

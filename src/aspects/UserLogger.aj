@@ -7,6 +7,11 @@ import bean.User;
 import filter.BasicSecurityContext;
 import filter.BasicAuthFilter;
 
+/**
+ * Aspect that prints to the console which user is authenticated
+ * @author kdrzazga
+ *
+ */
 public aspect UserLogger {
 	
 	pointcut afterUserLogged(ContainerRequestContext request):

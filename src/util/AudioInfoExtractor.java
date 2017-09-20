@@ -15,16 +15,34 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 
 import net.beadsproject.beads.events.AudioContextStopTrigger;
 
+/**
+ * This class is able to extract array of amplitudes over time and durations
+ * of the provided audio. It's generally better for performance if extractor will
+ * be called once for results (and than save then to the DB) instead of calling methods
+ * on every request.
+ * 
+ * @author kdrzazga
+ *
+ */
 public class AudioInfoExtractor {
 	
 	private final int CHUNK_AND_HOP_SIZE = 1024;
 	
 	private Sample sample;
 
+	/**
+	 * Class (only) constructor
+	 * @param filename Path to the audio file you want to process
+	 * @throws IOException
+	 */
 	public AudioInfoExtractor(String filename) throws IOException {
 		this.sample = new Sample(filename);
 	}
 	
+	/**
+	 * Method that returns length of the audio
+	 * @return Length of the audio
+	 */
 	public double getLength() {
 		return sample.getLength() / 1000;
 	}
@@ -36,6 +54,12 @@ public class AudioInfoExtractor {
 		return sfs;
 	}
 	
+	/**
+	 * Computes amplitude over time. It's based on the segmentator that
+	 * cuts audio data to smaller pieces, that can be processed individually
+	 * to get RMS.
+	 * @return RMS of all chunk'ed audio data
+	 */
 	public float[] getRmsOverTime() {
 		AudioContext ac = new AudioContext(new NonrealtimeIO());
 		

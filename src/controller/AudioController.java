@@ -38,6 +38,11 @@ import filter.BasicSecurityContext;
 import util.AudioInfoExtractor;
 import util.PATCH;
 
+/**
+ * REST endpoints concerning audio files
+ * @author kdrzazga
+ *
+ */
 @Path("audios")
 @Stateless
 public class AudioController {
@@ -51,6 +56,11 @@ public class AudioController {
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
 
+	/**
+	 * Produces list of the audio entries
+	 * @param securityContext Security context with authenticated user
+	 * @return Response with the list of audio if there is no errors
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAudioList(@Context SecurityContext securityContext) {
@@ -59,6 +69,12 @@ public class AudioController {
 		return Response.ok(audios.stream().map(a -> a.prepareForResponse()).collect(Collectors.toList())).build();
 	}
 	
+	/**
+	 * Returns .wav audio file represented by provided ID
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID number of the resource
+	 * @return Audio file
+	 */
 	@Path("{id}")
 	@GET
 	@Produces("audio/wav")
@@ -75,6 +91,12 @@ public class AudioController {
 		return Response.ok(audioFile).header("Content-Disposition", "attachment; filename=\"" + audio.audioAttachmentName() + "\"").build();
 	}
 	
+	/**
+	 * Creates audio from form data
+	 * @param audio Form data that must be validated
+	 * @param securityContext Security context with authenticated user
+	 * @return Action status
+	 */
 	@POST 
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -104,6 +126,14 @@ public class AudioController {
 		return Response.status(Status.CREATED).entity(new AudioPostSuccessMessage(audio.getId(), audio.getLength(), audio.getAmplitudeOverTime())).build();
 	}
 	
+	
+	/**
+	 * Updated audio info
+	 * @param newAudio Audio form that is used to update existing one
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID of the audio
+	 * @return Action status
+	 */
 	@Path("{id}")
 	@PATCH
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -130,6 +160,12 @@ public class AudioController {
 		return Response.ok(AUDIO_UPDATED_PAYLOAD).build();
 	}
 	
+	/**
+	 * Deletes requested audio
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID of the audio resource
+	 * @return Action status
+	 */
 	@Path("{id}")
 	@DELETE
 	@Produces(MediaType.APPLICATION_JSON)

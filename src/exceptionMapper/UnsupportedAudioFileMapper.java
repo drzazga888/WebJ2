@@ -8,10 +8,18 @@ import javax.ws.rs.ext.ExceptionMapper;
 
 import bean.ErrorMessage;
 
+/**
+ * Maps UnsupportedAudioFileException to UNSUPPORTED_MEDIA_TYPE response
+ * @author kdrzazga
+ *
+ */
 public class UnsupportedAudioFileMapper implements ExceptionMapper<UnsupportedAudioFileException> {
 	
 	private final static String UNSUPPOETED_AUDIO_DESCRIPTION = "audio file is not supported";
 
+	/**
+	 * Returns UNSUPPORTED_MEDIA_TYPE error with information that wav file is only allowed
+	 */
 	@Override
 	public Response toResponse(UnsupportedAudioFileException arg0) {
 		return Response

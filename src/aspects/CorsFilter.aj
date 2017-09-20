@@ -2,6 +2,11 @@ package aspects;
 
 import javax.ws.rs.core.Response;
 
+/**
+ * Aspect used to add CORS headers to the JAX-RS API responses
+ * @author kdrzazga
+ *
+ */
 public aspect CorsFilter {
 	
 	after() returning(Response response): execution(public Response controller.*.*(..)) {

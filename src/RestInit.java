@@ -15,6 +15,13 @@ import exceptionMapper.UserAlreadyExistsMapper;
 import exceptionMapper.UserIsNotOwnerMapper;
 import filter.BasicAuthFilter;
  
+/**
+ * JAX-RS Application starting point.
+ * Override getClasses() to connect all
+ * exceptionMappers, filters and service endpoints
+ * @author kdrzazga
+ *
+ */
 @ApplicationPath("api")
 public class RestInit extends Application {
      

@@ -7,6 +7,11 @@ import java.lang.annotation.Target;
 
 import javax.ws.rs.HttpMethod;
 
+/**
+ * Annotation used as a polyfill of PATCH method for jax-rs
+ * @author kdrzazga
+ *
+ */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @HttpMethod("PATCH")

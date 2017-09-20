@@ -16,6 +16,13 @@ import net.beadsproject.beads.ugens.SamplePlayer;
 import net.beadsproject.beads.ugens.GranularSamplePlayer;
 import net.beadsproject.beads.ugens.RecordToSample;
 
+/**
+ * Utility class used for joining project definition
+ * and audio files into result song
+ * 
+ * @author kdrzazga
+ *
+ */
 public class MusicProducer {
 
 	private static float MASTER_GAIN_VALUE = 0.5f;
@@ -23,6 +30,12 @@ public class MusicProducer {
 	final private Project project;
 	final private AudioContext ac = new AudioContext(new NonrealtimeIO());
 	
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param project Project that will be used as a source of the truth
+	 */
 	public MusicProducer(Project project) {
 		this.project = project;
 	}
@@ -59,6 +72,10 @@ public class MusicProducer {
 		return g;
 	}
 	
+	/**
+	 * Produces audio and saves it to the file
+	 * @throws IOException
+	 */
 	public void createFromProject() throws IOException {
 		Gain masterGain = new Gain(ac, project.countSamples(), MASTER_GAIN_VALUE);
 		for (Track track : project.getTracks()) {
@@ -71,6 +88,10 @@ public class MusicProducer {
 		record(ac, masterGain);
 	}
 	
+	/**
+	 * Returns audio as a File
+	 * @return Audio file
+	 */
 	public File getResult() {
 		return new File(project.resultPath());
 	}

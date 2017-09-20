@@ -9,9 +9,17 @@ import javax.ws.rs.ext.Provider;
 import bean.ErrorMessage;
 import exception.BadParameterException;
 
+/**
+ * Maps BadParameterException to the BAD_REQUEST response
+ * @author kdrzazga
+ *
+ */
 @Provider
 public class BadParameterMapper implements ExceptionMapper<BadParameterException> {
 
+	/**
+	 * Returns BAD_REQUEST response with error message provided in the exception
+	 */
 	@Override
 	public Response toResponse(BadParameterException e) {
 		return Response

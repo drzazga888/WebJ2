@@ -17,6 +17,12 @@ import exception.BadParameterException;
 import util.ResponsePreparable;
 import util.Sanitizable;
 
+/**
+ * JPA entity that maps user details to the DB.
+ * This class extends Credentials class.
+ * @author kdrzazga
+ *
+ */
 @Entity
 @Table(name = "PROFILE")
 @NamedQuery(name = "User.getByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
@@ -47,10 +53,22 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Project> projects;
 
+	/**
+	 * Default constructor
+	 */
 	public User() {
 		super();
 	}
 	
+	/**
+	 * Full constructor with all necessary params
+	 * @param id ID of the user
+	 * @param fname First name of the user
+	 * @param lname Last name of the user
+	 * @param email E-mail of the user
+	 * @param password2 User password (confirmation)
+	 * @param password User password
+	 */
 	public User(Long id, String fname, String lname, String email, String password2, String password) {
 		super(email, password);
 		this.id = id;
@@ -59,6 +77,9 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 		this.password2 = password2;
 	}
 	
+	/**
+	 * Sanitizes fields, throws BadParameterException on error
+	 */
 	public void sanitize() {
 		if (fname == null || fname.length() == 0) {
 			throw new BadParameterException("fname must be provided");
@@ -92,6 +113,9 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 		}
 	}
 	
+	/**
+	 * Representation of the object as string
+	 */
 	@Override
 	public String toString() {
 		return String.format(
@@ -102,54 +126,106 @@ public class User extends Credentials implements Sanitizable, ResponsePreparable
 		);
 	}
 
+	/**
+	 * User ID getter
+	 * @return User ID
+	 */
 	public Long getId() {
 		return id;
 	}
 
+	/**
+	 * User ID setter
+	 * @param id New user ID
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
 
+	/**
+	 * User first name getter
+	 * @return User first name
+	 */
 	public String getFname() {
 		return fname;
 	}
 
+	/**
+	 * User first name setter
+	 * @param fname User new first name
+	 */
 	public void setFname(String fname) {
 		this.fname = fname;
 	}
 
+	/**
+	 * User last name getter
+	 * @return User last name
+	 */
 	public String getLname() {
 		return lname;
 	}
 
+	/**
+	 * User last name setter
+	 * @param lname User new last name
+	 */
 	public void setLname(String lname) {
 		this.lname = lname;
 	}
 
+	/**
+	 * Getter for password (repeated for confirmation)
+	 * @return Confirmed password
+	 */
 	public String getPassword2() {
 		return password2;
 	}
 
+	/**
+	 * Setter for second password (confirmation)
+	 * @param password2 Second password
+	 */
 	public void setPassword2(String password2) {
 		this.password2 = password2;
 	}
 
+	/**
+	 * Provides list of audio files that belongs to the user
+	 * @return Audio details list
+	 */
 	public List<Audio> getAudios() {
 		return audios;
 	}
 
+	/**
+	 * Audio list setter
+	 * @param audios New audio collection
+	 */
 	public void setAudios(List<Audio> audios) {
 		this.audios = audios;
 	}
 
+	/**
+	 * Provides list of user projects
+	 * @return User projects (as List)
+	 */
 	public List<Project> getProjects() {
 		return projects;
 	}
 
+	/**
+	 * Allows to change list of the user projects
+	 * @param projects New user project list
+	 */
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
 	}
 	
+	/**
+	 * Returns object that could be send as response to the client,
+	 * contains only first and last names
+	 */
 	@Override
 	public Object prepareForResponse() {
 		User user = new User();

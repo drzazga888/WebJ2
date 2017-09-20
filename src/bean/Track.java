@@ -15,6 +15,11 @@ import javax.persistence.OneToMany;
 import exception.BadParameterException;
 import util.Sanitizable;
 
+/**
+ * JPA entity that contains information about project tracks
+ * @author kdrzazga
+ *
+ */
 @Entity
 public class Track implements Sanitizable {
 	
@@ -33,31 +38,75 @@ public class Track implements Sanitizable {
 	@Column(nullable = false)
 	private float gain;
 	
+	/**
+	 * Track ID getter
+	 * @return Track ID
+	 */
 	public Long getId() {
 		return id;
 	}
+	
+	/**
+	 * Track ID setter
+	 * @param id New track ID
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	/**
+	 * Track name getter
+	 * @return Track name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Track name setter
+	 * @param name New track name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	/**
+	 * Return list of the samples contained in current track
+	 * @return List of samples
+	 */
 	public List<Sample> getSamples() {
 		return samples;
 	}
+	
+	/**
+	 * This method allows to replace sample list to the new collection
+	 * @param samples List of new samples
+	 */
 	public void setSamples(List<Sample> samples) {
 		this.samples = samples;
 	}
+	
+	/**
+	 * Getter of the track gain (it applies also to the contained samples)
+	 * @return Gain (volume) value
+	 */
 	public float getGain() {
 		return gain;
 	}
+	
+	/**
+	 * Allows to set new value of track gain
+	 * @param gain New track volume
+	 */
 	public void setGain(float gain) {
 		this.gain = gain;
 	}
 	
+	/**
+	 * It combines track fields to create new object that
+	 * could be used e.g. as a JAX-RS JSON response
+	 * @return
+	 */
 	public Object prepareForResponse() {
 		Track track = new Track();
 		track.setGain(gain);
@@ -66,6 +115,10 @@ public class Track implements Sanitizable {
 		return track;
 	}
 	
+	/**
+	 * When you call this function on track and no exceptions will be thrown
+	 * than track-specific fields are valid
+	 */
 	@Override
 	public void sanitize() {
 		if (name == null) {

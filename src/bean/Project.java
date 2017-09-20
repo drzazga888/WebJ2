@@ -24,6 +24,11 @@ import javax.persistence.UniqueConstraint;
 import exception.BadParameterException;
 import util.Sanitizable;
 
+/**
+ * JPA entity that holds song project details
+ * @author kdrzazga
+ *
+ */
 @Entity
 @NamedQueries({
 	@NamedQuery(name = "Project.getByUser", query = "SELECT p FROM Project p WHERE p.user.id = :id"),
@@ -57,49 +62,125 @@ public class Project implements Sanitizable {
 	@Transient
 	private Float duration;
 	
+	/**
+	 * Project ID getter
+	 * @return Project ID
+	 */
 	public Long getId() {
 		return id;
 	}
+	
+	/**
+	 * Project ID setter
+	 * @param id Project ID
+	 */
 	public void setId(Long id) {
 		this.id = id;
 	}
+	
+	/**
+	 * Project name getter
+	 * @return Project name
+	 */
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * Changes project name
+	 * @param name New project name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	/**
+	 * Returns list of tracks that belogs to the project
+	 * @return List of tracks
+	 */
 	public List<Track> getTracks() {
 		return tracks;
 	}
+	
+	/**
+	 * Allows to set new list of tracks
+	 * @param tracks List of tracks
+	 */
 	public void setTracks(List<Track> tracks) {
 		this.tracks = tracks;
 	}
+	
+	/**
+	 * Returns project creation date
+	 * @return Creation date
+	 */
 	public Date getCreatedAt() {
 		return createdAt;
 	}
+	
+	/**
+	 * Changes creation date
+	 * @param createdAt Creation date
+	 */
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
 	}
+	
+	/**
+	 * Getter of project update timestamp
+	 * @return Update date
+	 */
 	public Date getUpdatedAt() {
 		return updatedAt;
 	}
+	
+	/**
+	 * Setter ot the project update date
+	 * @param updatedAt New update date
+	 */
 	public void setUpdatedAt(Date updatedAt) {
 		this.updatedAt = updatedAt;
 	}
+	
+	/**
+	 * Reurns user that is connected to the project
+	 * @return User JPA object if connected
+	 */
 	public User getUser() {
 		return user;
 	}
+	
+	/**
+	 * This method allows to replace user of this project 
+	 * @param user New user object
+	 */
 	public void setUser(User user) {
 		this.user = user;
 	}
+	
+	/**
+	 * Allows to set new duration (in seconds) of the project,
+	 * it's not persistant, only generated when need
+	 * to return JSON request with this info
+	 * @return Duration of the project song
+	 */
 	public Float getDuration() {
 		return duration;
 	}
+	
+	/**
+	 * Sets new project duration (in seconds). This field is
+	 * transient so it will be not persisted to the DB
+	 * @param duration New duratuon of the project song
+	 */
 	public void setDuration(Float duration) {
 		this.duration = duration;
 	}
 	
+	/**
+	 * Counts all of the samples that belongs to the project.
+	 * @return Count of samples entries
+	 */
 	public int countSamples() {
 		int n = 0;
 		for (Track track : getTracks()) {
@@ -108,15 +189,25 @@ public class Project implements Sanitizable {
 		return n;
 	}
 	
+	/**
+	 * Returns path to the result project song
+	 * @return
+	 */
 	public String resultPath() {
 		return id != null ? "./projects/" + id + ".wav" : null;
 	}
 	
+	/**
+	 * Deletes all temp project songs
+	 */
 	public void deleteAudioFile() {
 		File audioFile = new File(resultPath());
 		audioFile.delete();
 	}
 	
+	/**
+	 * Convert object ot string (for debug)
+	 */
 	@Override
 	public String toString() {
 		return String.format(
@@ -125,6 +216,10 @@ public class Project implements Sanitizable {
 		);
 	}
 	
+	/**
+	 * Goes through all constrained fields and does validation.
+	 * On error BadParameterException with appropriate error is throwed.
+	 */
 	@Override
 	public void sanitize() {
 		if (name == null || name.length() == 0) {
@@ -135,6 +230,9 @@ public class Project implements Sanitizable {
 		}
 	}
 	
+	/**
+	 * Does the same as sanitize(), but also goes deeper to the tracks and sanmples
+	 */
 	public void deepSanitize() {
 		sanitize();
 		for (Track track : tracks) {
@@ -142,6 +240,10 @@ public class Project implements Sanitizable {
 		}
 	}
 	
+	/**
+	 * Creates payload for project list (not detailed information)
+	 * @return Object that could be used as entry in list response
+	 */
 	public Project prepareForResponse() {
 		Project project = new Project();
 		project.setId(id);
@@ -152,6 +254,10 @@ public class Project implements Sanitizable {
 		return project;
 	}
 	
+	/**
+	 * Creates extended object with information, contains also tracks and samples.
+	 * @return Object that could be used as response
+	 */
 	public Object prepareForExtendedResponse() {
 		Project project = new Project();
 		project.setName(name);
@@ -161,6 +267,10 @@ public class Project implements Sanitizable {
 		return project;
 	}
 	
+	/**
+	 * Computes song duration of the project
+	 * @return Duration of the project
+	 */
 	public float computeDuration() {
 		float duration = 0;
 		for (Track track : getTracks()) {

@@ -40,6 +40,11 @@ import filter.BasicSecurityContext;
 import util.MusicProducer;
 import util.PATCH;
 
+/**
+ * REST endpoints concerning song project(s)
+ * @author kdrzazga
+ *
+ */
 @Path("projects")
 @Stateless
 public class ProjectController {
@@ -52,6 +57,12 @@ public class ProjectController {
 	@PersistenceContext(name = "WebJ2")
 	private EntityManager em;
 	
+	/**
+	 * Creates new project
+	 * @param requestProject Project form to be processed
+	 * @param securityContext Security context with authenticated user
+	 * @return Action status
+	 */
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -78,6 +89,11 @@ public class ProjectController {
 		return Response.status(Status.CREATED).entity(new ProjectPostSuccessMessage(project.getId(), project.getCreatedAt(), project.getUpdatedAt())).build();
 	}
 	
+	/**
+	 * Returns project list that belong to the authenticated user
+	 * @param securityContext Security context with authenticated user
+	 * @return List of the projects (basic information, without tracks)
+	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getProjectsList(@Context SecurityContext securityContext) {
@@ -86,6 +102,12 @@ public class ProjectController {
 		return Response.ok(projects.stream().map(a -> a.prepareForResponse()).collect(Collectors.toList())).build();
 	}
 	
+	/**
+	 * Returns specific full-detailed project
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID of the project resource
+	 * @return Detailed project (with tracks and samples)
+	 */
 	@GET
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -101,6 +123,13 @@ public class ProjectController {
 		return Response.ok(project.prepareForExtendedResponse()).build();
 	}
 	
+	/**
+	 * Replaces project to the given one
+	 * @param project New project payload
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID of the project resource
+	 * @return Action status
+	 */
 	@PUT
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -153,6 +182,13 @@ public class ProjectController {
 		return Response.ok(new SuccessMessage(PROJECT_UPDATED_MESSAGE)).build();
 	}
 	
+	/**
+	 * Replaces only name of the project
+	 * @param project Project form  only name will be taken
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID of the project resource
+	 * @return Action status
+	 */
 	@PATCH
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -178,6 +214,12 @@ public class ProjectController {
 		return Response.ok(new ProjectPatchSuccessMessage(existingProject.getUpdatedAt())).build();
 	}
 	
+	/**
+	 * Deletes project
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID of the project resource
+	 * @return Action status
+	 */
 	@DELETE
 	@Path("{id}")
 	@Produces(MediaType.APPLICATION_JSON)
@@ -210,6 +252,12 @@ public class ProjectController {
 		return Response.ok(PROJECT_DELETED_PAYLOAD).build();
 	}
 	
+	/**
+	 * Produces and returns song made of requested project, in .wav format
+	 * @param securityContext Security context with authenticated user
+	 * @param id ID of the project resource
+	 * @return WAV audio file with ready song
+	 */
 	@GET
 	@Path("{id}/audio")
 	@Produces("audio/wav")

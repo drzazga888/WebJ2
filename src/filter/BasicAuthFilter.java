@@ -20,6 +20,13 @@ import bean.User;
 import exception.NotAuthorizedException;
 import util.BCrypt;
 
+/**
+ * This is the authentication filer.
+ * It's used via JAX-RS to provide SecurityContext
+ * or to throw NotAuthorizedException (when path is secured).
+ * @author kdrzazga
+ *
+ */
 @Provider
 @PreMatching
 public class BasicAuthFilter implements ContainerRequestFilter {
@@ -30,6 +37,9 @@ public class BasicAuthFilter implements ContainerRequestFilter {
 	@Inject
 	private EntityManagerProvider entityManagerProvider;
 	
+	/**
+	 * Default constructor
+	 */
     public BasicAuthFilter() {
     }
 
@@ -49,6 +59,10 @@ public class BasicAuthFilter implements ContainerRequestFilter {
 		return null;
 	}
 	
+	/**
+	 * Main filter body that sets security context to
+	 * the request or throws NotAuthorizedException
+	 */
 	@Override
 	public void filter(ContainerRequestContext request) {
 		if (request.getMethod() == HttpMethod.OPTIONS) {

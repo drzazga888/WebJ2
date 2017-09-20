@@ -8,10 +8,18 @@ import javax.ws.rs.ext.ExceptionMapper;
 import bean.ErrorMessage;
 import exception.UserAlreadyExistsException;
 
+/**
+ * Maps UserAlreadyExistsException to the CONFLICT response
+ * @author kdrzazga
+ *
+ */
 public class UserAlreadyExistsMapper implements ExceptionMapper<UserAlreadyExistsException> {
 	
 	public static final String DEFAULT_MESSAGE = "user already exists";
 
+	/**
+	 * Returns CONFLICT response
+	 */
 	@Override
 	public Response toResponse(UserAlreadyExistsException exception) {
 		return Response

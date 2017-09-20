@@ -8,10 +8,18 @@ import javax.ws.rs.ext.ExceptionMapper;
 
 import bean.ErrorMessage;
 
+/**
+ * Maps NotFoundException to the NOT_FOUND response
+ * @author kdrzazga
+ *
+ */
 public class NotFoundExceptionMapper implements ExceptionMapper<NotFoundException> {
 	
 	public static final String DEFAULT_MESSAGE = "resource cannot be found";
 
+	/**
+	 * Returns NOT_FOUND
+	 */
 	@Override
 	public Response toResponse(NotFoundException exception) {
 		return Response
