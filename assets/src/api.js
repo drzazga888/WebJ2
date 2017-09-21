@@ -1,7 +1,7 @@
 import { jsonOrThrow, blobOrThrow, mergeArrayBufferWithForm, getBasicAuthorization } from './converters'
 
-export const basePath = '/webj2/api/'
-//export const basePath = 'https://localhost:9443/webj2/api/'
+export const basePath = (typeof SERVER_PATH !== 'undefined' ? SERVER_PATH : '') + '/webj2/api/'
+console.log(basePath)
 
 // user
 

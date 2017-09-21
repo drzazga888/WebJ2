@@ -14,6 +14,7 @@ import exceptionMapper.UnsupportedAudioFileMapper;
 import exceptionMapper.UserAlreadyExistsMapper;
 import exceptionMapper.UserIsNotOwnerMapper;
 import filter.BasicAuthFilter;
+import filter.CorsFilter;
  
 /**
  * JAX-RS Application starting point.
@@ -35,6 +36,7 @@ public class RestInit extends Application {
         	UserIsNotOwnerMapper.class,
         	UnsupportedAudioFileMapper.class,
         	BasicAuthFilter.class,
+        	CorsFilter.class,
         	AudioController.class,
         	ProjectController.class,
         	UserController.class

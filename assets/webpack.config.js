@@ -1,5 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+console.log('API calls will point to', process.env.SERVER_PATH || '/');
 
 module.exports = {
   entry: './src/index.js',
@@ -37,6 +40,9 @@ module.exports = {
     ]
   },
   plugins: [
+    new webpack.DefinePlugin({
+      SERVER_PATH: JSON.stringify(process.env.SERVER_PATH)
+    }),
     new HtmlWebpackPlugin({
       template: './src/index.html',
       filename: 'index.html',

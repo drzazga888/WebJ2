@@ -3,6 +3,7 @@
                 <aspect name="aspects.*"/>
         </aspects>
         <weaver options="-verbose -showWeaveInfo -debug">
-                <include within="controller.*"/>     
+                <include within="controller.*"/>
+                <include within="bean.*"/>
         </weaver>
 </aspectj>
