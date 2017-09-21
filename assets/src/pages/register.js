@@ -50,10 +50,10 @@ class RegisterPage extends React.Component {
                     <form onSubmit={this.register}>
                         <fieldset>
                             <legend>Formularz rejestracji</legend>
-                            <label>Imię: <input disabled={!loaded} type="text" name="fname" maxLength="40" required value={this.state.fname} onChange={this.onFieldChange} /></label>
-                            <label>Nazwisko: <input disabled={!loaded} type="text" name="lname" maxLength="40" required value={this.state.lname} onChange={this.onFieldChange} /></label>
+                            <label>Imię (max. 40 znaków): <input disabled={!loaded} type="text" name="fname" maxLength="40" required value={this.state.fname} onChange={this.onFieldChange} /></label>
+                            <label>Nazwisko (max. 40 znaków): <input disabled={!loaded} type="text" name="lname" maxLength="40" required value={this.state.lname} onChange={this.onFieldChange} /></label>
                             <label>E-mail: <input disabled={!loaded} type="email" name="email" required value={this.state.email} onChange={this.onFieldChange} /></label>
-                            <label>Hasło: (od 6 do 16 znaków) <input disabled={!loaded} type="password" name="password" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^\x26*-]).{8,}" required value={this.state.password} onChange={this.onFieldChange} /></label>
+                            <label title="Minimum 8 znaków, musi zawierać co najmniej 1 dużą literę, 1 małą, 1 cyfrę oraz 1 znak specjalny z puli: #?!@$%^&amp;*-">Hasło: (min. 8 znaków, ...) <input disabled={!loaded} type="password" name="password" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[#?!@$%^\x26*-]).{8,}" required value={this.state.password} onChange={this.onFieldChange} /></label>
                             <label>Powtórz hasło: <input disabled={!loaded} ref="password2" type="password" name="password2" required value={this.state.password2} onChange={this.onFieldChange} /></label>
                             <button type="submit">{loaded ? `Zarejestruj się` : `Rejestrowanie...`}</button>
                         </fieldset>
