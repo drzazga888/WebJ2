@@ -22,7 +22,8 @@ class MixerPage extends React.PureComponent {
             data: this.props.data,
             dataChanged: false,
             audioBuffers: this.props.audiosEntries ? this.props.audiosEntries.reduce((c, a) => (c[a.id] = null, c), {}) : null,
-            playingCursor: null
+            playingCursor: null,
+            downloading: false
         }
     }
 
@@ -141,8 +142,8 @@ class MixerPage extends React.PureComponent {
     renderTrackHead(track, i) {
         return (
             <div key={i} className="track track-head">
-                <input type="text" placeholder="Nazwij track" className="name" value={track.name} onChange={e => this.changeTrackName(i, e.target.value)} required />
-                <p className="track-gain" title="wzmocnienie"><i className="icon-volume-up"></i> <em><input type="number" step={0.01} min={0} max={10.0} className="gain" onChange={e => this.changeTrackGain(i, Number(e.target.value))} value={track.gain} /></em></p>
+                <input type="text" placeholder="Nazwij track" className="name" value={track.name} onChange={e => this.changeTrackName(i, e.target.value)} />
+                <p className="track-gain" title="wzmocnienie"><i className="icon-volume-up"></i> <em><input type="number" min={0} max={10.0} className="gain" onChange={e => this.changeTrackGain(i, Number(e.target.value))} value={track.gain} /></em></p>
                 <p className="icon-cancel deleter" onClick={() => this.removeTrack(i)}>Usuń</p>
             </div>
         )
@@ -268,13 +269,20 @@ class MixerPage extends React.PureComponent {
         if (this.state.dataChanged) {
             alert('Należy najpierw zapisać projekt przed pobraniem utworu')
         } else {
-            this.props.getProjectAudio().then(data => {
-                let a = document.createElement('a')
-                a.href = URL.createObjectURL(data)
-                a.download = this.props.data.name.replace(/[^a-z0-9]/gi, '_').toLowerCase()
-                document.body.appendChild(a)
-                a.click()
-                document.body.removeChild(a)
+            this.setState({
+                downloading: true
+            }, () => {
+                this.props.getProjectAudio().then(data => {
+                    let a = document.createElement('a')
+                    a.href = URL.createObjectURL(data)
+                    a.download = this.props.data.name.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.wav'
+                    document.body.appendChild(a)
+                    a.click()
+                    document.body.removeChild(a)
+                    this.setState({
+                        downloading: false
+                    })
+                })
             })
         }
     }
@@ -316,7 +324,7 @@ class MixerPage extends React.PureComponent {
 
     renderMixer() {
         const { loaded } = this.props
-        const { data, dataChanged, audioBuffers, playingCursor, pixelsPerSecond } = this.state
+        const { data, dataChanged, audioBuffers, playingCursor, pixelsPerSecond, downloading } = this.state
         const songLength = this.getSongLength()
         const playDisabled = !audioBuffers || Object.values(audioBuffers).some(ab => ab === null)
         return (
@@ -342,7 +350,7 @@ class MixerPage extends React.PureComponent {
                 <button disabled={!dataChanged} className="icon-floppy" onClick={this.saveData}>{dataChanged ? 'Zapisz' : 'Aktualne'}</button>
                 <button className="icon-plus" onClick={this.addNewTrack}>Dodaj ścieżkę</button>
                 <button disabled={playDisabled} className={playingCursor ? 'icon-stop' : 'icon-play'} onClick={playingCursor ? this.stop : this.play}>{playingCursor ? 'Zatrzymaj' : 'Graj'}</button>
-                <button onClick={this.downloadProjectAudio} className="icon-download">Utwórz</button>
+                <button disabled={downloading} onClick={this.downloadProjectAudio} className="icon-download">{downloading ? 'Tworzenie...' : 'Utwórz'}</button>
                 <span className="icon-resize-horizontal">
                     Rozciągnij: 
                     <input type="range" className="pixels-per-second-range" min={200} max={2000} value={Math.sqrt(2000 * this.state.pixelsPerSecond)} onChange={this.changePixelsPerSecond} />

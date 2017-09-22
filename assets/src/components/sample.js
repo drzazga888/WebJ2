@@ -32,10 +32,10 @@ class Sample extends React.PureComponent {
                 />
                 <div className="sample-controls">
                     <p><strong>{name}</strong></p>
-                    <p>start [s]: <em><input name="start" type="number" step={0.01} min={0} max={999.9} className="start" value={start} onChange={onChangeParam} /></em></p>
-                    <p>offset [s]: <em><input name="offset" type="number" step={0.01} min={0} max={999.9} className="offset" value={offset} onChange={onChangeParam} /></em></p>
-                    <p>długość [s]: <em><input name="duration" type="number" step={0.01} min={0} max={999.9} className="duration" value={duration} onChange={onChangeParam} /></em></p>
-                    <p>wzmocnienie: <em><input name="gain" type="number" step={0.01} min={0} max={10.0} className="gain" value={gain} onChange={onChangeParam} /></em></p>
+                    <p>start [s]: <em><input name="start" type="number" min={0} max={999.9} className="start" value={start} onChange={onChangeParam} /></em></p>
+                    <p>offset [s]: <em><input name="offset" type="number" min={0} max={999.9} className="offset" value={offset} onChange={onChangeParam} /></em></p>
+                    <p>długość [s]: <em><input name="duration" type="number" min={0} max={999.9} className="duration" value={duration} onChange={onChangeParam} /></em></p>
+                    <p>wzmocnienie: <em><input name="gain" type="number" min={0} max={10.0} className="gain" value={gain} onChange={onChangeParam} /></em></p>
                     <p className="deleter icon-cancel" onClick={onRemove}></p>
                 </div>
             </div>
