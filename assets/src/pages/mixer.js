@@ -282,6 +282,7 @@ class MixerPage extends React.PureComponent {
     stop = () => {
         this.playInterval && clearInterval(this.playInterval)
         this.stopTimeout && clearTimeout(this.stopTimeout)
+        this.stopTimeouts && this.stopTimeouts.forEach(t => clearTimeout(t))
         this.timeouts && this.timeouts.forEach(t => clearTimeout(t))
         this.audioSrcs && this.audioSrcs.forEach(a => a.stop())
         this.setState({ playingCursor: null })
@@ -290,6 +291,7 @@ class MixerPage extends React.PureComponent {
     play = () => {
         this.stop()
         this.timeouts = []
+        this.stopTimeouts = []
         this.audioSrcs = []
         this.state.data.tracks.reduce((c, t) => c.concat([ t.samples.map(s => {
             let audioSrc = this.audioContext.createBufferSource()
@@ -302,6 +304,9 @@ class MixerPage extends React.PureComponent {
             this.timeouts.push(setTimeout(() => {
                 audioSrc.start(0, s.offset, s.duration)
                 this.audioSrcs.push(audioSrc)
+                this.stopTimeouts.push(setTimeout(() => {
+                    audioSrc.stop()
+                }, s.duration * 1000))
             }, s.start * 1000))
         })]), [])
         this.setState({ playingCursor: 0 })
